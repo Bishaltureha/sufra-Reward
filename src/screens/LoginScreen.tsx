@@ -3,7 +3,7 @@ import React from "react";
 
 type Props = {};
 
-const Login = (props: Props) => {
+const LoginScreen = (props: Props) => {
   return (
     <View>
       <Text>Login</Text>
@@ -11,6 +11,6 @@ const Login = (props: Props) => {
   );
 };
 
-export default Login;
+export default LoginScreen;
 
 const styles = StyleSheet.create({});

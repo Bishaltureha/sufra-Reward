@@ -10,10 +10,14 @@ import {
 import React, { useRef, useState } from "react";
 import CustomButton from "../components/CustomButton";
 import LanguageButton from "../components/LanguageButton";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types";
+
+type Props = NativeStackScreenProps<RootStackParamList, "Splash">;
 
 const { width, height } = Dimensions.get("window");
 
-const WelcomeScreen = () => {
+const WelcomeScreen = ({ navigation }: Props) => {
   const onboardingData = [
     {
       id: "1",
@@ -106,7 +110,7 @@ const WelcomeScreen = () => {
                   <CustomButton
                     title={"Continue as Guest"}
                     backgroundColor="#ffffff"
-                    onPress={() => console.log("Guest pressed")}
+                    onPress={() => navigation.navigate("Home")}
                     style={{
                       position: "absolute",
                       right: 10,
