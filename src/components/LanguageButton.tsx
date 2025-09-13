@@ -2,7 +2,13 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const LanguageButton = ({ flagSource, label, onPress, style, textStyle }) => {
+const LanguageButton = ({
+  flagSource,
+  label,
+  onPress,
+  style,
+  textStyle = undefined,
+}) => {
   return (
     <TouchableOpacity
       style={[styles.button, style]}

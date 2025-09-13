@@ -7,8 +7,8 @@ const CustomButton = ({
   onPress,
   style,
   textStyle,
-  borderColor,
-  borderWidth,
+  borderColor = undefined,
+  borderWidth = undefined,
 }) => {
   return (
     <TouchableOpacity

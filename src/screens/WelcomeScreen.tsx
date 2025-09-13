@@ -97,13 +97,12 @@ const WelcomeScreen = ({ navigation }: Props) => {
                     <LanguageButton
                       flagSource={require("../../assets/image/Usa.png")}
                       label="EN"
-                      onPress={() => console.log("Language button pressed")}
+                      onPress={() => navigation.navigate("Language")}
                       style={{
                         width: "20%",
                         alignSelf: "center",
                         height: 25,
                       }}
-                      textStyle={undefined}
                     />
                   )}
 
@@ -130,8 +129,6 @@ const WelcomeScreen = ({ navigation }: Props) => {
                       fontSize: 12,
                       textAlign: "center",
                     }}
-                    borderColor={undefined}
-                    borderWidth={undefined}
                   />
                 </View>
               </View>
@@ -170,18 +167,20 @@ const WelcomeScreen = ({ navigation }: Props) => {
           <CustomButton
             title={currentIndex === 2 ? "Discover Sufra Benefits" : "Login"}
             backgroundColor="#ffab00"
-            onPress={undefined}
+            onPress={
+              currentIndex === 2
+                ? () => navigation.navigate("DiscoverSufraBenefits")
+                : () => navigation.navigate("Home")
+            }
             style={{ paddingVertical: 16 }}
             textStyle={{ color: "#000000" }}
-            borderColor={undefined}
-            borderWidth={undefined}
           />
           <CustomButton
             title={"Register"}
             backgroundColor="#ffffff"
             borderColor="black"
             borderWidth={1.5}
-            onPress={undefined}
+            onPress={() => navigation.navigate("Register")}
             style={{ paddingVertical: 16 }}
             textStyle={{ color: "#000000" }}
           />
@@ -205,10 +204,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignSelf: "center",
     top: 0,
-    left: -110,
+    left: -100,
     right: 0,
     bottom: 0,
-    width: "155%",
+    width: "150%",
     height: "100%",
     resizeMode: "cover",
   },

@@ -5,12 +5,22 @@ type Props = {};
 
 const Register = (props: Props) => {
   return (
-    <View>
-      <Text>Register</Text>
+    <View style={styles.container}>
+      <Text style={styles.text}>Register</Text>
     </View>
   );
 };
 
 export default Register;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+});

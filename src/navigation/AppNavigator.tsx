@@ -8,6 +8,7 @@ import DiscoverSufraBenefits from "../screens/DiscoverSufraBenefits";
 import HomeScreen from "../screens/HomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import OtpScreen from "../screens/OtpScreen";
+import Register from "../screens/Register";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -28,7 +29,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Otp" component={OtpScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={Register} />
     </Stack.Navigator>
   );
 }
