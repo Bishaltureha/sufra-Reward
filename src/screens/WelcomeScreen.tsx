@@ -97,7 +97,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
                     <LanguageButton
                       flagSource={require("../../assets/image/Usa.png")}
                       label="EN"
-                      onPress={() => navigation.navigate("Language")}
+                      onPress={() => navigation.navigate("CountryandLanguage")}
                       style={{
                         width: "20%",
                         alignSelf: "center",
@@ -105,7 +105,6 @@ const WelcomeScreen = ({ navigation }: Props) => {
                       }}
                     />
                   )}
-
                   <CustomButton
                     title={"Continue as Guest"}
                     backgroundColor="#ffffff"

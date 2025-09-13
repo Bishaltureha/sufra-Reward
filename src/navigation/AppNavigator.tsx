@@ -9,6 +9,7 @@ import HomeScreen from "../screens/HomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import OtpScreen from "../screens/OtpScreen";
 import Register from "../screens/Register";
+import CountryandLanguage from "../screens/CountryandLanguage";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -22,6 +23,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Language" component={Language} />
+      <Stack.Screen name="CountryandLanguage" component={CountryandLanguage} />
       <Stack.Screen
         name="DiscoverSufraBenefits"
         component={DiscoverSufraBenefits}

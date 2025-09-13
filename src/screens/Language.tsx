@@ -2,14 +2,16 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Header from "../components/Header";
 
-const Language = () => {
+type Props = {};
+
+const Language = (props: Props) => {
   return (
     <View style={styles.container}>
       <Header
         onBackPress={undefined}
         titleStyle={undefined}
         containerStyle={undefined}
-        title="Country & Language"
+        title="Language"
       />
     </View>
   );
@@ -24,7 +26,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   text: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "300",
   },
 });

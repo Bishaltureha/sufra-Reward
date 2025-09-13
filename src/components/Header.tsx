@@ -38,7 +38,7 @@ const Header = ({
           onPress={handleBackPress}
           activeOpacity={0.7}
         >
-          <MaterialIcons name="keyboard-arrow-left" size={28} color="#047851" />
+          <MaterialIcons name="keyboard-arrow-left" size={30} color="#047851" />
         </TouchableOpacity>
       )}
 
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     paddingVertical: 12,
     paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 12 : 50,
     backgroundColor: "#fff",
