@@ -15,7 +15,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const Header = ({
   title = "Header Title",
-  onBackPress,
+  onBackPress = undefined,
   showBackButton = true,
   titleStyle,
   containerStyle,

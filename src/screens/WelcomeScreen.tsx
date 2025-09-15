@@ -2,11 +2,11 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   FlatList,
   Dimensions,
   Image,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useRef, useState } from "react";
 import CustomButton from "../components/CustomButton";
 import LanguageButton from "../components/LanguageButton";
@@ -101,7 +101,6 @@ const WelcomeScreen = ({ navigation }: Props) => {
                       style={{
                         width: "20%",
                         alignSelf: "center",
-                        height: 25,
                       }}
                     />
                   )}

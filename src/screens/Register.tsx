@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { scale, screenWidth, screenHeight } from "../utils/dimen";
 
 type Props = {};
 
@@ -18,9 +19,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: screenWidth * 0.05,
   },
   text: {
-    fontSize: 18,
+    fontSize: scale(18),
     fontWeight: "bold",
   },
 });

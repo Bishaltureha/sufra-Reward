@@ -33,6 +33,7 @@ export default LanguageButton;
 
 const styles = StyleSheet.create({
   button: {
+    height: 35,
     backgroundColor: "#ffffff",
     borderRadius: 5,
     alignItems: "center",

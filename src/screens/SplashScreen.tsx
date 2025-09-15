@@ -29,13 +29,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#ffffff",
   },
   image: {
-    // width: scale(200),
-    // height: scale(60),
     resizeMode: "contain",
-  },
-  loader: {
-    // marginTop: scale(20),
   },
 });

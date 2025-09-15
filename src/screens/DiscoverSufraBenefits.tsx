@@ -1,16 +1,225 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image, Platform } from "react-native";
 import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import Header from "../components/Header";
+import CustomButton from "../components/CustomButton";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types";
+import Tiers from "../../assets/svg/Tiers";
 
-const DiscoverSufraBenefits = () => {
+type Props = NativeStackScreenProps<RootStackParamList, "Splash">;
+
+// Reusable component for tier header row
+const TierBox = ({ children }: { children: React.ReactNode }) => (
+  <View
+    style={{
+      borderWidth: 1,
+      borderColor: "#fdfbfbff",
+      flex: 1,
+      height: 62,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    {children}
+  </View>
+);
+
+// Reusable component for benefits rows
+const BenefitBox = ({ text }: { text: string }) => (
+  <View
+    style={{
+      borderWidth: 1,
+      borderColor: "#F4F4F4",
+      flex: 1,
+      height: 62,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <Text
+      style={{
+        color: "#717171",
+        fontSize: 12,
+        fontWeight: "500",
+        textAlign: "center",
+      }}
+    >
+      {text}
+    </Text>
+  </View>
+);
+
+const DiscoverSufraBenefits = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
       <Header
-        onBackPress={undefined}
         titleStyle={{ color: "#000000" }}
         containerStyle={undefined}
         title="Tiers"
       />
+
+      {/* Green Section */}
+      <LinearGradient
+        colors={["#007851", "#009463"]}
+        start={[0, 0]}
+        end={[1, 1]}
+        style={styles.greenSection}
+      >
+        <View
+          style={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            alignSelf: "flex-start",
+          }}
+        >
+          <Image
+            source={require("../../assets/image/logo.png")}
+            style={styles.image}
+          />
+          <Text style={styles.greenSectionTitleText}>T I E R S</Text>
+          <Text style={styles.greenSectionText}>From Star to Legend</Text>
+        </View>
+        <Tiers width="24.1%" height="100%" />
+      </LinearGradient>
+
+      {/* Tiers Row */}
+      <View
+        style={{
+          height: 62,
+          backgroundColor: "#F4F4F4",
+          width: "100%",
+          flexDirection: "row",
+        }}
+      >
+        <TierBox>
+          <Image
+            source={require("../../assets/image/star.png")}
+            height={20}
+            width={20}
+          />
+          <Text
+            style={{
+              color: "#017851",
+              fontSize: 12,
+              fontWeight: "500",
+              marginTop: 2.5,
+            }}
+          >
+            STAR
+          </Text>
+        </TierBox>
+
+        <TierBox>
+          <View style={{ flexDirection: "row", gap: 2.5 }}>
+            <Image
+              source={require("../../assets/image/star.png")}
+              height={20}
+              width={20}
+            />
+            <Image
+              source={require("../../assets/image/star.png")}
+              height={20}
+              width={20}
+            />
+          </View>
+          <Text
+            style={{
+              color: "#017851",
+              fontSize: 12,
+              fontWeight: "500",
+              marginTop: 2.5,
+            }}
+          >
+            ICON
+          </Text>
+        </TierBox>
+
+        <TierBox>
+          <View style={{ flexDirection: "row", gap: 2.5 }}>
+            <Image
+              source={require("../../assets/image/star.png")}
+              height={20}
+              width={20}
+            />
+            <Image
+              source={require("../../assets/image/star.png")}
+              height={20}
+              width={20}
+            />
+            <Image
+              source={require("../../assets/image/star.png")}
+              height={20}
+              width={20}
+            />
+          </View>
+          <Text
+            style={{
+              color: "#017851",
+              fontSize: 12,
+              fontWeight: "500",
+              marginTop: 2.5,
+            }}
+          >
+            LEGEND
+          </Text>
+        </TierBox>
+      </View>
+
+      {/* Benefits Rows */}
+      {[
+        [
+          "Earn and burn\npoints on dine-in\nand online orders",
+          "All Star Tier\ndenefits",
+          "All Star and Icon\nTier benefits",
+        ],
+        [
+          "Member-only\ndining in and\ndelivery promoti...",
+          "Tier upgrade gift",
+          "Invitations to\nspecial events",
+        ],
+        [
+          "Birthday gift",
+          "Enhanced bonus\npoints\nopportunities",
+          "VIP Hotline",
+        ],
+        [
+          "Bonus points\nopportunities",
+          "Priority seating",
+          "EArly accesee to\nnew menu items",
+        ],
+        [
+          "Loyalty Tier for\nkids",
+          "More chances to\nwin at prize draws",
+          "Access ti Chef",
+        ],
+        ["-", "Complimentary \n delights and \n surprises", "-"],
+      ].map((row, i) => (
+        <View
+          key={i}
+          style={{
+            height: 62,
+            backgroundColor: "#ffffff",
+            width: "100%",
+            flexDirection: "row",
+          }}
+        >
+          {row.map((text, j) => (
+            <BenefitBox key={j} text={text} />
+          ))}
+        </View>
+      ))}
+
+      {/* Button */}
+      <View style={styles.contentContainer}>
+        <CustomButton
+          title={"Register Now"}
+          backgroundColor="#ffab00"
+          onPress={() => navigation.navigate("Register")}
+          style={styles.buttonStyle}
+          textStyle={undefined}
+        />
+      </View>
     </View>
   );
 };
@@ -23,8 +232,49 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ffffff",
   },
-  text: {
-    fontSize: 18,
-    fontWeight: "bold",
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    position: "relative",
+    width: "100%",
+  },
+  greenSection: {
+    height: "16%",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+  },
+  image: {
+    height: 52,
+    width: 144,
+    resizeMode: "contain",
+    position: "absolute",
+    left: 0,
+    top: 10,
+  },
+  greenSectionText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: 800,
+    left: 0,
+    backgroundColor: "#01845bff",
+    marginTop: 9,
+  },
+  greenSectionTitleText: {
+    color: "#ffab00",
+    fontSize: 16,
+    fontWeight: 800,
+    marginTop: 50,
+    left: Platform.OS === "ios" ? -30 : -21,
+    backgroundColor: "#01845bff",
+    width: 100,
+  },
+  buttonStyle: {
+    paddingVertical: 16,
+    position: "absolute",
+    bottom: 40,
   },
 });
