@@ -8,4 +8,6 @@ export type RootStackParamList = {
   Login: undefined;
   Otp: undefined;
   Register: undefined;
+  ForgetPassword: undefined;
+  InformationScreen: undefined;
 };

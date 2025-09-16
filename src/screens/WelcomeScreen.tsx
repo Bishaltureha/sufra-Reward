@@ -13,7 +13,7 @@ import LanguageButton from "../components/LanguageButton";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Splash">;
+type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
 
 const { width, height } = Dimensions.get("window");
 
@@ -113,7 +113,6 @@ const WelcomeScreen = ({ navigation }: Props) => {
                       right: 10,
                       width: "36.5%",
                       height: 35,
-                      alignSelf: "center",
                       // iOS Shadow
                       shadowColor: "#000",
                       shadowOffset: { width: 0, height: 2 },
@@ -126,7 +125,10 @@ const WelcomeScreen = ({ navigation }: Props) => {
                       fontWeight: "600",
                       fontSize: 12,
                       textAlign: "center",
+                      position: "absolute",
+                      top: 10,
                     }}
+                    textColor={""}
                   />
                 </View>
               </View>
@@ -171,7 +173,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
                 : () => navigation.navigate("Login")
             }
             style={{ paddingVertical: 16 }}
-            textStyle={{ color: "#000000" }}
+            textColor={"#000000"}
           />
           <CustomButton
             title={"Register"}
@@ -180,7 +182,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
             borderWidth={1.5}
             onPress={() => navigation.navigate("Register")}
             style={{ paddingVertical: 16 }}
-            textStyle={{ color: "#000000" }}
+            textColor={"#4A4A4A"}
           />
         </View>
       </View>

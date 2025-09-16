@@ -48,6 +48,7 @@ const Language = () => {
         titleStyle={styles.title}
         containerStyle={undefined}
         title="Language"
+        image={undefined}
       />
       <View style={styles.content}>
         <Text style={styles.text}>Choose Your Language</Text>
@@ -85,6 +86,7 @@ const Language = () => {
           onPress={handleConfirm}
           style={styles.confirmButton}
           textStyle={styles.confirmButtonText}
+          textColor={"#ffffff"}
         />
       </View>
     </View>

@@ -10,6 +10,8 @@ import LoginScreen from "../screens/LoginScreen";
 import OtpScreen from "../screens/OtpScreen";
 import Register from "../screens/Register";
 import CountryandLanguage from "../screens/CountryandLanguage";
+import ForgetPassword from "../screens/ForgetPassword";
+import InformationScreen from "../screens/InformationScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,6 +34,8 @@ export default function AppNavigator() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Otp" component={OtpScreen} />
       <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
+      <Stack.Screen name="InformationScreen" component={InformationScreen} />
     </Stack.Navigator>
   );
 }

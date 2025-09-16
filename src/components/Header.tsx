@@ -14,19 +14,20 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const Header = ({
-  title = "Header Title",
-  onBackPress = undefined,
+  title,
+  onBackPress,
   showBackButton = true,
   titleStyle,
   containerStyle,
+  image,
 }) => {
   const navigation = useNavigation<NavigationProp>();
 
   const handleBackPress = () => {
     if (onBackPress) {
-      onBackPress(); // Agar custom function diya hai toh usko chalao
+      onBackPress();
     } else {
-      navigation.goBack(); // Otherwise automatic wapas jao
+      navigation.goBack();
     }
   };
 
@@ -42,20 +43,23 @@ const Header = ({
         </TouchableOpacity>
       )}
 
-      <Text style={[styles.title, titleStyle]}>{title}</Text>
+      <View style={styles.titleContainer}>
+        {image}
+        {title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
+      </View>
 
-      {/* Spacer to center the title when back button is present */}
       {showBackButton && <View style={styles.spacer} />}
     </View>
   );
 };
+
+export default Header;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    // paddingHorizontal: 16,
     paddingVertical: 12,
     paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 12 : 50,
     backgroundColor: "#fff",
@@ -64,16 +68,19 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 20,
   },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
   title: {
     fontSize: 18,
     fontWeight: "600",
     color: "#007852",
-    textAlign: "center",
-    flex: 1,
+    marginLeft: 8, // spacing between image and text
   },
   spacer: {
-    width: 36, // Same width as back button to center title
+    width: 36,
   },
 });
-
-export default Header;

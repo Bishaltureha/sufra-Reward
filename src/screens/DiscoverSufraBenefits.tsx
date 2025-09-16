@@ -6,49 +6,45 @@ import CustomButton from "../components/CustomButton";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 import Tiers from "../../assets/svg/Tiers";
+import Logo from "../../assets/svg/Logo";
+import TierBox from "../components/TierBox";
+import BenefitBox from "../components/BenefitBox";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Splash">;
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  "DiscoverSufraBenefits"
+>;
 
-// Reusable component for tier header row
-const TierBox = ({ children }: { children: React.ReactNode }) => (
-  <View
-    style={{
-      borderWidth: 1,
-      borderColor: "#fdfbfbff",
-      flex: 1,
-      height: 62,
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    {children}
-  </View>
-);
+const tiers = [
+  { label: "STAR", stars: 1 },
+  { label: "ICON", stars: 2 },
+  { label: "LEGEND", stars: 3 },
+];
 
-// Reusable component for benefits rows
-const BenefitBox = ({ text }: { text: string }) => (
-  <View
-    style={{
-      borderWidth: 1,
-      borderColor: "#F4F4F4",
-      flex: 1,
-      height: 62,
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <Text
-      style={{
-        color: "#717171",
-        fontSize: 12,
-        fontWeight: "500",
-        textAlign: "center",
-      }}
-    >
-      {text}
-    </Text>
-  </View>
-);
+const benefits = [
+  [
+    "Earn and burn\npoints on dine-in\nand online orders",
+    "All Star Tier\ndenefits",
+    "All Star and Icon\nTier benefits",
+  ],
+  [
+    "Member-only\ndining in and\ndelivery promoti...",
+    "Tier upgrade gift",
+    "Invitations to\nspecial events",
+  ],
+  ["Birthday gift", "Enhanced bonus\npoints\nopportunities", "VIP Hotline"],
+  [
+    "Bonus points\nopportunities",
+    "Priority seating",
+    "EArly accesee to\nnew menu items",
+  ],
+  [
+    "Loyalty Tier for\nkids",
+    "More chances to\nwin at prize draws",
+    "Access ti Chef",
+  ],
+  ["-", "Complimentary \n delights and \n surprises", "-"],
+];
 
 const DiscoverSufraBenefits = ({ navigation }: Props) => {
   return (
@@ -57,6 +53,8 @@ const DiscoverSufraBenefits = ({ navigation }: Props) => {
         titleStyle={{ color: "#000000" }}
         containerStyle={undefined}
         title="Tiers"
+        onBackPress={undefined}
+        image={undefined}
       />
 
       {/* Green Section */}
@@ -66,17 +64,8 @@ const DiscoverSufraBenefits = ({ navigation }: Props) => {
         end={[1, 1]}
         style={styles.greenSection}
       >
-        <View
-          style={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            alignSelf: "flex-start",
-          }}
-        >
-          <Image
-            source={require("../../assets/image/logo.png")}
-            style={styles.image}
-          />
+        <View style={styles.greenLeft}>
+          <Logo style={styles.image} />
           <Text style={styles.greenSectionTitleText}>T I E R S</Text>
           <Text style={styles.greenSectionText}>From Star to Legend</Text>
         </View>
@@ -84,126 +73,26 @@ const DiscoverSufraBenefits = ({ navigation }: Props) => {
       </LinearGradient>
 
       {/* Tiers Row */}
-      <View
-        style={{
-          height: 62,
-          backgroundColor: "#F4F4F4",
-          width: "100%",
-          flexDirection: "row",
-        }}
-      >
-        <TierBox>
-          <Image
-            source={require("../../assets/image/star.png")}
-            height={20}
-            width={20}
-          />
-          <Text
-            style={{
-              color: "#017851",
-              fontSize: 12,
-              fontWeight: "500",
-              marginTop: 2.5,
-            }}
-          >
-            STAR
-          </Text>
-        </TierBox>
-
-        <TierBox>
-          <View style={{ flexDirection: "row", gap: 2.5 }}>
-            <Image
-              source={require("../../assets/image/star.png")}
-              height={20}
-              width={20}
-            />
-            <Image
-              source={require("../../assets/image/star.png")}
-              height={20}
-              width={20}
-            />
-          </View>
-          <Text
-            style={{
-              color: "#017851",
-              fontSize: 12,
-              fontWeight: "500",
-              marginTop: 2.5,
-            }}
-          >
-            ICON
-          </Text>
-        </TierBox>
-
-        <TierBox>
-          <View style={{ flexDirection: "row", gap: 2.5 }}>
-            <Image
-              source={require("../../assets/image/star.png")}
-              height={20}
-              width={20}
-            />
-            <Image
-              source={require("../../assets/image/star.png")}
-              height={20}
-              width={20}
-            />
-            <Image
-              source={require("../../assets/image/star.png")}
-              height={20}
-              width={20}
-            />
-          </View>
-          <Text
-            style={{
-              color: "#017851",
-              fontSize: 12,
-              fontWeight: "500",
-              marginTop: 2.5,
-            }}
-          >
-            LEGEND
-          </Text>
-        </TierBox>
+      <View style={styles.tierRow}>
+        {tiers.map((tier, i) => (
+          <TierBox key={i}>
+            <View style={tier.stars > 1 ? styles.starRow : undefined}>
+              {Array.from({ length: tier.stars }).map((_, j) => (
+                <Image
+                  key={j}
+                  source={require("../../assets/image/star.png")}
+                  style={styles.starImage}
+                />
+              ))}
+            </View>
+            <Text style={styles.tierLabel}>{tier.label}</Text>
+          </TierBox>
+        ))}
       </View>
 
       {/* Benefits Rows */}
-      {[
-        [
-          "Earn and burn\npoints on dine-in\nand online orders",
-          "All Star Tier\ndenefits",
-          "All Star and Icon\nTier benefits",
-        ],
-        [
-          "Member-only\ndining in and\ndelivery promoti...",
-          "Tier upgrade gift",
-          "Invitations to\nspecial events",
-        ],
-        [
-          "Birthday gift",
-          "Enhanced bonus\npoints\nopportunities",
-          "VIP Hotline",
-        ],
-        [
-          "Bonus points\nopportunities",
-          "Priority seating",
-          "EArly accesee to\nnew menu items",
-        ],
-        [
-          "Loyalty Tier for\nkids",
-          "More chances to\nwin at prize draws",
-          "Access ti Chef",
-        ],
-        ["-", "Complimentary \n delights and \n surprises", "-"],
-      ].map((row, i) => (
-        <View
-          key={i}
-          style={{
-            height: 62,
-            backgroundColor: "#ffffff",
-            width: "100%",
-            flexDirection: "row",
-          }}
-        >
+      {benefits.map((row, i) => (
+        <View key={i} style={styles.benefitRow}>
           {row.map((text, j) => (
             <BenefitBox key={j} text={text} />
           ))}
@@ -218,6 +107,7 @@ const DiscoverSufraBenefits = ({ navigation }: Props) => {
           onPress={() => navigation.navigate("Register")}
           style={styles.buttonStyle}
           textStyle={undefined}
+          textColor={"#000000"}
         />
       </View>
     </View>
@@ -247,6 +137,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
+  greenLeft: {
+    justifyContent: "space-between",
+    alignItems: "center",
+    alignSelf: "flex-start",
+  },
   image: {
     height: 52,
     width: 144,
@@ -258,7 +153,7 @@ const styles = StyleSheet.create({
   greenSectionText: {
     color: "#ffffff",
     fontSize: 16,
-    fontWeight: 800,
+    fontWeight: "800",
     left: 0,
     backgroundColor: "#01845bff",
     marginTop: 9,
@@ -266,11 +161,38 @@ const styles = StyleSheet.create({
   greenSectionTitleText: {
     color: "#ffab00",
     fontSize: 16,
-    fontWeight: 800,
+    fontWeight: "800",
     marginTop: 50,
     left: Platform.OS === "ios" ? -30 : -21,
-    backgroundColor: "#01845bff",
-    width: 100,
+    marginLeft: 30,
+    alignSelf: "flex-start",
+  },
+  tierRow: {
+    height: 62,
+    backgroundColor: "#F4F4F4",
+    width: "100%",
+    flexDirection: "row",
+  },
+  starRow: {
+    flexDirection: "row",
+    gap: 2.5,
+  },
+  starImage: {
+    height: 20,
+    width: 20,
+    resizeMode: "contain",
+  },
+  tierLabel: {
+    color: "#017851",
+    fontSize: 12,
+    fontWeight: "500",
+    marginTop: 2.5,
+  },
+  benefitRow: {
+    height: 62,
+    backgroundColor: "#ffffff",
+    width: "100%",
+    flexDirection: "row",
   },
   buttonStyle: {
     paddingVertical: 16,

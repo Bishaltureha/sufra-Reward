@@ -6,7 +6,7 @@ const CircularRightArrow = ({
   size = 20,
   color = "#007852",
   backgroundColor = "#ffffff",
-  style,
+  style = undefined,
 }) => (
   <View style={[styles.container, style]}>
     <Svg width={size} height={size} viewBox="0 0 24 24" style={styles.svg}>
