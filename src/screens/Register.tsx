@@ -11,7 +11,7 @@ import Logo from "../../assets/svg/Logo";
 import CustomButton from "../components/CustomButton";
 import { RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import PhoneNumberInputtext from "../components/PhoneNumberInputtext";
+import PhoneNumberInput from "../components/PhoneNumberInputtext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Register">;
 
@@ -28,38 +28,56 @@ interface Country {
 const Register = ({ navigation }: Props) => {
   const [phone, setPhone] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [isValidPhone, setIsValidPhone] = useState(false);
 
   const handlePhoneChange = (phone: string, country: Country) => {
     setPhone(phone);
     setSelectedCountry(country);
-    console.log("📞 Phone:", phone, "🌍 Country:", country);
+
+    // Validate phone number
+    const cleanNumber = phone.replace(/\D/g, "");
+    const isValid = cleanNumber.length >= (country.phoneLength || 7);
+    setIsValidPhone(isValid);
+
+    console.log("Phone:", phone, "Country:", country, "Valid:", isValid);
   };
 
   const handleCountryChange = (country: Country) => {
     setSelectedCountry(country);
-    console.log("🌍 Selected Country:", country);
+
+    // Re-validate phone number with new country
+    if (phone) {
+      const cleanNumber = phone.replace(/\D/g, "");
+      const isValid = cleanNumber.length >= (country.phoneLength || 7);
+      setIsValidPhone(isValid);
+    }
+
+    console.log("Selected Country:", country);
   };
 
   const handleContinue = () => {
-    if (phone.trim() && selectedCountry) {
-      const fullNumber = `${selectedCountry.dial_code}${phone}`;
-      console.log("➡️ Proceed with number:", fullNumber);
+    if (phone.trim() && selectedCountry && isValidPhone) {
+      const cleanNumber = phone.replace(/\D/g, "");
+      const fullNumber = `${selectedCountry.dial_code}${cleanNumber}`;
+      console.log("Proceed with number:", fullNumber);
       navigation.navigate("Otp");
     } else {
-      console.log("⚠️ Phone number required");
+      console.log("Please enter a valid phone number");
+      // You could show an alert or error message here
     }
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={"padding"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
       {/* Header */}
       <Header
         image={<Logo height={35} width={123} />}
         title={undefined}
-        onBackPress={undefined}
+        onBackPress={() => navigation.goBack()}
         titleStyle={undefined}
         containerStyle={undefined}
       />
@@ -70,14 +88,23 @@ const Register = ({ navigation }: Props) => {
           Enter your phone number {"\n"}and continue
         </Text>
 
-        {/* 📞 Phone input */}
-        <View style={{ marginTop: 20 }}>
-          <PhoneNumberInputtext
-            defaultCountry="US"
+        {/* Phone input */}
+        <View style={styles.phoneInputContainer}>
+          <PhoneNumberInput
+            defaultCountry="AE"
             placeholder="Enter phone number"
             onCountryChange={handleCountryChange}
             onPhoneChange={handlePhoneChange}
+            value={phone}
+            style={styles.phoneInput}
           />
+
+          {/* Validation message */}
+          {phone && !isValidPhone && (
+            <Text style={styles.errorText}>
+              Please enter a valid phone number
+            </Text>
+          )}
         </View>
       </View>
 
@@ -85,10 +112,11 @@ const Register = ({ navigation }: Props) => {
       <View style={styles.footer}>
         <CustomButton
           title="Continue"
-          backgroundColor="#ffab00"
+          backgroundColor={isValidPhone ? "#ffab00" : "#E0E0E0"}
           onPress={handleContinue}
           style={styles.buttonStyle}
-          textColor="#000000"
+          textColor={isValidPhone ? "#000000" : "#999999"}
+          disabled={!isValidPhone}
         />
       </View>
     </KeyboardAvoidingView>
@@ -111,9 +139,32 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#4A4A4A",
     textAlign: "left",
+    marginBottom: 8,
+    lineHeight: 32,
+  },
+  phoneInputContainer: {
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  phoneInput: {
+    marginBottom: 0,
+  },
+  errorText: {
+    fontSize: 14,
+    color: "#FF3B30",
+    marginTop: 8,
+    marginLeft: 4,
+  },
+  termsText: {
+    fontSize: 14,
+    color: "#717171",
+    textAlign: "center",
+    lineHeight: 20,
+    marginTop: 40,
   },
   footer: {
     padding: 20,
+    paddingBottom: Platform.OS === "ios" ? 34 : 20,
   },
   buttonStyle: {
     paddingVertical: 16,

@@ -21,10 +21,7 @@ const InformationScreen = ({ navigation }: Props) => {
   const [receiveOffers, setReceiveOffers] = useState(false);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <KeyboardAvoidingView style={styles.container} behavior={"padding"}>
       {/* Header */}
       <Header
         image={<Logo height={35} width={123} />}

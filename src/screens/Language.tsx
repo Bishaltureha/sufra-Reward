@@ -10,33 +10,26 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import CustomButton from "../components/CustomButton";
 
-type Language = {
-  id: string;
-  name: string;
-  flag: any;
-};
-const Language = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState("English");
+// Import your circular (1x1) flags
+import UKFlag from "../../assets/flags/1x1/gb.svg";
+import SaudiFlag from "../../assets/flags/1x1/sa.svg";
 
+const Language = () => {
+  // Just English & Arabic
   const languages = [
-    {
-      id: "english",
-      name: "English",
-      flag: require("../../assets/image/Usa.png"),
-    },
-    {
-      id: "arabic",
-      name: "العربية",
-      flag: require("../../assets/image/Saudi.png"),
-    },
+    { id: "en", name: "English", flag: UKFlag },
+    { id: "ar", name: "العربية", flag: SaudiFlag },
   ];
 
-  const handleLanguageSelect = (language: Language) => {
-    setSelectedLanguage(language.name);
+  const [selectedLanguageCode, setSelectedLanguageCode] = useState("en"); // default English
+
+  const handleLanguageSelect = (languageCode: string) => {
+    setSelectedLanguageCode(languageCode);
   };
 
   const handleConfirm = () => {
-    Alert.alert("Language Selected", `You have selected: ${selectedLanguage}`, [
+    const selected = languages.find((l) => l.id === selectedLanguageCode);
+    Alert.alert("Language Selected", `You have selected: ${selected?.name}`, [
       { text: "OK" },
     ]);
   };
@@ -50,6 +43,7 @@ const Language = () => {
         title="Language"
         image={undefined}
       />
+
       <View style={styles.content}>
         <Text style={styles.text}>Choose Your Language</Text>
 
@@ -60,20 +54,21 @@ const Language = () => {
               styles.languageOption,
               index === 0 && styles.languageOptionWithBorder,
             ]}
-            onPress={() => handleLanguageSelect(language)}
+            onPress={() => handleLanguageSelect(language.id)}
           >
             <View style={styles.languageInfo}>
-              <Image source={language.flag} style={styles.flagImage} />
+              {/* Circular flag */}
+              <language.flag width={32} height={32} style={styles.flagIcon} />
               <Text style={styles.languageName}>{language.name}</Text>
             </View>
             <View
               style={[
                 styles.radioButton,
-                selectedLanguage === language.name &&
+                selectedLanguageCode === language.id &&
                   styles.radioButtonSelected,
               ]}
             >
-              {selectedLanguage === language.name && (
+              {selectedLanguageCode === language.id && (
                 <View style={styles.radioButtonInner} />
               )}
             </View>
@@ -127,12 +122,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  flagImage: {
-    width: 32,
-    height: 24,
+  flagIcon: {
+    borderRadius: 16, // circular
     marginRight: 12,
-    borderRadius: 4,
-    resizeMode: "cover",
+    overflow: "hidden",
   },
   languageName: {
     fontSize: 16,
