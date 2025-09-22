@@ -1,33 +1,112 @@
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
 import React from "react";
-import Drawerlogo from "../../assets/svg/Drawerlogo";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Delivery from "../../assets/svg/Delivery";
-import Dine_in from "../../assets/svg/Dine_in";
-import { scaleHeightSize, scaleWidthSize } from "../utils/responsive";
+import {
+  scaleHeightSize,
+  scaleSpacing,
+  scaleWidthSize,
+} from "../utils/responsive";
+import HeaderBox from "../components/HeaderBox";
+import StatsCard from "../components/StatsCard";
+import BrandsContainer from "../components/BrandsContainer";
+import OfferBanner from "../components/OfferBanner";
 
 const HomeScreen = () => {
+  const handleDeliveryPress = () => {
+    console.log("Delivery tapped!");
+    // Add navigation or other logic here
+  };
+
+  const handleDineInPress = () => {
+    console.log("Dine-in tapped!");
+    // Add navigation or other logic here
+  };
+
+  const handleRewardsPress = () => {
+    console.log("Rewards card tapped!");
+    // Add navigation to rewards page
+  };
+
+  const handleTierPress = () => {
+    console.log("Tier card tapped!");
+    // Add navigation to tier page
+  };
+
+  const handleViewDealsPress = () => {
+    console.log("View Deals tapped!");
+    // Add navigation to deals page
+  };
+
+  const handleBrandPress = (brandIndex) => {
+    console.log(`Brand ${brandIndex} tapped!`);
+    // Add navigation to specific brand
+  };
+
+  const handleOfferPress = (offerIndex) => {
+    console.log(`Offer ${offerIndex} tapped!`);
+    // Add navigation to specific offer
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.headerRow}>
-        <Drawerlogo />
+      <HeaderBox />
+
+      <View style={{ backgroundColor: "#f5f5f5", marginTop: scaleSpacing(16) }}>
+        {/* Stats Cards */}
+        <View style={styles.statsContainer}>
+          <StatsCard type="rewards" onPress={handleRewardsPress} />
+          <StatsCard type="tier" onPress={handleTierPress} />
+        </View>
+
+        {/* Main Action Buttons */}
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={styles.imgButton}
+            onPress={handleDeliveryPress}
+            activeOpacity={0.8}
+            accessibilityLabel="Delivery option"
+            accessibilityHint="Tap to select delivery service"
+          >
+            <Image
+              style={styles.buttonImage}
+              source={require("../../assets/image/delivery_en.png")}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.imgButton}
+            onPress={handleDineInPress}
+            activeOpacity={0.8}
+            accessibilityLabel="Dine-in option"
+            accessibilityHint="Tap to select dine-in service"
+          >
+            <Image
+              style={styles.buttonImage}
+              source={require("../../assets/image/dinein_en.png")}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Offer Banner with Pagination */}
+        <OfferBanner onOfferPress={handleOfferPress} />
+
+        {/* Our Brands Section */}
+        <BrandsContainer
+          onBrandPress={handleBrandPress}
+          onViewDealsPress={handleViewDealsPress}
+        />
       </View>
 
-      {/* Buttons */}
-      <View style={styles.buttonRow}>
-        <TouchableOpacity
-          style={styles.svgButton}
-          onPress={() => console.log("Delivery tapped!")}
-        >
-          <Delivery width={scaleWidthSize(173)} height={scaleHeightSize(175)} />
+      {/* Bottom Action Buttons */}
+      <View style={styles.bottomButtonsContainer}>
+        <TouchableOpacity style={styles.dineInButton}>
+          <Text style={styles.dineInButtonText}>Find Dine-in Spots</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.svgButton}
-          onPress={() => console.log("Dine-in tapped!")}
-        >
-          <Dine_in width={scaleWidthSize(173)} height={scaleHeightSize(175)} />
+        <TouchableOpacity style={styles.loyaltyButton}>
+          <Text style={styles.loyaltyButtonText}>Show Loyalty ID</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -39,39 +118,84 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    // paddingHorizontal: 20,
+    backgroundColor: "#ffffff",
   },
-  headerRow: {
+  statsContainer: {
     flexDirection: "row",
-    height: 40,
-    alignItems: "center",
+    paddingHorizontal: scaleSpacing(16),
+    justifyContent: "space-between",
+    marginBottom: scaleSpacing(20),
   },
-  // buttonRow: {
-  //   flexDirection: "row",
-  //   width: "100%",
-  //   justifyContent: "space-between",
-  //   marginTop: 20,
-  // },
-  // svgButton: {
-  //   flex: 1,
-  //   marginHorizontal: 5,
-  //   alignItems: "center",
-  // },
   buttonRow: {
-    width: scaleWidthSize(358),
-
     flexDirection: "row",
-    justifyContent: "center", // evenly distribute space
-    alignItems: "center",
-    marginTop: scaleHeightSize(0), // add more breathing room
+    justifyContent: "space-between",
+    paddingHorizontal: scaleSpacing(16),
+    marginBottom: scaleSpacing(16),
   },
-
-  svgButton: {
-    width: scaleWidthSize(175), // set fixed width
-    aspectRatio: 1, // keep it square
-    borderRadius: 12,
-    alignItems: "center",
+  imgButton: {
+    borderRadius: 8,
+    overflow: "hidden",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+  },
+  buttonImage: {
+    width: scaleWidthSize(173),
+    height: scaleHeightSize(175),
+  },
+  bottomButtonsContainer: {
+    width: "100%",
+    height: scaleHeightSize(138),
+    backgroundColor: "#ffffff",
+    position: "absolute",
+    bottom: 15,
     justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    // Shadow for iOS
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    // Shadow for Android
+    elevation: 4,
+  },
+  dineInButton: {
+    width: scaleWidthSize(358),
+    height: scaleHeightSize(52),
+    borderRadius: 5,
+    backgroundColor: "#017851",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dineInButtonText: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#FFFFFF",
+    fontFamily: "Rubik-Medium",
+    textAlign: "center",
+  },
+  loyaltyButton: {
+    width: scaleWidthSize(358),
+    height: scaleHeightSize(52),
+    borderRadius: 5,
+    backgroundColor: "#f5b01f",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loyaltyButtonText: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "#000000",
+    fontFamily: "Rubik-Medium",
+    textAlign: "center",
   },
 });

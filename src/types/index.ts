@@ -11,3 +11,7 @@ export type RootStackParamList = {
   ForgetPassword: undefined;
   InformationScreen: undefined;
 };
+
+export type DrawerParamList = {
+  Home: undefined;
+};

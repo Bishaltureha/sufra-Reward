@@ -8,10 +8,10 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const App = () => {
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={{ backgroundColor: "#ffffff" }}>
       <NavigationContainer>
         <StatusBar
-          backgroundColor="white"
+          backgroundColor="#ffffff"
           barStyle="dark-content"
           translucent={false}
         />

@@ -170,7 +170,8 @@ const WelcomeScreen = ({ navigation }: Props) => {
             onPress={
               currentIndex === 2
                 ? () => navigation.navigate("DiscoverSufraBenefits")
-                : () => navigation.navigate("Login")
+                : // : () => navigation.navigate("Login")
+                  () => navigation.navigate("Register")
             }
             style={{ paddingVertical: 16 }}
             textColor={"#000000"}

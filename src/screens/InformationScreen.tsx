@@ -68,7 +68,7 @@ const InformationScreen = ({ navigation }: Props) => {
         <CustomButton
           title={"Register"}
           backgroundColor="#ffab00"
-          onPress={() => navigation.navigate("Login")}
+          onPress={() => navigation.navigate("Home")}
           style={styles.buttonStyle}
           textStyle={undefined}
           textColor={"#000000"}
