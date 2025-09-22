@@ -1,8 +1,6 @@
 import {
   StyleSheet,
-  Text,
   View,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -13,8 +11,12 @@ import Logo from "../../assets/svg/Logo";
 import CustomButton from "../components/CustomButton";
 import { RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
 import PhoneNumberInput from "../components/PhoneNumberInputtext";
+import { useLocalization } from "../context/LocalizationContext";
+import RTLText from "../components/RTLText";
+import RTLTextInput from "../components/RTLTextInput";
+import { scale } from "../utils/dimen";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
@@ -29,6 +31,7 @@ interface Country {
 }
 
 const LoginScreen = ({ navigation }: Props) => {
+  const { t } = useLocalization();
   const [secureText, setSecureText] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -86,7 +89,7 @@ const LoginScreen = ({ navigation }: Props) => {
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
       <Header
-        image={<Logo height={35} width={123} />}
+        image={<Logo height={scale(35)} width={scale(123)} />}
         title={undefined}
         onBackPress={undefined}
         titleStyle={undefined}
@@ -94,31 +97,27 @@ const LoginScreen = ({ navigation }: Props) => {
       />
 
       <View style={styles.content}>
-        <Text style={styles.heading}>
-          Enter your phone number{"\n"}and password
-        </Text>
+        <RTLText style={styles.heading}>{t("login.title")}</RTLText>
 
         {/* Phone number input with country selector */}
         <View style={styles.phoneInputContainer}>
           <PhoneNumberInput
             defaultCountry="AE"
-            placeholder="Enter phone number"
+            placeholder={t("phone.placeholder")}
             onCountryChange={handleCountryChange}
             onPhoneChange={handlePhoneChange}
             value={phoneNumber}
             style={styles.phoneInput}
           />
           {phoneNumber && !isValidPhone && (
-            <Text style={styles.errorText}>
-              Please enter a valid phone number
-            </Text>
+            <RTLText style={styles.errorText}>{t("phone.invalid")}</RTLText>
           )}
         </View>
 
         {/* Password input with eye toggle */}
         <View style={styles.passwordContainer}>
-          <TextInput
-            placeholder="Password"
+          <RTLTextInput
+            placeholder={t("login.passwordPlaceholder")}
             secureTextEntry={secureText}
             style={styles.input}
             value={password}
@@ -129,11 +128,16 @@ const LoginScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={styles.eyeIcon}
             onPress={() => setSecureText(!secureText)}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            hitSlop={{
+              top: scale(10),
+              bottom: scale(10),
+              left: scale(10),
+              right: scale(10),
+            }}
           >
             <Ionicons
               name={secureText ? "eye-off" : "eye"}
-              size={21}
+              size={scale(21)}
               color="#6D6D6D"
             />
           </TouchableOpacity>
@@ -143,14 +147,21 @@ const LoginScreen = ({ navigation }: Props) => {
         <TouchableOpacity
           onPress={() => navigation.navigate("ForgetPassword")}
           style={styles.forgotWrapper}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          hitSlop={{
+            top: scale(10),
+            bottom: scale(10),
+            left: scale(10),
+            right: scale(10),
+          }}
         >
-          <Text style={styles.forgotText}>Forgot Password</Text>
+          <RTLText style={styles.forgotText}>
+            {t("login.forgotPassword")}
+          </RTLText>
         </TouchableOpacity>
 
         {/* Sign in button */}
         <CustomButton
-          title="Sign In"
+          title={t("login.signIn")}
           backgroundColor={isFormValid ? "#ffab00" : "#E0E0E0"}
           onPress={handleLogin}
           style={styles.buttonStyle}
@@ -160,12 +171,14 @@ const LoginScreen = ({ navigation }: Props) => {
 
         {/* Register link */}
         <View style={styles.registerSection}>
-          <Text style={styles.noAccount}>If you don't have an account</Text>
+          <RTLText style={styles.noAccount}>{t("login.noAccount")}</RTLText>
           <TouchableOpacity
             onPress={() => navigation.navigate("Register")}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Text style={styles.registerText}>Register Now</Text>
+            <RTLText style={styles.registerText}>
+              {t("login.registerNow")}
+            </RTLText>
           </TouchableOpacity>
         </View>
       </View>
@@ -182,77 +195,77 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: scale(20),
     width: "100%",
   },
   heading: {
-    fontSize: 24,
+    fontSize: scale(24),
     fontWeight: "600",
     color: "#4A4A4A",
     textAlign: "left",
-    marginBottom: 8,
-    lineHeight: 32,
+    marginBottom: scale(8),
+    lineHeight: scale(32),
   },
   phoneInputContainer: {
-    marginTop: 30,
-    marginBottom: 20,
+    marginTop: scale(30),
+    marginBottom: scale(20),
   },
   phoneInput: {
     marginBottom: 0,
   },
   passwordContainer: {
     position: "relative",
-    marginBottom: 20,
+    marginBottom: scale(20),
   },
   input: {
-    borderWidth: 1,
+    borderWidth: scale(1),
     borderColor: "#E6E6E6",
     width: "100%",
-    padding: 16,
-    borderRadius: 8,
-    fontSize: 16,
+    padding: scale(16),
+    borderRadius: scale(8),
+    fontSize: scale(16),
     backgroundColor: "#ffffff",
   },
   eyeIcon: {
     position: "absolute",
-    right: 16,
+    right: scale(16),
     top: "50%",
-    transform: [{ translateY: -10.5 }],
+    transform: [{ translateY: -scale(10.5) }],
   },
   errorText: {
-    fontSize: 14,
+    fontSize: scale(14),
     color: "#FF3B30",
-    marginTop: 8,
-    marginLeft: 4,
+    marginTop: scale(8),
+    marginStart: scale(4),
   },
   forgotWrapper: {
     alignSelf: "flex-end",
-    marginBottom: 30,
+    marginBottom: scale(30),
   },
   forgotText: {
     color: "#017851",
     fontWeight: "600",
-    fontSize: 15,
+    fontSize: scale(15),
     textDecorationLine: "underline",
   },
   buttonStyle: {
-    paddingVertical: 16,
-    marginBottom: 20,
+    paddingVertical: scale(16),
+    marginBottom: scale(20),
   },
   registerSection: {
     alignItems: "center",
-    marginTop: 20,
+    marginTop: scale(20),
   },
   noAccount: {
     color: "#717171",
-    fontSize: 15,
+    fontSize: scale(15),
     fontWeight: "400",
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: scale(12),
   },
   registerText: {
     color: "#017851",
-    fontSize: 18,
+    fontSize: scale(18),
     fontWeight: "600",
     textAlign: "center",
     textDecorationLine: "underline",

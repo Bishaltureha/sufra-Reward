@@ -1,16 +1,12 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Drawerlogo from "../../assets/svg/Drawerlogo";
-import {
-  scaleHeightSize,
-  scaleSpacing,
-  scaleWidthSize,
-} from "../utils/responsive";
 import { MaterialIcons } from "@expo/vector-icons";
 import BellIcon from "../../assets/svg/BellIcon";
 import SearchIcon from "../../assets/svg/SearchIcon";
 import { useNavigation } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { scale } from "../utils/dimen";
 
 // Drawer param list (adjust names as per your app)
 type DrawerParamList = {
@@ -64,10 +60,10 @@ export default HeaderBox;
 const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
-    height: scaleHeightSize(40),
+    height: scale(40),
     alignItems: "center",
-    paddingHorizontal: scaleSpacing(16),
-    paddingBottom: scaleHeightSize(10),
+    paddingHorizontal: scale(16),
+    paddingBottom: scale(10),
     backgroundColor: "#ffffff",
     justifyContent: "space-between",
     // Down shadow only for iOS
@@ -112,8 +108,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   circularButton: {
-    width: scaleWidthSize(40),
-    height: scaleHeightSize(40),
+    width: scale(40),
+    height: scale(40),
     borderWidth: 1,
     borderColor: "#E6E6E6",
     borderRadius: 20,
@@ -125,8 +121,8 @@ const styles = StyleSheet.create({
   },
   notificationDot: {
     backgroundColor: "#F6B01F",
-    width: scaleWidthSize(10),
-    height: scaleHeightSize(10),
+    width: scale(10),
+    height: scale(10),
     borderRadius: 5,
     position: "absolute",
     right: 3,

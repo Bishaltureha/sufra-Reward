@@ -7,11 +7,7 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import {
-  scaleSpacing,
-  scaleWidthSize,
-  scaleHeightSize,
-} from "../utils/responsive";
+import { scale } from "../utils/dimen";
 
 const BrandsContainer = ({ onBrandPress, onViewDealsPress }) => {
   // Mock brand data - replace with actual data
@@ -102,8 +98,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: scaleSpacing(16),
-    marginBottom: scaleSpacing(16),
+    paddingHorizontal: scale(16),
+    marginBottom: scale(16),
   },
   brandsTitle: {
     fontSize: 18,
@@ -119,12 +115,12 @@ const styles = StyleSheet.create({
     fontFamily: "Rubik-SemiBold",
   },
   brandsContainer: {
-    paddingHorizontal: scaleSpacing(16),
-    gap: scaleSpacing(5),
+    paddingHorizontal: scale(16),
+    gap: scale(5),
   },
   brandItem: {
-    width: scaleWidthSize(75),
-    height: scaleHeightSize(75),
+    width: scale(75),
+    height: scale(75),
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 6,

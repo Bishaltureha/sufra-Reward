@@ -1,15 +1,11 @@
 import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  scaleHeightSize,
-  scaleSpacing,
-  scaleWidthSize,
-} from "../utils/responsive";
 import HeaderBox from "../components/HeaderBox";
 import StatsCard from "../components/StatsCard";
 import BrandsContainer from "../components/BrandsContainer";
 import OfferBanner from "../components/OfferBanner";
+import { scale, screenWidth } from "../utils/dimen";
 
 const HomeScreen = () => {
   const handleDeliveryPress = () => {
@@ -52,7 +48,7 @@ const HomeScreen = () => {
       {/* Header */}
       <HeaderBox />
 
-      <View style={{ backgroundColor: "#f5f5f5", marginTop: scaleSpacing(16) }}>
+      <View style={{ backgroundColor: "#f5f5f5", marginTop: scale(16) }}>
         {/* Stats Cards */}
         <View style={styles.statsContainer}>
           <StatsCard type="rewards" onPress={handleRewardsPress} />
@@ -122,15 +118,15 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: "row",
-    paddingHorizontal: scaleSpacing(16),
+    paddingHorizontal: scale(16),
     justifyContent: "space-between",
-    marginBottom: scaleSpacing(20),
+    marginBottom: scale(20),
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: scaleSpacing(16),
-    marginBottom: scaleSpacing(16),
+    paddingHorizontal: scale(16),
+    marginBottom: scale(16),
   },
   imgButton: {
     borderRadius: 8,
@@ -145,12 +141,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   buttonImage: {
-    width: scaleWidthSize(173),
-    height: scaleHeightSize(175),
+    width: screenWidth * 0.5 - scale(24),
+    height: screenWidth * 0.5 - scale(24),
+    maxHeight: scale(200),
+    maxWidth: scale(200),
   },
   bottomButtonsContainer: {
     width: "100%",
-    height: scaleHeightSize(138),
+    height: scale(138),
     backgroundColor: "#ffffff",
     position: "absolute",
     bottom: 15,
@@ -169,8 +167,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   dineInButton: {
-    width: scaleWidthSize(358),
-    height: scaleHeightSize(52),
+    width: screenWidth - scale(40),
+    height: scale(52),
     borderRadius: 5,
     backgroundColor: "#017851",
     justifyContent: "center",
@@ -184,8 +182,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   loyaltyButton: {
-    width: scaleWidthSize(358),
-    height: scaleHeightSize(52),
+    width: screenWidth - scale(40),
+    height: scale(52),
     borderRadius: 5,
     backgroundColor: "#f5b01f",
     justifyContent: "center",

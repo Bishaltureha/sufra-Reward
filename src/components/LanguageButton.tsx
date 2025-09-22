@@ -1,6 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
+import { scale } from "../utils/dimen";
 import { MaterialIcons } from "@expo/vector-icons";
+import RTLText from "./RTLText";
 
 const LanguageButton = ({
   flagSource,
@@ -17,12 +19,12 @@ const LanguageButton = ({
     >
       <View style={styles.row}>
         <Image source={flagSource} style={styles.flag} />
-        <Text style={[styles.text, textStyle]}>{label}</Text>
+        <RTLText style={[styles.text, textStyle]}>{label}</RTLText>
         <MaterialIcons
           name="keyboard-arrow-down"
-          size={18}
+          size={scale(18)}
           color="#000"
-          style={{ marginLeft: 3 }}
+          style={{ marginStart: scale(3) }}
         />
       </View>
     </TouchableOpacity>
@@ -33,19 +35,19 @@ export default LanguageButton;
 
 const styles = StyleSheet.create({
   button: {
-    height: 35,
+    height: scale(35),
     backgroundColor: "#ffffff",
-    borderRadius: 5,
+    borderRadius: scale(5),
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
     position: "absolute",
-    left: 10,
+    left: scale(10),
     // iOS Shadow
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: scale(2) },
     shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowRadius: scale(3),
 
     // Android Shadow
     elevation: 3,
@@ -56,15 +58,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   flag: {
-    height: 20,
-    width: 20,
-    borderRadius: 10,
+    height: scale(20),
+    width: scale(20),
+    borderRadius: scale(10),
     resizeMode: "cover",
     overflow: "hidden",
   },
   text: {
-    marginLeft: 5,
-    fontSize: 12,
+    marginStart: scale(5),
+    fontSize: scale(12),
     fontWeight: "600",
   },
 });

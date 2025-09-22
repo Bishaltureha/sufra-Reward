@@ -24,7 +24,11 @@ export default function AppNavigator() {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen
+        name="Welcome"
+        component={WelcomeScreen}
+        options={{ animation: "fade" }}
+      />
       <Stack.Screen name="Language" component={Language} />
       <Stack.Screen name="CountryandLanguage" component={CountryandLanguage} />
       <Stack.Screen

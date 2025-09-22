@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  Text,
-  StyleSheet,
-  TextInputProps,
-} from "react-native";
+import { View, TextInput, StyleSheet, TextInputProps } from "react-native";
+import { scale } from "../utils/dimen";
+import RTLText from "./RTLText";
 
 interface FloatingLabelInputProps extends TextInputProps {
   label: string;
@@ -17,9 +13,11 @@ const FloatingLabelInput = ({ label, ...props }: FloatingLabelInputProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, (isFocused || value) && styles.labelFocused]}>
+      <RTLText
+        style={[styles.label, (isFocused || value) && styles.labelFocused]}
+      >
         {label}
-      </Text>
+      </RTLText>
 
       <TextInput
         style={styles.input}
@@ -41,24 +39,24 @@ const styles = StyleSheet.create({
   },
   label: {
     position: "absolute",
-    left: 12,
-    top: 18,
-    fontSize: 16,
+    left: scale(12),
+    top: scale(18),
+    fontSize: scale(16),
     color: "#717171",
   },
   labelFocused: {
-    top: 5,
-    fontSize: 12,
+    top: scale(5),
+    fontSize: scale(12),
     color: "#717171",
     backgroundColor: "#ffffff",
   },
   input: {
-    height: 55,
-    borderWidth: 1,
+    height: scale(55),
+    borderWidth: scale(1),
     borderColor: "#E6E6E6",
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    fontSize: 16,
+    borderRadius: scale(6),
+    paddingHorizontal: scale(12),
+    fontSize: scale(16),
     color: "#000",
     justifyContent: "center",
     paddingVertical: 0,

@@ -1,27 +1,21 @@
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import React, { useState } from "react";
+import { Alert, StyleSheet, View, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import CustomButton from "../components/CustomButton";
 
 // Import your circular (1x1) flags
-import UKFlag from "../../assets/flags/1x1/gb.svg";
-import SaudiFlag from "../../assets/flags/1x1/sa.svg";
+
+import { useLocalization } from "../context/LocalizationContext";
+import { languages } from "../constants/language";
+import RTLText from "../components/RTLText";
+import { scale } from "../utils/dimen";
 
 const Language = () => {
-  // Just English & Arabic
-  const languages = [
-    { id: "en", name: "English", flag: UKFlag },
-    { id: "ar", name: "العربية", flag: SaudiFlag },
-  ];
+  const { locale, setLanguage, t } = useLocalization();
 
-  const [selectedLanguageCode, setSelectedLanguageCode] = useState("en"); // default English
+  const [selectedLanguageCode, setSelectedLanguageCode] = useState(
+    locale || "en"
+  );
 
   const handleLanguageSelect = (languageCode: string) => {
     setSelectedLanguageCode(languageCode);
@@ -29,9 +23,18 @@ const Language = () => {
 
   const handleConfirm = () => {
     const selected = languages.find((l) => l.id === selectedLanguageCode);
-    Alert.alert("Language Selected", `You have selected: ${selected?.name}`, [
-      { text: "OK" },
-    ]);
+    Alert.alert(
+      t("language.selectedAlertTitle"),
+      t("language.selectedAlertMessage", { name: selected?.name }),
+      [
+        {
+          text: t("common.ok"),
+          onPress: () => {
+            setLanguage(selected?.id || "en", selected?.isRTL || false);
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -40,12 +43,14 @@ const Language = () => {
         onBackPress={undefined}
         titleStyle={styles.title}
         containerStyle={undefined}
-        title="Language"
+        title={t("common.language")}
         image={undefined}
       />
 
       <View style={styles.content}>
-        <Text style={styles.text}>Choose Your Language</Text>
+        <RTLText style={styles.text}>
+          {t("language.chooseYourLanguage")}
+        </RTLText>
 
         {languages.map((language, index) => (
           <TouchableOpacity
@@ -58,8 +63,8 @@ const Language = () => {
           >
             <View style={styles.languageInfo}>
               {/* Circular flag */}
-              <language.flag width={32} height={32} style={styles.flagIcon} />
-              <Text style={styles.languageName}>{language.name}</Text>
+              <language.flag width={scale(32)} height={scale(32)} style={styles.flagIcon} />
+              <RTLText style={styles.languageName}>{language.name}</RTLText>
             </View>
             <View
               style={[
@@ -76,7 +81,7 @@ const Language = () => {
         ))}
 
         <CustomButton
-          title="Confirm"
+          title={t("common.confirm")}
           backgroundColor="#007852"
           onPress={handleConfirm}
           style={styles.confirmButton}
@@ -97,25 +102,25 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   content: {
-    paddingHorizontal: 16,
+    paddingHorizontal: scale(16),
     width: "100%",
     flex: 1,
   },
   title: { fontWeight: "bold" },
   text: {
-    fontSize: 18,
+    fontSize: scale(18),
     fontWeight: "500",
     color: "#333",
-    marginVertical: 24,
+    marginVertical: scale(24),
   },
   languageOption: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 16,
+    paddingVertical: scale(16),
   },
   languageOptionWithBorder: {
-    borderBottomWidth: 1,
+    borderBottomWidth: scale(1),
     borderBottomColor: "#cfcece",
   },
   languageInfo: {
@@ -123,20 +128,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   flagIcon: {
-    borderRadius: 16, // circular
-    marginRight: 12,
+    borderRadius: scale(16), // circular
+    marginEnd: scale(12),
     overflow: "hidden",
   },
   languageName: {
-    fontSize: 16,
+    fontSize: scale(16),
     fontWeight: "400",
     color: "#333",
   },
   radioButton: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
+    width: scale(24),
+    height: scale(24),
+    borderRadius: scale(12),
+    borderWidth: scale(2),
     borderColor: "#000",
     alignItems: "center",
     justifyContent: "center",
@@ -145,19 +150,19 @@ const styles = StyleSheet.create({
     borderColor: "#007852",
   },
   radioButtonInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: scale(12),
+    height: scale(12),
+    borderRadius: scale(6),
     backgroundColor: "#007852",
   },
   confirmButton: {
     width: "100%",
-    paddingVertical: 16,
-    borderRadius: 8,
-    marginTop: 32,
+    paddingVertical: scale(16),
+    borderRadius: scale(8),
+    marginTop: scale(32),
   },
   confirmButtonText: {
-    fontSize: 16,
+    fontSize: scale(16),
     fontWeight: "600",
   },
 });

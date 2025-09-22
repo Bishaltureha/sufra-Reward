@@ -1,38 +1,37 @@
 import {
   StyleSheet,
-  Text,
   View,
-  TextInput,
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
+  TextInput,
 } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
 import CustomButton from "../components/CustomButton";
 import { RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useLocalization } from "../context/LocalizationContext";
+import RTLText from "../components/RTLText";
+import RTLTextInput from "../components/RTLTextInput";
+import { scale } from "../utils/dimen";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Otp">;
 
+const OTP_LENGTH = 4;
+const RESEND_TIMEOUT = 120;
+
 const OtpScreen = ({ navigation }: Props) => {
-  // ✅ Manage OTP digits separately
-  const [otp1, setOtp1] = useState("");
-  const [otp2, setOtp2] = useState("");
-  const [otp3, setOtp3] = useState("");
-  const [otp4, setOtp4] = useState("");
+  const { t } = useLocalization();
 
-  // ✅ Timer (120s)
-  const [timeLeft, setTimeLeft] = useState(120);
+  // ✅ Manage OTP as array of digits
+  const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const [timeLeft, setTimeLeft] = useState(RESEND_TIMEOUT);
 
-  // ✅ TextInput refs for auto focus
-  const otp1Ref = useRef<TextInput>(null);
-  const otp2Ref = useRef<TextInput>(null);
-  const otp3Ref = useRef<TextInput>(null);
-  const otp4Ref = useRef<TextInput>(null);
+  // ✅ Refs for OTP inputs
+  const inputRefs = useRef<Array<TextInput | null>>([]);
 
-  // ✅ Countdown timer effect
+  // ✅ Countdown timer
   useEffect(() => {
     if (timeLeft <= 0) return;
     const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
@@ -40,24 +39,58 @@ const OtpScreen = ({ navigation }: Props) => {
   }, [timeLeft]);
 
   // ✅ Format mm:ss
-  const formatTime = (seconds: number) => {
+  const formatTime = useCallback((seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m}:${s < 10 ? "0" : ""}${s}`;
-  };
+  }, []);
 
-  // ✅ Combine OTP digits
-  const otp = otp1 + otp2 + otp3 + otp4;
+  // ✅ Handle OTP input
+  const handleChange = useCallback(
+    (text: string, index: number) => {
+      const newOtp = [...otp];
+      newOtp[index] = text;
+      setOtp(newOtp);
+
+      if (text && index < OTP_LENGTH - 1) {
+        inputRefs.current[index + 1]?.focus();
+      } else if (!text && index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
+    },
+    [otp]
+  );
+
+  // ✅ Handle resend
+  const handleResend = useCallback(() => {
+    if (timeLeft === 0) {
+      setTimeLeft(RESEND_TIMEOUT);
+      setOtp(Array(OTP_LENGTH).fill(""));
+      inputRefs.current[0]?.focus();
+    }
+  }, [timeLeft]);
+
+  // ✅ Handle confirm
+  const handleConfirm = useCallback(() => {
+    const code = otp.join("");
+    if (code.length === OTP_LENGTH) {
+      console.log("Entered OTP:", code);
+      navigation.navigate("InformationScreen");
+    }
+  }, [otp, navigation]);
+
+  const code = otp.join("");
+  const isOtpComplete = code.length === OTP_LENGTH;
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={"padding"}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
         {/* Header with Logo */}
         <Header
-          image={<Logo height={35} width={123} />}
+          image={<Logo height={scale(35)} width={scale(123)} />}
           title={undefined}
           onBackPress={undefined}
           titleStyle={undefined}
@@ -65,89 +98,47 @@ const OtpScreen = ({ navigation }: Props) => {
         />
 
         <View style={styles.subContent}>
-          <Text style={styles.title}>
-            Verify your phone and login {"\n"}your account
-          </Text>
+          <RTLText style={styles.title}>{t("otp.title")}</RTLText>
 
           {/* Timer Row */}
           <View style={styles.timerRow}>
-            <Text style={styles.label}>2FA Confirmation Code</Text>
+            <RTLText style={styles.label}>{t("otp.codeLabel")}</RTLText>
             {timeLeft > 0 && (
-              <Text style={styles.timer}>{formatTime(timeLeft)} Left</Text>
+              <RTLText style={styles.timer}>
+                {formatTime(timeLeft)} {t("otp.leftSuffix")}
+              </RTLText>
             )}
           </View>
 
           {/* OTP Input Row */}
           <View style={styles.otpRow}>
-            <TextInput
-              ref={otp1Ref}
-              value={otp1}
-              onChangeText={(text) => {
-                setOtp1(text);
-                if (text) otp2Ref.current?.focus();
-              }}
-              keyboardType="number-pad"
-              maxLength={1}
-              style={styles.input}
-            />
-            <TextInput
-              ref={otp2Ref}
-              value={otp2}
-              onChangeText={(text) => {
-                setOtp2(text);
-                if (text) otp3Ref.current?.focus();
-                else otp1Ref.current?.focus();
-              }}
-              keyboardType="number-pad"
-              maxLength={1}
-              style={styles.input}
-            />
-            <TextInput
-              ref={otp3Ref}
-              value={otp3}
-              onChangeText={(text) => {
-                setOtp3(text);
-                if (text) otp4Ref.current?.focus();
-                else otp2Ref.current?.focus();
-              }}
-              keyboardType="number-pad"
-              maxLength={1}
-              style={styles.input}
-            />
-            <TextInput
-              ref={otp4Ref}
-              value={otp4}
-              onChangeText={(text) => {
-                setOtp4(text);
-                if (!text) otp3Ref.current?.focus();
-              }}
-              keyboardType="number-pad"
-              maxLength={1}
-              style={styles.input}
-            />
+            {otp.map((digit, i) => (
+              <RTLTextInput
+                key={i}
+                ref={(ref) => {
+                  inputRefs.current[i] = ref;
+                }}
+                value={digit}
+                onChangeText={(text) => handleChange(text, i)}
+                keyboardType="number-pad"
+                maxLength={1}
+                style={styles.input}
+              />
+            ))}
           </View>
 
           {/* Resend Code */}
           <View style={styles.resendRow}>
-            <Text style={styles.resendText}>Didn’t receive the code?</Text>
-            <Text
+            <RTLText style={styles.resendText}>{t("otp.didntReceive")}</RTLText>
+            <RTLText
               style={[
                 styles.resendLink,
                 { color: timeLeft > 0 ? "#B0B0B0" : "#017851" },
               ]}
-              onPress={() => {
-                if (timeLeft === 0) {
-                  setTimeLeft(120);
-                  setOtp1("");
-                  setOtp2("");
-                  setOtp3("");
-                  setOtp4("");
-                  otp1Ref.current?.focus();
-                }
-              }}
+              onPress={handleResend}
             >
-              Resend Code
-            </Text>
+              {t("otp.resendCode")}
+            </RTLText>
           </View>
         </View>
       </ScrollView>
@@ -155,17 +146,12 @@ const OtpScreen = ({ navigation }: Props) => {
       {/* Fixed Confirm Button */}
       <View style={styles.footer}>
         <CustomButton
-          title={"Confirm"}
-          backgroundColor={otp.length === 4 ? "#ffab00" : "#B0B0B0"} // ✅ Disabled color
-          onPress={() => {
-            if (otp.length === 4) {
-              console.log("Entered OTP:", otp);
-              navigation.navigate("InformationScreen");
-            }
-          }}
-          disabled={otp.length !== 4}
+          title={t("common.confirm")}
+          backgroundColor={isOtpComplete ? "#ffab00" : "#B0B0B0"}
+          onPress={handleConfirm}
+          disabled={!isOtpComplete}
           style={styles.buttonStyle}
-          textColor={"#000000"}
+          textColor="#000000"
         />
       </View>
     </KeyboardAvoidingView>
@@ -175,43 +161,71 @@ const OtpScreen = ({ navigation }: Props) => {
 export default OtpScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#ffffff" },
-  scroll: { flexGrow: 1 },
-  subContent: { flex: 1, padding: 20 },
-  title: { fontSize: 24, fontWeight: "600", color: "#4A4A4A" },
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+  scroll: {
+    flexGrow: 1,
+  },
+  subContent: {
+    flex: 1,
+    padding: scale(20),
+  },
+  title: {
+    fontSize: scale(24),
+    fontWeight: "600",
+    color: "#4A4A4A",
+  },
   timerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginTop: scale(20),
   },
-  label: { fontSize: 15, fontWeight: "400", color: "#717171" },
-  timer: { fontSize: 15, fontWeight: "700", color: "#017851" },
+  label: {
+    fontSize: scale(15),
+    fontWeight: "400",
+    color: "#717171",
+  },
+  timer: {
+    fontSize: scale(15),
+    fontWeight: "700",
+    color: "#017851",
+  },
   otpRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginTop: scale(20),
   },
   input: {
-    borderWidth: 1,
+    borderWidth: scale(1),
     borderColor: "#E6E6E6",
-    width: 79,
-    height: 65,
+    width: scale(79),
+    height: scale(65),
     textAlign: "center",
-    fontSize: 20,
+    fontSize: scale(20),
     fontWeight: "600",
-    borderRadius: 6,
+    borderRadius: scale(6),
   },
   resendRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 25,
+    marginTop: scale(25),
   },
-  resendText: { color: "#717171", fontSize: 15 },
+  resendText: {
+    color: "#717171",
+    fontSize: scale(15),
+  },
   resendLink: {
     textDecorationLine: "underline",
-    fontSize: 15,
+    fontSize: scale(15),
     fontWeight: "600",
   },
-  footer: { padding: 20 },
-  buttonStyle: { paddingVertical: 16, marginBottom: 20 },
+  footer: {
+    padding: scale(20),
+  },
+  buttonStyle: {
+    paddingVertical: scale(16),
+    marginBottom: scale(20),
+  },
 });

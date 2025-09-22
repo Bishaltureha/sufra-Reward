@@ -1,15 +1,12 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  StatusBar,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { scale } from "../utils/dimen";
+import RTLText from "./RTLText";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -22,6 +19,7 @@ const Header = ({
   image,
 }) => {
   const navigation = useNavigation<NavigationProp>();
+  const inset = useSafeAreaInsets();
 
   const handleBackPress = () => {
     if (onBackPress) {
@@ -32,20 +30,32 @@ const Header = ({
   };
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: inset.top ? inset.top : inset.top + scale(12),
+        },
+        containerStyle,
+      ]}
+    >
       {showBackButton && (
         <TouchableOpacity
           style={styles.backButton}
           onPress={handleBackPress}
           activeOpacity={0.7}
         >
-          <MaterialIcons name="keyboard-arrow-left" size={30} color="#047851" />
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={scale(30)}
+            color="#047851"
+          />
         </TouchableOpacity>
       )}
 
       <View style={styles.titleContainer}>
         {image}
-        {title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
+        {title && <RTLText style={[styles.title, titleStyle]}>{title}</RTLText>}
       </View>
 
       {showBackButton && <View style={styles.spacer} />}
@@ -60,13 +70,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 12,
-    paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 12 : 50,
     backgroundColor: "#fff",
+    paddingBottom: scale(12),
   },
   backButton: {
-    padding: 4,
-    borderRadius: 20,
+    padding: scale(4),
+    borderRadius: scale(20),
   },
   titleContainer: {
     flexDirection: "row",
@@ -75,12 +84,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 18,
+    fontSize: scale(18),
     fontWeight: "600",
     color: "#007852",
-    marginLeft: 8, // spacing between image and text
+    marginStart: scale(8),
   },
   spacer: {
-    width: 36,
+    width: scale(36),
   },
 });

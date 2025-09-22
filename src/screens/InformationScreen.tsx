@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView } from "react-native";
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
@@ -13,10 +7,14 @@ import { RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 import CustomCheckbox from "../components/CustomCheckbox";
+import { useLocalization } from "../context/LocalizationContext";
+import RTLText from "../components/RTLText";
+import { scale } from "../utils/dimen";
 
 type Props = NativeStackScreenProps<RootStackParamList, "InformationScreen">;
 
 const InformationScreen = ({ navigation }: Props) => {
+  const { t } = useLocalization();
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [receiveOffers, setReceiveOffers] = useState(false);
 
@@ -24,7 +22,7 @@ const InformationScreen = ({ navigation }: Props) => {
     <KeyboardAvoidingView style={styles.container} behavior={"padding"}>
       {/* Header */}
       <Header
-        image={<Logo height={35} width={123} />}
+        image={<Logo height={scale(35)} width={scale(123)} />}
         title={undefined}
         onBackPress={undefined}
         titleStyle={undefined}
@@ -33,40 +31,43 @@ const InformationScreen = ({ navigation }: Props) => {
 
       {/* Content */}
       <View style={styles.subContent}>
-        <Text style={styles.title}>
-          Enter your information to {"\n"}continue
-        </Text>
+        <RTLText style={styles.title}>{t("info.title")}</RTLText>
 
         <View style={{ gap: 10, marginTop: 20 }}>
           <FloatingLabelInput
-            label="First Name*"
+            label={t("info.firstName")}
             keyboardType="ascii-capable"
           />
-          <FloatingLabelInput label="Last Name*" keyboardType="ascii-capable" />
-          <FloatingLabelInput label="Email Address*" keyboardType="default" />
+          <FloatingLabelInput
+            label={t("info.lastName")}
+            keyboardType="ascii-capable"
+          />
+          <FloatingLabelInput label={t("info.email")} keyboardType="default" />
         </View>
 
         {/* Checkboxes */}
         <View style={styles.checkboxRow}>
           <CustomCheckbox checked={acceptTerms} onChange={setAcceptTerms} />
-          <Text style={styles.checkboxText}>
-            I accept the{" "}
-            <Text style={{ textDecorationLine: "underline" }}>
-              Terms and Conditions
-            </Text>
-          </Text>
+          <RTLText style={styles.checkboxText}>
+            {t("info.acceptTerms")}
+            <RTLText style={{ textDecorationLine: "underline" }}>
+              {t("info.termsAndConditions")}
+            </RTLText>
+          </RTLText>
         </View>
 
         <View style={styles.checkboxRow}>
           <CustomCheckbox checked={receiveOffers} onChange={setReceiveOffers} />
-          <Text style={styles.checkboxText}>Receive offers and promotions</Text>
+          <RTLText style={styles.checkboxText}>
+            {t("info.receiveOffers")}
+          </RTLText>
         </View>
       </View>
 
       {/* Fixed button at bottom */}
       <View style={styles.footer}>
         <CustomButton
-          title={"Register"}
+          title={t("welcome.register")}
           backgroundColor="#ffab00"
           onPress={() => navigation.navigate("Home")}
           style={styles.buttonStyle}
@@ -87,10 +88,10 @@ const styles = StyleSheet.create({
   },
   subContent: {
     flex: 1,
-    padding: 20,
+    padding: scale(20),
   },
   title: {
-    fontSize: 24,
+    fontSize: scale(24),
     fontWeight: "600",
     color: "#4A4A4A",
     textAlign: "left",
@@ -98,21 +99,21 @@ const styles = StyleSheet.create({
   checkboxRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 16,
+    marginTop: scale(16),
   },
   checkboxText: {
     color: "#000000",
-    fontSize: 14,
+    fontSize: scale(14),
     fontWeight: "400",
-    marginLeft: 8,
+    marginStart: scale(8),
     flexShrink: 1,
   },
   footer: {
-    padding: 20,
+    padding: scale(20),
     backgroundColor: "#ffffff",
   },
   buttonStyle: {
-    paddingVertical: 16,
-    marginBottom: 20,
+    paddingVertical: scale(16),
+    marginBottom: scale(20),
   },
 });

@@ -1,20 +1,24 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import React from "react";
 import Header from "../components/Header";
 import CircularRightArrow from "../../assets/svg/CircularRightArrow";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
+import { useLocalization } from "../context/LocalizationContext";
+import RTLText from "../components/RTLText";
+import { scale } from "../utils/dimen";
 
 type Props = NativeStackScreenProps<RootStackParamList, "CountryandLanguage">;
 
 const CountryandLanguage = ({ navigation }: Props) => {
+  const { t } = useLocalization();
   return (
     <View style={styles.container}>
       <Header
         onBackPress={undefined}
         titleStyle={undefined}
         containerStyle={undefined}
-        title="Country & Language"
+        title={t("common.countryAndLanguage")}
         image={undefined}
       />
 
@@ -22,7 +26,7 @@ const CountryandLanguage = ({ navigation }: Props) => {
         style={styles.row}
         onPress={() => navigation.navigate("Language")}
       >
-        <Text style={styles.text}>Language</Text>
+        <RTLText style={styles.text}>{t("common.language")}</RTLText>
         <CircularRightArrow />
       </TouchableOpacity>
     </View>
@@ -41,11 +45,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: scale(12),
+    paddingHorizontal: scale(16),
   },
   text: {
-    fontSize: 16,
+    fontSize: scale(16),
     fontWeight: "400",
   },
 });

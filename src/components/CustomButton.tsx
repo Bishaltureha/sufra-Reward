@@ -1,5 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
+import RTLText from "./RTLText";
+import { scale } from "../utils/dimen";
 
 type Props = {
   title: string;
@@ -36,7 +38,7 @@ const CustomButton = ({
       activeOpacity={0.8}
       disabled={disabled}
     >
-      <Text
+      <RTLText
         style={[
           styles.text,
           textStyle,
@@ -44,7 +46,7 @@ const CustomButton = ({
         ]}
       >
         {title}
-      </Text>
+      </RTLText>
     </TouchableOpacity>
   );
 };
@@ -54,13 +56,13 @@ export default CustomButton;
 const styles = StyleSheet.create({
   button: {
     width: "100%",
-    borderRadius: 4,
+    borderRadius: scale(4),
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 12,
+    paddingVertical: scale(12),
   },
   text: {
-    fontSize: 16,
+    fontSize: scale(16),
     fontWeight: "600",
   },
 });

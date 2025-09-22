@@ -1,14 +1,12 @@
 import React, { useMemo, useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { countries, getInputMaxLength } from "../utils/countries";
 import CountryPicker from "./CountryPicker";
+import { useLocalization } from "../context/LocalizationContext";
+import RTLTextInput from "./RTLTextInput";
+import RTLText from "./RTLText";
+import { scale } from "../utils/dimen";
 
 interface Country {
   name: string;
@@ -43,11 +41,12 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   defaultCountry = "US",
   onCountryChange,
   onPhoneChange,
-  placeholder = "Phone number",
+  placeholder,
   value,
   editable = true,
   style,
 }) => {
+  const { t } = useLocalization();
   const validCountries = useMemo(() => {
     return countries
       .filter((c) => c.dial_code)
@@ -143,35 +142,37 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
             typeof selectedCountry.image1x1 === "function" ? (
               <View style={styles.flagWrapper}>
                 <selectedCountry.image1x1
-                  width={28}
-                  height={28}
+                  width={scale(28)}
+                  height={scale(28)}
                   style={styles.flagSvg}
                 />
               </View>
             ) : selectedCountry.emoji ? (
-              <Text style={styles.emojiFlag}>{selectedCountry.emoji}</Text>
+              <RTLText style={styles.emojiFlag}>
+                {selectedCountry.emoji}
+              </RTLText>
             ) : (
               <View style={styles.fallbackFlag}>
-                <Text style={styles.fallbackFlagText}>
+                <RTLText style={styles.fallbackFlagText}>
                   {selectedCountry.code}
-                </Text>
+                </RTLText>
               </View>
             )}
           </View>
 
-          <Text style={styles.dialCode}>
+          <RTLText style={styles.dialCode}>
             {selectedCountry.dial_code || "+1"}
-          </Text>
+          </RTLText>
           {editable && (
-            <MaterialIcons name="keyboard-arrow-down" size={20} color="#666" />
+            <MaterialIcons name="keyboard-arrow-down" size={scale(20)} color="#666" />
           )}
         </TouchableOpacity>
 
         <View style={styles.separator} />
 
-        <TextInput
+        <RTLTextInput
           style={styles.phoneInput}
-          placeholder={placeholder}
+          placeholder={placeholder ?? t("phone.placeholder")}
           value={phoneNumber}
           onChangeText={handlePhoneNumberChange}
           keyboardType="phone-pad"
@@ -197,11 +198,11 @@ const styles = StyleSheet.create({
   phoneInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1,
+    borderWidth: scale(1),
     borderColor: "#E0E0E0",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    height: 55,
+    borderRadius: scale(8),
+    paddingHorizontal: scale(12),
+    height: scale(55),
     backgroundColor: "#FFF",
   },
   disabled: {
@@ -211,21 +212,21 @@ const styles = StyleSheet.create({
   countrySelector: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
+    paddingVertical: scale(8),
   },
   flagContainer: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-    borderRadius: 12,
+    width: scale(24),
+    height: scale(24),
+    marginEnd: scale(8),
+    borderRadius: scale(12),
     overflow: "hidden",
     backgroundColor: "#f0f0f0",
     justifyContent: "center",
     alignItems: "center",
   },
   flagWrapper: {
-    width: 28,
-    height: 28,
+    width: scale(28),
+    height: scale(28),
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
@@ -234,39 +235,39 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   emojiFlag: {
-    fontSize: 18,
+    fontSize: scale(18),
     textAlign: "center",
   },
   fallbackFlag: {
-    width: 24,
-    height: 24,
+    width: scale(24),
+    height: scale(24),
     backgroundColor: "#E0E0E0",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 12,
-    borderWidth: 1,
+    borderRadius: scale(12),
+    borderWidth: scale(1),
     borderColor: "#CCC",
   },
   fallbackFlagText: {
-    fontSize: 8,
+    fontSize: scale(8),
     fontWeight: "bold",
     color: "#666",
   },
   dialCode: {
-    fontSize: 16,
+    fontSize: scale(16),
     fontWeight: "500",
-    marginRight: 4,
+    marginEnd: scale(4),
     color: "#333",
   },
   separator: {
-    width: 1,
-    height: 30,
+    width: scale(1),
+    height: scale(30),
     backgroundColor: "#E0E0E0",
-    marginHorizontal: 8,
+    marginHorizontal: scale(8),
   },
   phoneInput: {
     flex: 1,
-    fontSize: 16,
+    fontSize: scale(16),
     color: "#333",
   },
 });

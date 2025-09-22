@@ -1,21 +1,16 @@
 import React, { useMemo, useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  Modal,
-  FlatList,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { View, Modal, FlatList, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { countries } from "../utils/countries";
+import { scale } from "../utils/dimen";
+import { useLocalization } from "../context/LocalizationContext";
+import RTLText from "./RTLText";
+import RTLTextInput from "./RTLTextInput";
 
 const FallbackFlag = ({ countryCode }: { countryCode: string }) => (
   <View style={styles.fallbackFlag}>
-    <Text style={styles.fallbackFlagText}>{countryCode}</Text>
+    <RTLText style={styles.fallbackFlagText}>{countryCode}</RTLText>
   </View>
 );
 
@@ -49,6 +44,7 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
   selectedCountry,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { t } = useLocalization();
 
   const validCountries = useMemo(() => {
     return countries
@@ -104,28 +100,26 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
           activeOpacity={0.7}
         >
           {/* Dial Code */}
-          <Text style={styles.countryCode}>
-            {item.dial_code.replace("+", "")}
-          </Text>
+          <RTLText style={styles.countryCode}>{item.dial_code}</RTLText>
 
           {/* Flag */}
           <View style={styles.flagContainer}>
             {item.image4x3 && typeof item.image4x3 === "function" ? (
-              <item.image4x3 width={24} height={18} style={styles.flagSvg} />
+              <item.image4x3 width={scale(24)} height={scale(18)} style={styles.flagSvg} />
             ) : item.emoji ? (
-              <Text style={styles.emojiFlag}>{item.emoji}</Text>
+              <RTLText style={styles.emojiFlag}>{item.emoji}</RTLText>
             ) : (
               <FallbackFlag countryCode={item.code} />
             )}
           </View>
 
           {/* Country Name with Native Name */}
-          <Text style={styles.countryName} numberOfLines={1}>
+          <RTLText style={styles.countryName} numberOfLines={1}>
             {displayName}
-          </Text>
+          </RTLText>
 
           {isSelected && (
-            <MaterialIcons name="check" size={20} color="#007AFF" />
+            <MaterialIcons name="check" size={scale(20)} color="#007AFF" />
           )}
         </TouchableOpacity>
       );
@@ -152,21 +146,23 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
           <SafeAreaView style={styles.safeAreaContainer}>
             {/* Header */}
             <View style={styles.bottomSheetHeader}>
-              <Text style={styles.bottomSheetTitle}>Select Country</Text>
+              <RTLText style={styles.bottomSheetTitle}>
+                {t("countryPicker.selectTitle")}
+              </RTLText>
               <TouchableOpacity
                 onPress={handleClose}
                 style={styles.closeButton}
               >
-                <MaterialIcons name="close" size={24} color="#444" />
+                <MaterialIcons name="close" size={scale(24)} color="#444" />
               </TouchableOpacity>
             </View>
 
             {/* Search bar */}
             <View style={styles.searchContainer}>
-              <MaterialIcons name="search" size={20} color="#666" />
-              <TextInput
+              <MaterialIcons name="search" size={scale(20)} color="#666" />
+              <RTLTextInput
                 style={styles.searchInput}
-                placeholder="Search country or language"
+                placeholder={t("countryPicker.searchPlaceholder")}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 placeholderTextColor="#878787"
@@ -176,7 +172,7 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
               />
               {searchQuery.length > 0 && (
                 <TouchableOpacity onPress={clearSearch}>
-                  <MaterialIcons name="clear" size={20} color="#666" />
+                  <MaterialIcons name="clear" size={scale(20)} color="#666" />
                 </TouchableOpacity>
               )}
             </View>
@@ -190,11 +186,13 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={() => (
                 <View style={styles.noResultsContainer}>
-                  <MaterialIcons name="search-off" size={48} color="#ccc" />
-                  <Text style={styles.noResultsText}>No countries found</Text>
-                  <Text style={styles.noResultsSubtext}>
-                    Try adjusting your search terms
-                  </Text>
+                  <MaterialIcons name="search-off" size={scale(48)} color="#ccc" />
+                  <RTLText style={styles.noResultsText}>
+                    {t("countryPicker.noResultsTitle")}
+                  </RTLText>
+                  <RTLText style={styles.noResultsSubtext}>
+                    {t("countryPicker.noResultsSubtitle")}
+                  </RTLText>
                 </View>
               )}
             />
@@ -220,16 +218,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: screenHeight * 0.9,
-    minHeight: screenHeight * 0.7,
+    maxHeight: screenHeight * 0.95,
+    minHeight: screenHeight * 0.8,
   },
   modalHandle: {
-    width: 40,
-    height: 4,
+    width: scale(40),
+    height: scale(4),
     backgroundColor: "#ddd",
-    borderRadius: 2,
+    borderRadius: scale(2),
     alignSelf: "center",
-    marginVertical: 8,
+    marginVertical: scale(8),
   },
   safeAreaContainer: {
     flex: 1,
@@ -238,114 +236,115 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: scale(20),
+    paddingVertical: scale(8),
     borderBottomWidth: 1,
     borderBottomColor: "#f0f0f0",
   },
   bottomSheetTitle: {
-    fontSize: 18,
+    fontSize: scale(18),
     fontWeight: "600",
     color: "#222",
   },
   closeButton: {
-    padding: 4,
+    padding: scale(4),
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 20,
-    marginTop: 12,
-    marginBottom: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    marginHorizontal: scale(20),
+    marginTop: scale(12),
+    marginBottom: scale(8),
+    paddingHorizontal: scale(12),
+    paddingVertical: scale(8),
     backgroundColor: "#ffffff",
-    borderRadius: 5,
-    borderWidth: 1,
+    borderRadius: scale(5),
+    borderWidth: scale(1),
     borderColor: "#E8E8E8",
     // iOS shadow
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: scale(2) },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: scale(4),
     // Android elevation
     elevation: 3,
   },
   searchInput: {
     flex: 1,
-    fontSize: 16,
-    marginLeft: 8,
+    fontSize: scale(16),
+    marginStart: scale(8),
     color: "#333",
   },
   countryItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 14,
-    borderBottomWidth: 1.5,
+    paddingVertical: scale(14),
+    borderBottomWidth: scale(1.5),
     borderBottomColor: "#eee",
-    marginLeft: 20,
+    marginStart: scale(20),
   },
   selectedCountryItem: {
     backgroundColor: "#F0F8FF",
   },
   flagContainer: {
-    width: 24,
-    height: 18,
-    marginHorizontal: 12,
+    width: scale(24),
+    height: scale(18),
+    marginHorizontal: scale(12),
     justifyContent: "center",
     alignItems: "center",
   },
   flagSvg: {
-    borderRadius: 4,
+    borderRadius: scale(4),
   },
   emojiFlag: {
-    fontSize: 18,
-    width: 24,
+    fontSize: scale(18),
+    width: scale(24),
     textAlign: "center",
   },
   fallbackFlag: {
-    width: 24,
-    height: 18,
+    width: scale(24),
+    height: scale(18),
     backgroundColor: "#E0E0E0",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 4,
-    borderWidth: 1,
+    borderRadius: scale(4),
+    borderWidth: scale(1),
     borderColor: "#CCC",
   },
   fallbackFlagText: {
-    fontSize: 10,
+    fontSize: scale(10),
     fontWeight: "bold",
     color: "#666",
   },
   countryName: {
     flex: 1,
-    fontSize: 16,
+    fontSize: scale(16),
     fontWeight: "400",
     color: "#333",
   },
   countryCode: {
-    fontSize: 15,
+    fontSize: scale(15),
     fontWeight: "600",
     color: "#FF9800",
-    width: 50,
+    width: scale(50),
     textAlign: "right",
   },
   noResultsContainer: {
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 40,
+    paddingVertical: scale(40),
   },
   noResultsText: {
-    fontSize: 16,
+    fontSize: scale(16),
     color: "#666",
-    marginTop: 12,
+    marginTop: scale(12),
     fontWeight: "500",
   },
   noResultsSubtext: {
-    fontSize: 14,
+    fontSize: scale(14),
     color: "#999",
-    marginTop: 4,
+    marginTop: scale(4),
     textAlign: "center",
   },
-});
+})
+;

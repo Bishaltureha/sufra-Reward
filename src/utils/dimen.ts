@@ -1,4 +1,4 @@
-import { Dimensions, PixelRatio, Platform } from "react-native";
+import { Dimensions, I18nManager, PixelRatio, Platform } from "react-native";
 
 const { width, height } = Dimensions.get("screen");
 export const { width: windowWidth, height: windowHeight } =
@@ -24,11 +24,13 @@ const scale = (size: number) => {
 
 const isAndroid = Platform.OS === "android";
 const isWeb = Platform.OS === "web";
+const isRTL = I18nManager.isRTL;
 
 export {
   isAndroid,
   isWeb,
   scale,
+  isRTL,
   height as screenHeight,
   width as screenWidth,
 };

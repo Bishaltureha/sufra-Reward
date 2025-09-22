@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
@@ -12,6 +6,9 @@ import CustomButton from "../components/CustomButton";
 import { RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import PhoneNumberInput from "../components/PhoneNumberInputtext";
+import { useLocalization } from "../context/LocalizationContext";
+import RTLText from "../components/RTLText";
+import { scale } from "../utils/dimen";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Register">;
 
@@ -26,6 +23,7 @@ interface Country {
 }
 
 const Register = ({ navigation }: Props) => {
+  const { t } = useLocalization();
   const [phone, setPhone] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [isValidPhone, setIsValidPhone] = useState(false);
@@ -73,45 +71,36 @@ const Register = ({ navigation }: Props) => {
       behavior={"padding"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      {/* Header */}
       <Header
-        image={<Logo height={35} width={123} />}
+        image={<Logo height={scale(35)} width={scale(123)} />}
         title={undefined}
         onBackPress={() => navigation.goBack()}
         titleStyle={undefined}
         containerStyle={undefined}
       />
 
-      {/* Content */}
       <View style={styles.subContent}>
-        <Text style={styles.title}>
-          Enter your phone number {"\n"}and continue
-        </Text>
+        <RTLText style={styles.title}>{t("register.title")}</RTLText>
 
-        {/* Phone input */}
         <View style={styles.phoneInputContainer}>
           <PhoneNumberInput
             defaultCountry="AE"
-            placeholder="Enter phone number"
+            placeholder={t("phone.placeholder")}
             onCountryChange={handleCountryChange}
             onPhoneChange={handlePhoneChange}
             value={phone}
             style={styles.phoneInput}
           />
 
-          {/* Validation message */}
           {phone && !isValidPhone && (
-            <Text style={styles.errorText}>
-              Please enter a valid phone number
-            </Text>
+            <RTLText style={styles.errorText}>{t("phone.invalid")}</RTLText>
           )}
         </View>
       </View>
 
-      {/* Footer */}
       <View style={styles.footer}>
         <CustomButton
-          title="Continue"
+          title={t("common.continue")}
           backgroundColor={isValidPhone ? "#ffab00" : "#E0E0E0"}
           onPress={handleContinue}
           style={styles.buttonStyle}
@@ -132,42 +121,42 @@ const styles = StyleSheet.create({
   },
   subContent: {
     flex: 1,
-    padding: 20,
+    padding: scale(20),
   },
   title: {
-    fontSize: 24,
+    fontSize: scale(24),
     fontWeight: "600",
     color: "#4A4A4A",
     textAlign: "left",
-    marginBottom: 8,
-    lineHeight: 32,
+    marginBottom: scale(8),
+    lineHeight: scale(32),
   },
   phoneInputContainer: {
-    marginTop: 30,
-    marginBottom: 20,
+    marginTop: scale(30),
+    marginBottom: scale(20),
   },
   phoneInput: {
     marginBottom: 0,
   },
   errorText: {
-    fontSize: 14,
+    fontSize: scale(14),
     color: "#FF3B30",
-    marginTop: 8,
-    marginLeft: 4,
+    marginTop: scale(8),
+    marginStart: scale(4),
   },
   termsText: {
-    fontSize: 14,
+    fontSize: scale(14),
     color: "#717171",
     textAlign: "center",
-    lineHeight: 20,
-    marginTop: 40,
+    lineHeight: scale(20),
+    marginTop: scale(40),
   },
   footer: {
-    padding: 20,
-    paddingBottom: Platform.OS === "ios" ? 34 : 20,
+    padding: scale(20),
+    paddingBottom: Platform.OS === "ios" ? scale(34) : scale(20),
   },
   buttonStyle: {
-    paddingVertical: 16,
-    marginBottom: 20,
+    paddingVertical: scale(16),
+    marginBottom: scale(20),
   },
 });

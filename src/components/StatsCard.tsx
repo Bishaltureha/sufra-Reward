@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { scaleHeightSize, scaleWidthSize } from "../utils/responsive";
 import FrontArrow from "../../assets/svg/FrontArrow";
 import Star from "../../assets/svg/Star";
+import { scale, screenWidth } from "../utils/dimen";
 
 const StatsCard = ({ type, onPress }) => {
   const renderRewardsCard = () => (
@@ -50,8 +50,9 @@ const StatsCard = ({ type, onPress }) => {
 
 const styles = StyleSheet.create({
   statsCard: {
-    height: scaleHeightSize(55),
-    width: scaleWidthSize(173),
+    height: scale(55),
+    width: screenWidth * 0.5 - scale(24),
+    maxWidth: scale(200),
     backgroundColor: "#017851",
     borderRadius: 6,
     padding: 10,

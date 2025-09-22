@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Platform } from "react-native";
+import { StyleSheet, View, Image, Platform } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import Header from "../components/Header";
@@ -9,50 +9,35 @@ import Tiers from "../../assets/svg/Tiers";
 import Logo from "../../assets/svg/Logo";
 import TierBox from "../components/TierBox";
 import BenefitBox from "../components/BenefitBox";
+import { useLocalization } from "../context/LocalizationContext";
+import RTLText from "../components/RTLText";
+import { scale } from "../utils/dimen";
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
   "DiscoverSufraBenefits"
 >;
 
-const tiers = [
-  { label: "STAR", stars: 1 },
-  { label: "ICON", stars: 2 },
-  { label: "LEGEND", stars: 3 },
-];
-
-const benefits = [
-  [
-    "Earn and burn\npoints on dine-in\nand online orders",
-    "All Star Tier\ndenefits",
-    "All Star and Icon\nTier benefits",
-  ],
-  [
-    "Member-only\ndining in and\ndelivery promoti...",
-    "Tier upgrade gift",
-    "Invitations to\nspecial events",
-  ],
-  ["Birthday gift", "Enhanced bonus\npoints\nopportunities", "VIP Hotline"],
-  [
-    "Bonus points\nopportunities",
-    "Priority seating",
-    "EArly accesee to\nnew menu items",
-  ],
-  [
-    "Loyalty Tier for\nkids",
-    "More chances to\nwin at prize draws",
-    "Access ti Chef",
-  ],
-  ["-", "Complimentary \n delights and \n surprises", "-"],
-];
-
 const DiscoverSufraBenefits = ({ navigation }: Props) => {
+  const { t } = useLocalization();
+  const tierNames = (t("benefits.tierNames") as unknown as string[]) || [
+    "STAR",
+    "ICON",
+    "LEGEND",
+  ];
+  const tiers = [
+    { label: tierNames[0], stars: 1 },
+    { label: tierNames[1], stars: 2 },
+    { label: tierNames[2], stars: 3 },
+  ];
+  const benefits =
+    (t("benefits.matrix") as unknown as string[][]) || ([] as string[][]);
   return (
     <View style={styles.container}>
       <Header
         titleStyle={{ color: "#000000" }}
         containerStyle={undefined}
-        title="Tiers"
+        title={t("benefits.tiersTitle")}
         onBackPress={undefined}
         image={undefined}
       />
@@ -66,8 +51,12 @@ const DiscoverSufraBenefits = ({ navigation }: Props) => {
       >
         <View style={styles.greenLeft}>
           <Logo style={styles.image} />
-          <Text style={styles.greenSectionTitleText}>T I E R S</Text>
-          <Text style={styles.greenSectionText}>From Star to Legend</Text>
+          <RTLText style={styles.greenSectionTitleText}>
+            {t("benefits.bannerTitle")}
+          </RTLText>
+          <RTLText style={styles.greenSectionText}>
+            {t("benefits.bannerSubtitle")}
+          </RTLText>
         </View>
         <Tiers width="24.1%" height="100%" />
       </LinearGradient>
@@ -85,7 +74,7 @@ const DiscoverSufraBenefits = ({ navigation }: Props) => {
                 />
               ))}
             </View>
-            <Text style={styles.tierLabel}>{tier.label}</Text>
+            <RTLText style={styles.tierLabel}>{tier.label}</RTLText>
           </TierBox>
         ))}
       </View>
@@ -102,7 +91,7 @@ const DiscoverSufraBenefits = ({ navigation }: Props) => {
       {/* Button */}
       <View style={styles.contentContainer}>
         <CustomButton
-          title={"Register Now"}
+          title={t("common.registerNow")}
           backgroundColor="#ffab00"
           onPress={() => navigation.navigate("Register")}
           style={styles.buttonStyle}
@@ -135,68 +124,72 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 20,
+    padding: scale(20),
   },
   greenLeft: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  greenstart: {
     justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "flex-start",
   },
   image: {
-    height: 52,
-    width: 144,
+    height: scale(52),
+    width: scale(144),
     resizeMode: "contain",
     position: "absolute",
     left: 0,
-    top: 10,
+    top: scale(10),
   },
   greenSectionText: {
     color: "#ffffff",
-    fontSize: 16,
+    fontSize: scale(16),
     fontWeight: "800",
     left: 0,
     backgroundColor: "#01845bff",
-    marginTop: 9,
+    marginTop: scale(9),
   },
   greenSectionTitleText: {
     color: "#ffab00",
-    fontSize: 16,
+    fontSize: scale(16),
     fontWeight: "800",
-    marginTop: 50,
+    marginTop: scale(50),
     left: Platform.OS === "ios" ? -30 : -21,
-    marginLeft: 30,
+    marginStart: scale(30),
     alignSelf: "flex-start",
   },
   tierRow: {
-    height: 62,
+    height: scale(62),
     backgroundColor: "#F4F4F4",
     width: "100%",
     flexDirection: "row",
   },
   starRow: {
     flexDirection: "row",
-    gap: 2.5,
+    gap: scale(2.5),
   },
   starImage: {
-    height: 20,
-    width: 20,
+    height: scale(20),
+    width: scale(20),
     resizeMode: "contain",
   },
   tierLabel: {
     color: "#017851",
-    fontSize: 12,
+    fontSize: scale(12),
     fontWeight: "500",
-    marginTop: 2.5,
+    marginTop: scale(2.5),
   },
   benefitRow: {
-    height: 62,
+    height: scale(62),
     backgroundColor: "#ffffff",
     width: "100%",
     flexDirection: "row",
   },
   buttonStyle: {
-    paddingVertical: 16,
+    paddingVertical: scale(16),
     position: "absolute",
-    bottom: 40,
+    bottom: scale(40),
   },
 });

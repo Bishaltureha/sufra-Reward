@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
+import { scale } from "../utils/dimen";
 import { Ionicons } from "@expo/vector-icons"; // or react-native-vector-icons
 
 interface CustomCheckboxProps {
@@ -21,7 +22,7 @@ const CustomCheckbox = ({ checked = false, onChange }: CustomCheckboxProps) => {
       style={[styles.container, isChecked && styles.checkedContainer]}
       onPress={toggleCheckbox}
     >
-      {isChecked && <Ionicons name="checkmark" size={18} color="#fff" />}
+      {isChecked && <Ionicons name="checkmark" size={scale(18)} color="#fff" />}
     </TouchableOpacity>
   );
 };
@@ -30,10 +31,10 @@ export default CustomCheckbox;
 
 const styles = StyleSheet.create({
   container: {
-    width: 26,
-    height: 26,
-    borderRadius: 3,
-    borderWidth: 1,
+    width: scale(26),
+    height: scale(26),
+    borderRadius: scale(3),
+    borderWidth: scale(1),
     borderColor: "#E6EAF1",
     justifyContent: "center",
     alignItems: "center",

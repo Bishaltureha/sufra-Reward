@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { View, ScrollView, Image, StyleSheet } from "react-native";
-import {
-  scaleHeightSize,
-  scaleSpacing,
-  scaleWidthSize,
-} from "../utils/responsive";
+import { scale, screenWidth } from "../utils/dimen";
 
 const OfferBanner = ({ onOfferPress }) => {
   const [activeOfferIndex, setActiveOfferIndex] = useState(0);
@@ -32,6 +28,9 @@ const OfferBanner = ({ onOfferPress }) => {
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={handleOfferScroll}
         style={styles.offerScrollView}
+        snapToInterval={screenWidth - scale(56)}
+        decelerationRate={"fast"}
+        contentContainerStyle={{ paddingHorizontal: scale(16), gap: scale(16) }}
       >
         {offers.map((offer) => (
           <View key={offer.id} style={styles.offerContainer}>
@@ -62,30 +61,29 @@ const OfferBanner = ({ onOfferPress }) => {
 
 const styles = StyleSheet.create({
   offerSection: {
-    marginBottom: scaleSpacing(16),
+    marginBottom: scale(16),
     position: "relative",
   },
   offerScrollView: {
-    height: scaleHeightSize(201),
+    height: scale(201),
   },
   offerContainer: {
-    paddingHorizontal: scaleSpacing(16),
-    width: scaleWidthSize(390),
+    width: screenWidth - scale(64),
   },
   offerImage: {
     width: "100%",
-    height: scaleHeightSize(201),
-    borderRadius: scaleSpacing(10),
+    height: scale(201),
+    borderRadius: scale(10),
   },
   paginationContainer: {
     position: "absolute",
-    bottom: scaleSpacing(10),
+    bottom: scale(10),
     left: 0,
     right: 0,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    gap: scaleSpacing(4),
+    gap: scale(4),
   },
   paginationDot: {
     width: 18,
