@@ -2,16 +2,20 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import FrontArrow from "../../assets/svg/FrontArrow";
 import Star from "../../assets/svg/Star";
+import SmallStar from "../../assets/svg/SmallStar";
 import { scale, screenWidth } from "../utils/dimen";
 
-const StatsCard = ({ type, onPress }) => {
+interface StatsCardProps {
+  type: "rewards" | "tier" | "tierSmall";
+  onPress: () => void;
+}
+
+const StatsCard: React.FC<StatsCardProps> = ({ type, onPress }) => {
   const renderRewardsCard = () => (
     <TouchableOpacity
-      style={styles.statsCard}
+      style={[styles.statsCard, styles.rewardsCard]}
       onPress={onPress}
       activeOpacity={0.8}
-      accessibilityLabel="My Rewards card"
-      accessibilityHint="Tap to view rewards details"
     >
       <View style={styles.cardHeader}>
         <Text style={styles.cardTitle}>My Rewards</Text>
@@ -19,18 +23,16 @@ const StatsCard = ({ type, onPress }) => {
       </View>
       <View style={styles.cardContent}>
         <Text style={styles.pointsText}>32.101 Pt</Text>
-        <Text style={styles.conversionText}>{"  "}/ 160 SR</Text>
+        <Text style={styles.conversionText}> / 160 SR</Text>
       </View>
     </TouchableOpacity>
   );
 
   const renderTierCard = () => (
     <TouchableOpacity
-      style={styles.statsCard}
+      style={[styles.statsCard, styles.tierCard]}
       onPress={onPress}
       activeOpacity={0.8}
-      accessibilityLabel="My Tier card"
-      accessibilityHint="Tap to view tier details"
     >
       <View style={styles.cardHeader}>
         <Text style={styles.cardTitle}>My Tier</Text>
@@ -45,9 +47,29 @@ const StatsCard = ({ type, onPress }) => {
     </TouchableOpacity>
   );
 
-  return type === "rewards" ? renderRewardsCard() : renderTierCard();
-};
+  const renderTierSmallCard = () => (
+    <TouchableOpacity
+      style={[styles.statsCard, styles.tierCard]}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>My Tier</Text>
+        <FrontArrow />
+      </View>
+      <View style={styles.tierContent}>
+        <Star />
+        <SmallStar />
+        <SmallStar />
+        <Text style={styles.tierText}>Star</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
+  if (type === "rewards") return renderRewardsCard();
+  if (type === "tier") return renderTierCard();
+  return renderTierSmallCard(); // "tierSmall"
+};
 const styles = StyleSheet.create({
   statsCard: {
     height: scale(55),
@@ -68,11 +90,7 @@ const styles = StyleSheet.create({
     fontFamily: "Rubik-Regular",
     color: "#ffffff",
   },
-  cardContent: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    marginTop: 2,
-  },
+  cardContent: { flexDirection: "row", alignItems: "flex-end", marginTop: 2 },
   pointsText: {
     fontFamily: "Rubik-Bold",
     fontWeight: "700",
@@ -88,7 +106,7 @@ const styles = StyleSheet.create({
   },
   tierContent: {
     flexDirection: "row",
-    gap: 5,
+    gap: 4,
     marginTop: 2,
     alignSelf: "flex-start",
     justifyContent: "flex-start",
@@ -101,6 +119,11 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     alignSelf: "center",
   },
+  rewardsCard: {
+    backgroundColor: "#017851",
+  },
+  tierCard: {
+    backgroundColor: "#017851",
+  },
 });
-
 export default StatsCard;

@@ -113,6 +113,7 @@ const HomeScreen = () => {
         <BrandsContainer
           onBrandPress={handleBrandPress}
           onViewDealsPress={handleViewDealsPress}
+          showViewDeals={true}
         />
       </View>
 
