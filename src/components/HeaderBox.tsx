@@ -4,24 +4,33 @@ import Drawerlogo from "../../assets/svg/Drawerlogo";
 import { MaterialIcons } from "@expo/vector-icons";
 import BellIcon from "../../assets/svg/BellIcon";
 import SearchIcon from "../../assets/svg/SearchIcon";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { scale } from "../utils/dimen";
-
-// Drawer param list (adjust names as per your app)
-type DrawerParamList = {
-  Home: undefined;
-  Profile: undefined;
-};
+import { DrawerParamList } from "../types";
 
 const HeaderBox: React.FC = () => {
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
+
+  const handleDrawerToggle = () => {
+    try {
+      // First try DrawerActions
+      navigation.dispatch(DrawerActions.openDrawer());
+    } catch (error) {
+      try {
+        // Fallback to direct method
+        navigation.openDrawer();
+      } catch (fallbackError) {
+        console.error("Drawer not working:", fallbackError);
+      }
+    }
+  };
 
   return (
     <View style={styles.headerRow}>
       {/* Left section - Logo and text */}
       <View style={styles.leftSection}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+        <TouchableOpacity onPress={handleDrawerToggle}>
           <Drawerlogo />
         </TouchableOpacity>
         <View style={styles.textContainer}>

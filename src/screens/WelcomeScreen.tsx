@@ -103,7 +103,11 @@ const WelcomeScreen = ({ navigation }: Props) => {
         <View style={styles.topButtons}>
           {currentIndex === 0 && (
             <LanguageButton
-              flagSource={require("../../assets/image/Usa.png")}
+              flagSource={
+                locale === "ar"
+                  ? require("../../assets/image/Saudi.png")
+                  : require("../../assets/image/Usa.png")
+              }
               label={locale.toUpperCase()}
               onPress={() => navigation.navigate("CountryandLanguage")}
               style={styles.languageButton}

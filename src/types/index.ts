@@ -10,8 +10,21 @@ export type RootStackParamList = {
   Register: undefined;
   ForgetPassword: undefined;
   InformationScreen: undefined;
+  DeliveryScreen: undefined;
+  DineInScreen: undefined;
+  TopTabScreen: undefined;
 };
 
 export type DrawerParamList = {
   Home: undefined;
+  DeliveryScreen: undefined;
+  DineInScreen: undefined;
+  Deals: undefined;
+  BookCatering: undefined;
+  MyFavorites: undefined;
+  MyOrders: undefined;
+  MyAddresses: undefined;
+  MyPaymentMethods: undefined;
+  GetHelp: undefined;
+  FAQ: undefined;
 };

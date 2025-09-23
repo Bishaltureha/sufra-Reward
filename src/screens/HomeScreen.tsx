@@ -6,15 +6,27 @@ import StatsCard from "../components/StatsCard";
 import BrandsContainer from "../components/BrandsContainer";
 import OfferBanner from "../components/OfferBanner";
 import { scale, screenWidth } from "../utils/dimen";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+type HomeScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Home"
+>;
 
 const HomeScreen = () => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+
   const handleDeliveryPress = () => {
     console.log("Delivery tapped!");
+    navigation.navigate("TopTabScreen");
     // Add navigation or other logic here
   };
 
   const handleDineInPress = () => {
     console.log("Dine-in tapped!");
+    navigation.navigate("TopTabScreen");
+
     // Add navigation or other logic here
   };
 

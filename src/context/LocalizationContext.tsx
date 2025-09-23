@@ -32,7 +32,7 @@ export const LocalizationProvider: React.FC<{ children: React.ReactNode }> = ({
     if (Platform.OS === "web") {
       window.location.reload();
     } else {
-      // RNRestart.restart();
+      RNRestart.restart();
     }
   }, []);
 

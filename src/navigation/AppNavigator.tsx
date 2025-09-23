@@ -13,6 +13,7 @@ import CountryandLanguage from "../screens/CountryandLanguage";
 import ForgetPassword from "../screens/ForgetPassword";
 import InformationScreen from "../screens/InformationScreen";
 import DrawerNavigator from "./DrawerNavigator";
+import TopTabScreen from "./TopTabScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -41,6 +42,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="InformationScreen" component={InformationScreen} />
+      <Stack.Screen name="TopTabScreen" component={TopTabScreen} />
     </Stack.Navigator>
   );
 }

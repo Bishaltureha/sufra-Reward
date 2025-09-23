@@ -3,6 +3,7 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeScreen from "../screens/HomeScreen";
 import { DrawerParamList } from "../types";
+import CustomDrawerContent from "../components/CustomDrawerContent";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -13,12 +14,18 @@ export default function DrawerNavigator() {
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
-        drawerType: "slide",
-        overlayColor: "tarnsparent",
-        swipeEnabled: false,
+        drawerType: "front",
+        overlayColor: "transparent",
+        swipeEnabled: true,
+        drawerHideStatusBarOnOpen: true,
       }}
+      drawerContent={(props) => <CustomDrawerContent {...props} />} // ✅ Inject custom drawer
     >
+      {/* Drawer Screens */}
       <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="DeliveryScreen" component={HomeScreen} />
+      <Drawer.Screen name="DineInScreen" component={HomeScreen} />
+      {/* Add the rest of your drawer screens here */}
     </Drawer.Navigator>
   );
 }
