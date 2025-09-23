@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import Drawerlogo from "../../assets/svg/Drawerlogo";
 import { MaterialIcons } from "@expo/vector-icons";
 import BellIcon from "../../assets/svg/BellIcon";
@@ -9,16 +15,18 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { scale } from "../utils/dimen";
 import { DrawerParamList } from "../types";
 
-const HeaderBox: React.FC = () => {
+interface HeaderBoxProps {
+  boxshadow?: ViewStyle; // 👈 ab props type define kar diya
+}
+
+const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
 
   const handleDrawerToggle = () => {
     try {
-      // First try DrawerActions
       navigation.dispatch(DrawerActions.openDrawer());
     } catch (error) {
       try {
-        // Fallback to direct method
         navigation.openDrawer();
       } catch (fallbackError) {
         console.error("Drawer not working:", fallbackError);
@@ -27,7 +35,7 @@ const HeaderBox: React.FC = () => {
   };
 
   return (
-    <View style={styles.headerRow}>
+    <View style={[styles.headerRow, boxshadow]}>
       {/* Left section - Logo and text */}
       <View style={styles.leftSection}>
         <TouchableOpacity onPress={handleDrawerToggle}>
@@ -75,16 +83,8 @@ const styles = StyleSheet.create({
     paddingBottom: scale(10),
     backgroundColor: "#ffffff",
     justifyContent: "space-between",
-    // Down shadow only for iOS
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    // Shadow for Android
-    elevation: 4,
+    borderBottomWidth: 1,
+    borderColor: "#E6EAF1",
   },
   leftSection: {
     flexDirection: "row",

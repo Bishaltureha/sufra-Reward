@@ -58,7 +58,15 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <HeaderBox />
+      <HeaderBox
+        boxshadow={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 4, // Android
+        }}
+      />
 
       <View style={{ backgroundColor: "#f5f5f5", marginTop: scale(16) }}>
         {/* Stats Cards */}

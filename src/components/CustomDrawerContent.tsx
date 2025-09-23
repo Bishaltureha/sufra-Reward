@@ -31,12 +31,12 @@ interface DrawerItem {
 const drawerItems: DrawerItem[] = [
   { name: "Home", label: "Home", icon: "HomeLogo" },
   {
-    name: "DeliveryScreen",
+    name: "Delivery",
     label: "Delivery & Pickup",
     icon: "DeliveryLogo",
   },
   {
-    name: "DineInScreen",
+    name: "DineIn",
     label: "Dine-in",
     icon: "DineInLogo",
   },
@@ -130,27 +130,39 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
   const renderDrawerItem = (item: DrawerItem, index: number) => {
     const isActive = state.index === index;
 
+    const handlePress = () => {
+      if (item.name === "Delivery") {
+        navigation.navigate("TopTabScreen", { screen: "Delivery" });
+      } else if (item.name === "DineIn") {
+        navigation.navigate("TopTabScreen", { screen: "DineIn" });
+      } else {
+        navigation.navigate(item.name as never); // baki screens normal navigate
+      }
+    };
+
     return (
       <TouchableOpacity
         key={item.name}
         style={[styles.drawerItem, isActive && styles.activeDrawerItem]}
-        onPress={() => navigation.navigate(item.name)}
+        onPress={handlePress}
       >
         <View style={styles.iconContainer}>{renderIcon(item, isActive)}</View>
         <View style={styles.textContainer}>
-          <Text
-            style={[
-              styles.drawerItemText,
-              isActive && styles.activeDrawerItemText,
-            ]}
-          >
-            {item.label}
-          </Text>
-          {item.name === "BookCatering" && (
-            <View style={styles.newBadge}>
-              <Text style={styles.newBadgeText}>NEW!</Text>
-            </View>
-          )}
+          <View style={styles.textWithBadgeContainer}>
+            <Text
+              style={[
+                styles.drawerItemText,
+                isActive && styles.activeDrawerItemText,
+              ]}
+            >
+              {item.label}
+            </Text>
+            {item.name === "BookCatering" && (
+              <View style={styles.newBadge}>
+                <Text style={styles.newBadgeText}>NEW!</Text>
+              </View>
+            )}
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -351,13 +363,19 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
+  },
+  textWithBadgeContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
   },
   drawerItemText: {
     fontSize: scale(17),
     fontFamily: "Rubik-Regular",
     color: "#4A4A4A",
-    flex: 1,
+    flexShrink: 1,
   },
   activeDrawerItemText: {
     color: "#017851",
@@ -366,22 +384,32 @@ const styles = StyleSheet.create({
   newBadgeText: {
     fontFamily: "Rubik-SemiBold",
     fontWeight: "600",
-    fontSize: 14,
+    fontSize: scale(12),
     color: "#017851",
     textAlign: "center",
+    lineHeight: scale(11),
   },
-  newBadge: { position: "absolute", right: 95, bottom: 7 },
+  newBadge: {
+    backgroundColor: "transparent",
+    paddingHorizontal: scale(2),
+    paddingVertical: scale(1),
+    marginLeft: scale(0),
+    marginTop: scale(-2),
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: scale(12),
+  },
   bottomContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    left: 35,
-    bottom: 110,
-    width: 77,
-    height: 38,
+    left: scale(35), // Made responsive
+    bottom: scale(110), // Made responsive
+    width: scale(77), // Made responsive
+    height: scale(38), // Made responsive
     backgroundColor: "#E6EAF1",
-    borderRadius: 12,
+    borderRadius: scale(12), // Made responsive
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
@@ -393,7 +421,7 @@ const styles = StyleSheet.create({
   },
   languageText: {
     marginStart: scale(3),
-    fontSize: 12,
+    fontSize: scale(12), // Made responsive
     color: "#4A4A4A",
     fontWeight: "500",
   },
@@ -406,12 +434,12 @@ const styles = StyleSheet.create({
   },
   languageDropdown: {
     position: "absolute",
-    bottom: 155,
-    left: 60,
-    width: 160,
-    height: 85,
+    bottom: scale(155), // Made responsive
+    left: scale(60), // Made responsive
+    width: scale(160), // Made responsive
+    height: scale(85), // Made responsive
     backgroundColor: "#E6EAF1",
-    borderRadius: 12,
+    borderRadius: scale(12), // Made responsive
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
@@ -437,8 +465,8 @@ const styles = StyleSheet.create({
     marginLeft: scale(8),
   },
   checkIcon: {
-    marginStart: -15,
-    marginEnd: 10,
+    marginStart: scale(-15), // Made responsive
+    marginEnd: scale(10), // Made responsive
   },
   dropdowndivider: {
     backgroundColor: "#D1D1D1",

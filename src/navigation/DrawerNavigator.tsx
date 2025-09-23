@@ -1,9 +1,9 @@
-// DrawerNavigator.tsx
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeScreen from "../screens/HomeScreen";
 import { DrawerParamList } from "../types";
 import CustomDrawerContent from "../components/CustomDrawerContent";
+import TopTabScreen from "./TopTabScreen";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -19,13 +19,16 @@ export default function DrawerNavigator() {
         swipeEnabled: true,
         drawerHideStatusBarOnOpen: true,
       }}
-      drawerContent={(props) => <CustomDrawerContent {...props} />} // ✅ Inject custom drawer
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
-      {/* Drawer Screens */}
       <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="DeliveryScreen" component={HomeScreen} />
-      <Drawer.Screen name="DineInScreen" component={HomeScreen} />
-      {/* Add the rest of your drawer screens here */}
+
+      <Drawer.Screen
+        name="TopTabScreen"
+        component={TopTabScreen}
+        initialParams={{ screen: "Delivery" }}
+        options={{ title: "Order" }}
+      />
     </Drawer.Navigator>
   );
 }

@@ -1,16 +1,31 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderBox from "../components/HeaderBox";
 import DeliveryContent from "../screens/DeliveryContent";
 import DineInContent from "../screens/DineInContent";
 import { scale } from "../utils/dimen";
+import { useRoute, RouteProp } from "@react-navigation/native";
+
+type TopTabParamList = {
+  screen?: "Delivery" | "DineIn";
+};
 
 const TopTabScreen = () => {
-  const [activeTab, setActiveTab] = useState("Delivery");
+  const route = useRoute<RouteProp<{ params: TopTabParamList }, "params">>();
 
-  const handleTabPress = (tabName: React.SetStateAction<string>) => {
-    console.log(`Switching to tab: ${tabName}`);
+  // default "Delivery", ya Drawer se aaya hua param
+  const [activeTab, setActiveTab] = useState<"Delivery" | "DineIn">(
+    route.params?.screen || "Delivery"
+  );
+
+  useEffect(() => {
+    if (route.params?.screen) {
+      setActiveTab(route.params.screen);
+    }
+  }, [route.params?.screen]);
+
+  const handleTabPress = (tabName: "Delivery" | "DineIn") => {
     setActiveTab(tabName);
   };
 
