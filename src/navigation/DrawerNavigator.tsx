@@ -4,6 +4,13 @@ import HomeScreen from "../screens/HomeScreen";
 import { DrawerParamList } from "../types";
 import CustomDrawerContent from "../components/CustomDrawerContent";
 import TopTabScreen from "./TopTabScreen";
+import DealsScreen from "../screens/DealsScreen";
+import BookCateringScreen from "../screens/BookCateringScreen";
+import MyFavoritesScreen from "../screens/MyFavoritesScreen";
+import MyAddressesScreen from "../screens/MyAddressesScreen";
+import MyPaymentMethodsScreen from "../screens/MyPaymentMethodsScreen";
+import GetHelpScreen from "../screens/GetHelpScreen";
+import FAQScreen from "../screens/FAQScreen";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -29,6 +36,16 @@ export default function DrawerNavigator() {
         initialParams={{ screen: "Delivery" }}
         options={{ title: "Order" }}
       />
+      <Drawer.Screen name="Deals" component={DealsScreen} />
+      <Drawer.Screen name="BookCatering" component={BookCateringScreen} />
+      <Drawer.Screen name="MyFavorites" component={MyFavoritesScreen} />
+      <Drawer.Screen name="MyAddresses" component={MyAddressesScreen} />
+      <Drawer.Screen
+        name="MyPaymentMethods"
+        component={MyPaymentMethodsScreen}
+      />
+      <Drawer.Screen name="GetHelp" component={GetHelpScreen} />
+      <Drawer.Screen name="FAQ" component={FAQScreen} />
     </Drawer.Navigator>
   );
 }
