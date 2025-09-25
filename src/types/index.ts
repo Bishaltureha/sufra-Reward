@@ -12,7 +12,7 @@ export type RootStackParamList = {
   InformationScreen: undefined;
   DeliveryScreen: undefined;
   DineInScreen: undefined;
-  TopTabScreen: undefined;
+  TopTabScreen: { screen?: "Delivery" | "DineIn" };
 };
 
 export type DrawerParamList = {

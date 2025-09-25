@@ -19,63 +19,52 @@ const HomeScreen = () => {
 
   const handleDeliveryPress = () => {
     console.log("Delivery tapped!");
-    navigation.navigate("TopTabScreen");
-    // Add navigation or other logic here
+    navigation.navigate("TopTabScreen", { screen: "Delivery" });
   };
 
   const handleDineInPress = () => {
     console.log("Dine-in tapped!");
-    navigation.navigate("TopTabScreen");
-
-    // Add navigation or other logic here
+    navigation.navigate("TopTabScreen", { screen: "DineIn" });
   };
 
   const handleRewardsPress = () => {
     console.log("Rewards card tapped!");
-    // Add navigation to rewards page
   };
 
   const handleTierPress = () => {
     console.log("Tier card tapped!");
-    // Add navigation to tier page
   };
 
   const handleViewDealsPress = () => {
     console.log("View Deals tapped!");
-    // Add navigation to deals page
   };
 
   const handleBrandPress = (brandIndex) => {
     console.log(`Brand ${brandIndex} tapped!`);
-    // Add navigation to specific brand
   };
 
   const handleOfferPress = (offerIndex) => {
     console.log(`Offer ${offerIndex} tapped!`);
-    // Add navigation to specific offer
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <HeaderBox
         boxshadow={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.1,
           shadowRadius: 4,
-          elevation: 4, // Android
+          elevation: 4,
         }}
       />
 
       <View style={{ backgroundColor: "#f5f5f5", marginTop: scale(16) }}>
-        {/* Stats Cards */}
         <View style={styles.statsContainer}>
           <StatsCard type="rewards" onPress={handleRewardsPress} />
           <StatsCard type="tier" onPress={handleTierPress} />
         </View>
 
-        {/* Main Action Buttons */}
         <View style={styles.buttonRow}>
           <TouchableOpacity
             style={styles.imgButton}
@@ -106,10 +95,8 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Offer Banner with Pagination */}
         <OfferBanner onOfferPress={handleOfferPress} />
 
-        {/* Our Brands Section */}
         <BrandsContainer
           onBrandPress={handleBrandPress}
           onViewDealsPress={handleViewDealsPress}
@@ -117,7 +104,6 @@ const HomeScreen = () => {
         />
       </View>
 
-      {/* Bottom Action Buttons */}
       <View style={styles.bottomButtonsContainer}>
         <TouchableOpacity style={styles.dineInButton}>
           <Text style={styles.dineInButtonText}>Find Dine-in Spots</Text>

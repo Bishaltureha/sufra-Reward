@@ -8,12 +8,13 @@ import { scale, screenWidth } from "../utils/dimen";
 interface StatsCardProps {
   type: "rewards" | "tier" | "tierSmall";
   onPress: () => void;
+  width?: number;
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ type, onPress }) => {
+const StatsCard: React.FC<StatsCardProps> = ({ type, onPress, width }) => {
   const renderRewardsCard = () => (
     <TouchableOpacity
-      style={[styles.statsCard, styles.rewardsCard]}
+      style={[styles.statsCard, styles.rewardsCard, width ? { width } : {}]}
       onPress={onPress}
       activeOpacity={0.8}
     >
@@ -30,7 +31,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ type, onPress }) => {
 
   const renderTierCard = () => (
     <TouchableOpacity
-      style={[styles.statsCard, styles.tierCard]}
+      style={[styles.statsCard, styles.tierCard, width ? { width } : {}]}
       onPress={onPress}
       activeOpacity={0.8}
     >
@@ -49,7 +50,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ type, onPress }) => {
 
   const renderTierSmallCard = () => (
     <TouchableOpacity
-      style={[styles.statsCard, styles.tierCard]}
+      style={[styles.statsCard, styles.tierCard, width ? { width } : {}]}
       onPress={onPress}
       activeOpacity={0.8}
     >
@@ -68,8 +69,9 @@ const StatsCard: React.FC<StatsCardProps> = ({ type, onPress }) => {
 
   if (type === "rewards") return renderRewardsCard();
   if (type === "tier") return renderTierCard();
-  return renderTierSmallCard(); // "tierSmall"
+  return renderTierSmallCard();
 };
+
 const styles = StyleSheet.create({
   statsCard: {
     height: scale(55),
@@ -126,4 +128,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#017851",
   },
 });
+
 export default StatsCard;

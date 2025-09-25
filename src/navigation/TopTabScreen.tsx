@@ -7,15 +7,18 @@ import DineInContent from "../screens/DineInContent";
 import { scale } from "../utils/dimen";
 import { useRoute, RouteProp } from "@react-navigation/native";
 
-type TopTabParamList = {
-  screen?: "Delivery" | "DineIn";
+// 👉 Stack Params type
+type RootStackParamList = {
+  TopTabScreen: { screen?: "Delivery" | "DineIn" };
 };
 
-const TopTabScreen = () => {
-  const route = useRoute<RouteProp<{ params: TopTabParamList }, "params">>();
+// 👉 Tab names type
+type TabName = "Delivery" | "DineIn";
 
-  // default "Delivery", ya Drawer se aaya hua param
-  const [activeTab, setActiveTab] = useState<"Delivery" | "DineIn">(
+const TopTabScreen = () => {
+  const route = useRoute<RouteProp<RootStackParamList, "TopTabScreen">>();
+
+  const [activeTab, setActiveTab] = useState<TabName>(
     route.params?.screen || "Delivery"
   );
 
@@ -25,20 +28,23 @@ const TopTabScreen = () => {
     }
   }, [route.params?.screen]);
 
-  const handleTabPress = (tabName: "Delivery" | "DineIn") => {
+  // 👉 Reusable tab switcher
+  const navigateToTab = (tabName: TabName) => {
     setActiveTab(tabName);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <HeaderBox />
+
+      {/* Tabs */}
       <View style={styles.tabRow}>
         <TouchableOpacity
           style={[
             styles.tabButton,
             activeTab === "Delivery" && styles.activeTab,
           ]}
-          onPress={() => handleTabPress("Delivery")}
+          onPress={() => navigateToTab("Delivery")}
         >
           <Text
             style={[
@@ -52,7 +58,7 @@ const TopTabScreen = () => {
 
         <TouchableOpacity
           style={[styles.tabButton, activeTab === "DineIn" && styles.activeTab]}
-          onPress={() => handleTabPress("DineIn")}
+          onPress={() => navigateToTab("DineIn")}
         >
           <Text
             style={[
@@ -111,20 +117,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  contentText: {
-    fontSize: 18,
-    fontWeight: "500",
-  },
-  tabContent: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  subText: {
-    fontSize: 14,
-    color: "#777",
-    marginTop: 8,
-    textAlign: "center",
   },
 });

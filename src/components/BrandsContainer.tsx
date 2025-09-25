@@ -45,7 +45,7 @@ const BrandsContainer: React.FC<BrandsContainerProps> = ({
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       {/* Brands Header */}
       <View style={styles.brandsHeader}>
         <Text style={styles.brandsTitle}>Our Brands</Text>
@@ -74,6 +74,9 @@ const BrandsContainer: React.FC<BrandsContainerProps> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: scale(0),
+  },
   brandsHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
