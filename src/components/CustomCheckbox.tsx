@@ -1,28 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { scale } from "../utils/dimen";
-import { Ionicons } from "@expo/vector-icons"; // or react-native-vector-icons
+import { Ionicons } from "@expo/vector-icons";
 
 interface CustomCheckboxProps {
-  checked?: boolean;
-  onChange?: (checked: boolean) => void;
+  checked: boolean; // controlled by parent
+  onChange: (checked: boolean) => void; // callback to parent
 }
 
-const CustomCheckbox = ({ checked = false, onChange }: CustomCheckboxProps) => {
-  const [isChecked, setIsChecked] = useState(checked);
-
-  const toggleCheckbox = () => {
-    const newValue = !isChecked;
-    setIsChecked(newValue);
-    onChange?.(newValue);
-  };
+const CustomCheckbox = ({ checked, onChange }: CustomCheckboxProps) => {
+  const toggleCheckbox = () => onChange(!checked);
 
   return (
     <TouchableOpacity
-      style={[styles.container, isChecked && styles.checkedContainer]}
+      style={[styles.container, checked && styles.checkedContainer]}
       onPress={toggleCheckbox}
     >
-      {isChecked && <Ionicons name="checkmark" size={scale(18)} color="#fff" />}
+      {checked && <Ionicons name="checkmark" size={scale(18)} color="#fff" />}
     </TouchableOpacity>
   );
 };

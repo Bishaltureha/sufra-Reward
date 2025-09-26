@@ -5,11 +5,17 @@ import RTLText from "./RTLText";
 
 interface FloatingLabelInputProps extends TextInputProps {
   label: string;
+  value: string; // value comes from parent
+  onChangeText: (text: string) => void; // callback to parent
 }
 
-const FloatingLabelInput = ({ label, ...props }: FloatingLabelInputProps) => {
+const FloatingLabelInput = ({
+  label,
+  value,
+  onChangeText,
+  ...props
+}: FloatingLabelInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [value, setValue] = useState("");
 
   return (
     <View style={styles.container}>
@@ -22,7 +28,7 @@ const FloatingLabelInput = ({ label, ...props }: FloatingLabelInputProps) => {
       <TextInput
         style={styles.input}
         value={value}
-        onChangeText={setValue}
+        onChangeText={onChangeText} // pass to parent
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         {...props}
@@ -34,9 +40,7 @@ const FloatingLabelInput = ({ label, ...props }: FloatingLabelInputProps) => {
 export default FloatingLabelInput;
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
+  container: { width: "100%" },
   label: {
     position: "absolute",
     left: scale(12),

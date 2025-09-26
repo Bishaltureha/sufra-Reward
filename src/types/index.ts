@@ -17,6 +17,7 @@ export type RootStackParamList = {
 
 export type DrawerParamList = {
   Home: undefined;
+  GiftCards: undefined;
   TopTabScreen: { screen?: "Delivery" | "DineIn" };
   Deals: undefined;
   BookCatering: undefined;

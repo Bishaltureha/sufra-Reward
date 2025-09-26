@@ -19,6 +19,7 @@ import MyAddressesLogo from "../../assets/svg/drawer/MyAddressesLogo";
 import MyFavoritesLogo from "../../assets/svg/drawer/MyFavoritesLogo";
 import MyOrdersLogo from "../../assets/svg/drawer/MyOrdersLogo";
 import MyPaymentMethodsLogo from "../../assets/svg/drawer/MyPaymentMethodsLogo";
+import GiftCardsLogo from "../../assets/svg/drawer/GiftCardsLogo";
 import { MaterialIcons } from "@expo/vector-icons";
 import Thick from "../../assets/svg/drawer/Thick";
 
@@ -30,6 +31,7 @@ interface DrawerItem {
 
 const drawerItems: DrawerItem[] = [
   { name: "Home", label: "Home", icon: "HomeLogo" },
+  { name: "GiftCards", label: "Gift Cards", icon: "GiftCardsLogo" },
   {
     name: "Delivery",
     label: "Delivery & Pickup",
@@ -99,6 +101,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
     // Map icon names to components
     const iconComponents = {
       HomeLogo: HomeLogo,
+      GiftCardsLogo: GiftCardsLogo,
       DeliveryLogo: DeliveryLogo,
       DineInLogo: DineInLogo,
       DealsLogo: DealsLogo,
@@ -157,7 +160,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
             >
               {item.label}
             </Text>
-            {item.name === "BookCatering" && (
+            {(item.name === "BookCatering" || item.name === "GiftCards") && (
               <View style={styles.newBadge}>
                 <Text style={styles.newBadgeText}>NEW!</Text>
               </View>
@@ -338,13 +341,13 @@ const styles = StyleSheet.create({
     marginStart: scale(16),
   },
   drawerItems: {
-    marginTop: scale(20),
+    marginTop: scale(15),
     paddingHorizontal: scale(16),
   },
   drawerItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: scale(8),
+    paddingVertical: scale(6),
     paddingHorizontal: scale(16),
     borderRadius: scale(8),
     marginVertical: scale(2),

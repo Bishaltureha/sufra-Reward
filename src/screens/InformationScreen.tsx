@@ -1,4 +1,4 @@
-import { StyleSheet, View, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Text } from "react-native";
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
@@ -15,11 +15,26 @@ type Props = NativeStackScreenProps<RootStackParamList, "InformationScreen">;
 
 const InformationScreen = ({ navigation }: Props) => {
   const { t } = useLocalization();
+
+  // Form states
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [receiveOffers, setReceiveOffers] = useState(false);
 
+  const handleRegister = () => {
+    // You can now access all form data here
+    const formData = { firstName, lastName, email, acceptTerms, receiveOffers };
+    console.log("Form Data:", formData);
+
+    // Navigate to Home
+    navigation.navigate("Home");
+  };
+
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={"padding"}>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       {/* Header */}
       <Header
         image={<Logo height={scale(35)} width={scale(123)} />}
@@ -33,16 +48,25 @@ const InformationScreen = ({ navigation }: Props) => {
       <View style={styles.subContent}>
         <RTLText style={styles.title}>{t("info.title")}</RTLText>
 
-        <View style={{ gap: 10, marginTop: 20 }}>
+        <View style={{ gap: scale(10), marginTop: scale(20) }}>
           <FloatingLabelInput
             label={t("info.firstName")}
             keyboardType="ascii-capable"
+            value={firstName}
+            onChangeText={setFirstName}
           />
           <FloatingLabelInput
             label={t("info.lastName")}
             keyboardType="ascii-capable"
+            value={lastName}
+            onChangeText={setLastName}
           />
-          <FloatingLabelInput label={t("info.email")} keyboardType="default" />
+          <FloatingLabelInput
+            label={t("info.email")}
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
         </View>
 
         {/* Checkboxes */}
@@ -69,10 +93,9 @@ const InformationScreen = ({ navigation }: Props) => {
         <CustomButton
           title={t("welcome.register")}
           backgroundColor="#ffab00"
-          onPress={() => navigation.navigate("Home")}
+          onPress={handleRegister}
           style={styles.buttonStyle}
-          textStyle={undefined}
-          textColor={"#000000"}
+          textColor="#000000"
         />
       </View>
     </KeyboardAvoidingView>

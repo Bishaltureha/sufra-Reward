@@ -16,7 +16,7 @@ import { scale } from "../utils/dimen";
 import { DrawerParamList } from "../types";
 
 interface HeaderBoxProps {
-  boxshadow?: ViewStyle; // 👈 ab props type define kar diya
+  boxshadow?: ViewStyle;
 }
 
 const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
