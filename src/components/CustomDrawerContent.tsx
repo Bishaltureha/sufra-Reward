@@ -138,8 +138,10 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
         navigation.navigate("TopTabScreen", { screen: "Delivery" });
       } else if (item.name === "DineIn") {
         navigation.navigate("TopTabScreen", { screen: "DineIn" });
+      } else if (item.name === "GiftCards") {
+        navigation.navigate("GiftCards", { screen: "GiftCardsMain" });
       } else {
-        navigation.navigate(item.name as never); // baki screens normal navigate
+        navigation.navigate(item.name as never);
       }
     };
 

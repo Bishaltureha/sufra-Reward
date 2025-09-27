@@ -21,8 +21,10 @@
       "supportsTablet": true,
       "infoPlist": {
         "ExpoLocalization_supportsRTL": true,
-        "CFBundleLocalizations": ["en", "ar"]
-      },
+        "CFBundleLocalizations": ["en", "ar"],
+        "NSLocationWhenInUseUsageDescription": "We need your location to show nearby services and deliver to you faster.", 
+        "NSLocationAlwaysUsageDescription": "We need your location to provide better service, even when the app is in the background."
+  },
       "bundleIdentifier": "com.sufrarewards"
     },
     "android": {
@@ -31,7 +33,11 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.sufrarewards"
+      "package": "com.sufrarewards",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import * as Location from "expo-location";
+
 import {
   StyleSheet,
   View,
@@ -14,7 +17,7 @@ import Star from "../../assets/svg/Star";
 import Error from "../../assets/svg/Error";
 import BigLocationLogo from "../../assets/svg/BigLocationLogo";
 
-const DeliveryCard = ({ item, onCardPress, onFavoritePress, delivery }) => {
+const DeliveryCard = ({ item, onCardPress, onFavoritePress }) => {
   const [isFavorite, setIsFavorite] = useState(item.isFavorite || false);
 
   const toggleFavorite = () => {
@@ -22,10 +25,8 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress, delivery }) => {
     onFavoritePress && onFavoritePress(item.id, !isFavorite);
   };
 
-  // Function to render delivery time with proper styling
   const renderDeliveryTime = () => {
     if (item.isOpeningSoon) {
-      // Special styling for "Opens at 9 am"
       return (
         <View style={styles.opensTimeRow}>
           <Text style={styles.opensText}>Opens</Text>
@@ -34,7 +35,6 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress, delivery }) => {
         </View>
       );
     } else {
-      // Regular delivery time like "15-25 min"
       return (
         <View style={styles.regularTimeRow}>
           <Text style={styles.timerText}>{item.deliveryTime}</Text>
@@ -78,13 +78,13 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress, delivery }) => {
         <Text style={styles.freeDeliveryText}>{item.delivery}</Text>
       </View>
 
-      {/* Free Delivery Badge - Always shown */}
+      {/* Free Delivery Badge */}
       <View style={styles.badgeContainer}>
         <FreeDelivery height={scale(14)} width={scale(14)} />
         <Text style={styles.badgeContainerText}>Free Delivery</Text>
       </View>
 
-      {/* Star Badge - Conditionally shown */}
+      {/* Star Badge */}
       {item.hasDoublePoints && (
         <View style={styles.badgeStarContainer}>
           <Star />
@@ -95,8 +95,8 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress, delivery }) => {
   );
 };
 
-// Fixed Location Modal Component
-const LocationModal = ({ visible, onClose }) => {
+// Location Modal
+const LocationModal = ({ visible, onClose, onEnableLocation }) => {
   return (
     <Modal
       animationType="slide"
@@ -126,7 +126,10 @@ const LocationModal = ({ visible, onClose }) => {
               proceed.
             </Text>
 
-            <TouchableOpacity style={styles.enableLocationButton}>
+            <TouchableOpacity
+              style={styles.enableLocationButton}
+              onPress={onEnableLocation}
+            >
               <Text style={styles.enableLocationButtonText}>
                 Enable Location
               </Text>
@@ -151,6 +154,21 @@ const DeliveringToYouSection = ({
   onFavoritePress,
 }) => {
   const [locationModalVisible, setLocationModalVisible] = useState(false);
+  const [isLocationEnabled, setIsLocationEnabled] = useState(false);
+
+  useEffect(() => {
+    const checkLocation = async () => {
+      const { status } = await Location.getForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setIsLocationEnabled(false);
+        return;
+      }
+      const servicesEnabled = await Location.hasServicesEnabledAsync();
+      setIsLocationEnabled(servicesEnabled);
+    };
+
+    checkLocation();
+  }, []);
 
   const handleEnableLocationPress = () => {
     setLocationModalVisible(true);
@@ -160,22 +178,35 @@ const DeliveringToYouSection = ({
     setLocationModalVisible(false);
   };
 
+  const handleEnableLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status === "granted") {
+      const servicesEnabled = await Location.hasServicesEnabledAsync();
+      setIsLocationEnabled(servicesEnabled);
+      setLocationModalVisible(false);
+    } else {
+      setIsLocationEnabled(false);
+    }
+  };
+
   return (
     <View style={styles.sectionContainer}>
       <View style={styles.headerRow}>
         <Text style={styles.sectionTitle}>{title}</Text>
-        <TouchableOpacity
-          style={styles.row}
-          onPress={handleEnableLocationPress}
-        >
-          <Error />
-          <Text style={styles.enableLocationText}>Enable Location</Text>
-        </TouchableOpacity>
+
+        {!isLocationEnabled && (
+          <TouchableOpacity
+            style={styles.row}
+            onPress={handleEnableLocationPress}
+          >
+            <Error />
+            <Text style={styles.enableLocationText}>Enable Location</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {data.map((item, index) => (
         <DeliveryCard
-          delivery={item}
           key={item.id || index}
           item={item}
           onCardPress={onCardPress}
@@ -187,6 +218,7 @@ const DeliveringToYouSection = ({
       <LocationModal
         visible={locationModalVisible}
         onClose={handleCloseModal}
+        onEnableLocation={handleEnableLocation}
       />
     </View>
   );

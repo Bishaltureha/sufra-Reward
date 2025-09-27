@@ -11,7 +11,7 @@ import MyAddressesScreen from "../screens/MyAddressesScreen";
 import MyPaymentMethodsScreen from "../screens/MyPaymentMethodsScreen";
 import GetHelpScreen from "../screens/GetHelpScreen";
 import FAQScreen from "../screens/FAQScreen";
-import GiftCardsScreen from "../screens/GiftCardsScreen";
+import GiftCardStack from "./GiftCardStack";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -30,7 +30,7 @@ export default function DrawerNavigator() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="GiftCards" component={GiftCardsScreen} />
+      <Drawer.Screen name="GiftCards" component={GiftCardStack} />
 
       <Drawer.Screen
         name="TopTabScreen"

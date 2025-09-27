@@ -28,3 +28,24 @@ export type DrawerParamList = {
   GetHelp: undefined;
   FAQ: undefined;
 };
+export type GiftCardStackParamList = {
+  GiftCardsMain: undefined;
+  Payment: {
+    selectedAmount?: string | null;
+    activeCardIndex?: number;
+    isBuyingForMyself?: boolean;
+    recipientName?: string;
+    recipientEmail?: string;
+    verifyRecipientEmail?: string;
+    recipientPhone?: string;
+    personalNote?: string;
+    senderName?: string;
+    senderEmail?: string;
+    senderPhone?: string;
+  };
+  PaymentDone: {
+    selectedAmount: number;
+    selectedCardComponent: React.ComponentType<any>;
+    recipientName: string;
+  };
+};

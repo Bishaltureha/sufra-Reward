@@ -15,9 +15,13 @@ import React, { useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { scale } from "../utils/dimen";
 import Drawerlogo from "../../assets/svg/Drawerlogo";
-import { DrawerActions, useNavigation } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  DrawerActions,
+  useNavigation,
+} from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
-import { DrawerParamList } from "../types";
+import { DrawerParamList, GiftCardStackParamList } from "../types";
 import GiftCard1 from "../../assets/svg/giftCards/GiftCard1";
 import GiftCard2 from "../../assets/svg/giftCards/GiftCard2";
 import GiftCard3 from "../../assets/svg/giftCards/GiftCard3";
@@ -25,13 +29,19 @@ import GiftCard4 from "../../assets/svg/giftCards/GiftCard4";
 import GiftCard5 from "../../assets/svg/giftCards/GiftCard5";
 import CustomCheckbox from "../components/CustomCheckbox";
 import FloatingLabelInput from "../components/FloatingLabelInput";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
 const SPACER_ITEM_SIZE = (width - ITEM_WIDTH) / 2;
 
+type GiftCardsScreenNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<GiftCardStackParamList, "GiftCardsMain">,
+  DrawerNavigationProp<DrawerParamList>
+>;
+
 const GiftCardsScreen = () => {
-  const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
+  const navigation = useNavigation<GiftCardsScreenNavigationProp>();
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList>(null);
 
@@ -293,9 +303,17 @@ const GiftCardsScreen = () => {
             <TouchableOpacity
               style={styles.checkoutButton}
               onPress={() => {
+                // Get the selected card component
+                const selectedCard =
+                  activeThumbIndex !== null
+                    ? realCards[activeThumbIndex]
+                    : null;
+
                 const formData = {
                   selectedAmount,
                   activeCardIndex: activeThumbIndex,
+                  selectedCardKey: selectedCard?.key,
+                  selectedCardComponent: selectedCard?.comp, // Pass the component
                   isBuyingForMyself,
                   recipientName,
                   recipientEmail,
@@ -306,7 +324,9 @@ const GiftCardsScreen = () => {
                   senderEmail,
                   senderPhone,
                 };
+
                 console.log("Checkout Data:", formData);
+                navigation.navigate("Payment", formData);
               }}
             >
               <Text style={styles.checkoutButtonText}>Checkout</Text>
