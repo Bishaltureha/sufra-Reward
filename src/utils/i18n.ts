@@ -9,8 +9,8 @@ const i18n = new I18n(translations);
 const { lang, isRTL } = loadLanguage();
 i18n.locale = lang ?? getLocales()[0].languageCode ?? "ar";
 
-I18nManager.allowRTL(isRTL);
-I18nManager.forceRTL(isRTL);
+I18nManager.allowRTL(isRTL ?? false);
+I18nManager.forceRTL(isRTL ?? false);
 
 // When a value is missing from a language it'll fall back to another language with the key present.
 i18n.enableFallback = true;
