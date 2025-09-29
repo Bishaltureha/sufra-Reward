@@ -24,8 +24,30 @@ const InformationScreen = ({ navigation }: Props) => {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [receiveOffers, setReceiveOffers] = useState(false);
 
+  // const handleRegister = () => {
+  //   // You can now access all form data here
+  //   const formData = { firstName, lastName, email, acceptTerms, receiveOffers };
+  //   console.log("Form Data:", formData);
+
+  //   // Navigate to Home
+  //   navigation.navigate("Home");
+  // };
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
   const handleRegister = () => {
-    // You can now access all form data here
+    if (!firstName.trim() || !lastName.trim() || !email.trim()) {
+      alert("Please fill all fields.");
+      return;
+    }
+
+    if (!acceptTerms) {
+      alert("Please accept Terms & Conditions.");
+      return;
+    }
+
+    // Form data ready
     const formData = { firstName, lastName, email, acceptTerms, receiveOffers };
     console.log("Form Data:", formData);
 
@@ -96,6 +118,13 @@ const InformationScreen = ({ navigation }: Props) => {
           onPress={handleRegister}
           style={styles.buttonStyle}
           textColor="#000000"
+          disabled={
+            !firstName.trim() ||
+            !lastName.trim() ||
+            !email.trim() ||
+            !isValidEmail(email) ||
+            !acceptTerms
+          }
         />
       </View>
     </KeyboardAvoidingView>

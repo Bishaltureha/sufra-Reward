@@ -64,6 +64,7 @@ const GiftCardsPaymentDoneScreen = ({ route }) => {
         <View style={styles.titleContainer}>
           <Text style={styles.headerTitle}>Sufra Gift Cards</Text>
         </View>
+        <View style={styles.spacer} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -224,6 +225,9 @@ const styles = StyleSheet.create({
     fontSize: scale(18),
     color: "#4A4A4A",
     textAlign: "center",
+  },
+  spacer: {
+    width: scale(36),
   },
   contentWrapper: { marginVertical: scale(20), marginHorizontal: scale(16) },
   orderRow: {

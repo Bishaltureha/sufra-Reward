@@ -46,7 +46,7 @@ const GiftCardsScreen = () => {
   const flatListRef = useRef<FlatList>(null);
 
   // Carousel / selection states
-  const [activeThumbIndex, setActiveThumbIndex] = useState<number | null>(null);
+  const [activeThumbIndex, setActiveThumbIndex] = useState<number | null>(0);
 
   // Gift amount
   const amounts = ["100", "250", "500", "1000", "1500"];
@@ -62,6 +62,23 @@ const GiftCardsScreen = () => {
   const [senderEmail, setSenderEmail] = useState("");
   const [senderPhone, setSenderPhone] = useState("");
   const [personalNote, setPersonalNote] = useState("");
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  const isFormValid =
+    recipientName &&
+    recipientEmail &&
+    verifyRecipientEmail &&
+    recipientEmail === verifyRecipientEmail &&
+    isValidEmail(recipientEmail) &&
+    recipientPhone &&
+    senderName &&
+    senderEmail &&
+    isValidEmail(senderEmail) &&
+    senderPhone &&
+    selectedAmount;
 
   const handleDrawerToggle = () => {
     try {
@@ -99,6 +116,77 @@ const GiftCardsScreen = () => {
     { useNativeDriver: false }
   );
 
+  const selectedCard = realCards[activeThumbIndex ?? 0];
+
+  const handleButton = () => {
+    // Required field check
+    if (
+      !recipientName ||
+      !recipientEmail ||
+      !verifyRecipientEmail ||
+      !recipientPhone ||
+      !senderName ||
+      !senderEmail ||
+      !senderPhone
+    ) {
+      alert("⚠️ Please fill all required fields");
+      return;
+    }
+
+    // Email validation
+    if (!isValidEmail(recipientEmail)) {
+      alert("⚠️ Recipient email is not valid");
+      return;
+    }
+    if (recipientEmail !== verifyRecipientEmail) {
+      alert("⚠️ Recipient emails do not match");
+      return;
+    }
+    if (!isValidEmail(senderEmail)) {
+      alert("⚠️ Sender email is not valid");
+      return;
+    }
+
+    // Phone validation
+    const phoneRegex = /^[0-9]{8,15}$/;
+    if (!phoneRegex.test(recipientPhone)) {
+      alert("⚠️ Recipient phone is invalid");
+      return;
+    }
+    if (!phoneRegex.test(senderPhone)) {
+      alert("⚠️ Sender phone is invalid");
+      return;
+    }
+
+    // Gift amount check
+    if (!selectedAmount) {
+      alert("⚠️ Please select a gift amount");
+      return;
+    }
+
+    // ✅ Fix: selectedCard defined
+    const selectedCard = realCards[activeThumbIndex ?? 0];
+
+    const formData = {
+      selectedAmount,
+      activeCardIndex: activeThumbIndex,
+      selectedCardKey: selectedCard?.key,
+      selectedCardComponent: selectedCard?.comp,
+      isBuyingForMyself,
+      recipientName,
+      recipientEmail,
+      verifyRecipientEmail,
+      recipientPhone,
+      personalNote,
+      senderName,
+      senderEmail,
+      senderPhone,
+    };
+
+    console.log("Checkout Data:", formData);
+    navigation.navigate("Payment", formData);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -116,6 +204,7 @@ const GiftCardsScreen = () => {
           <View style={styles.titleContainer}>
             <Text style={styles.headerTitle}>Sufra Gift Cards</Text>
           </View>
+          <View style={styles.spacer} />
         </View>
 
         <ScrollView
@@ -268,7 +357,6 @@ const GiftCardsScreen = () => {
               />
             </View>
 
-            {/* Personal Note */}
             <Text style={styles.sectionTitle}>Personal Note</Text>
             <TextInput
               style={styles.personalNoteInput}
@@ -279,7 +367,6 @@ const GiftCardsScreen = () => {
               multiline
             />
 
-            {/* Sender Info */}
             <Text style={styles.sectionTitle}>From</Text>
             <View style={styles.inputContainer}>
               <FloatingLabelInput
@@ -299,35 +386,13 @@ const GiftCardsScreen = () => {
               />
             </View>
 
-            {/* Checkout Button */}
             <TouchableOpacity
-              style={styles.checkoutButton}
-              onPress={() => {
-                // Get the selected card component
-                const selectedCard =
-                  activeThumbIndex !== null
-                    ? realCards[activeThumbIndex]
-                    : null;
-
-                const formData = {
-                  selectedAmount,
-                  activeCardIndex: activeThumbIndex,
-                  selectedCardKey: selectedCard?.key,
-                  selectedCardComponent: selectedCard?.comp, // Pass the component
-                  isBuyingForMyself,
-                  recipientName,
-                  recipientEmail,
-                  verifyRecipientEmail,
-                  recipientPhone,
-                  personalNote,
-                  senderName,
-                  senderEmail,
-                  senderPhone,
-                };
-
-                console.log("Checkout Data:", formData);
-                navigation.navigate("Payment", formData);
-              }}
+              style={[
+                styles.checkoutButton,
+                !isFormValid && { backgroundColor: "#ccc" },
+              ]}
+              onPress={handleButton}
+              disabled={!isFormValid}
             >
               <Text style={styles.checkoutButtonText}>Checkout</Text>
             </TouchableOpacity>
@@ -356,6 +421,9 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+  spacer: {
+    width: scale(36),
+  },
   drawerButton: { padding: scale(4), marginRight: scale(8) },
   titleContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
   headerTitle: {
@@ -364,6 +432,7 @@ const styles = StyleSheet.create({
     fontSize: scale(18),
     color: "#4A4A4A",
     textAlign: "center",
+    alignSelf: "center",
   },
   mainScrollView: { flex: 1 },
   cardContainer: {

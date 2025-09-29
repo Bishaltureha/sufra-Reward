@@ -61,6 +61,7 @@ const FloatingLabelInput = ({
         onChangeText={onChangeText}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        autoCapitalize="none"
         {...props}
       />
 

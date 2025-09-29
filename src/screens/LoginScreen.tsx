@@ -42,18 +42,14 @@ const LoginScreen = ({ navigation }: Props) => {
     setPhoneNumber(phone);
     setSelectedCountry(country);
 
-    // Validate phone number
     const cleanNumber = phone.replace(/\D/g, "");
     const isValid = cleanNumber.length >= (country.phoneLength || 7);
     setIsValidPhone(isValid);
-
-    // console.log("Phone:", phone, "Country:", country);
   };
 
   const handleCountryChange = (country: Country) => {
     setSelectedCountry(country);
 
-    // Re-validate phone number with new country
     if (phoneNumber) {
       const cleanNumber = phoneNumber.replace(/\D/g, "");
       const isValid = cleanNumber.length >= (country.phoneLength || 7);

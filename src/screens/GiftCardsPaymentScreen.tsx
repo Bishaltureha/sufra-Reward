@@ -90,6 +90,14 @@ const GiftCardsPaymentScreen = ({ route }) => {
     }
   };
 
+  // At the bottom, before the return
+  const isFormValid =
+    (cardHolderName.trim() !== "" &&
+      cardNumber.replace(/\s/g, "").length >= 12 &&
+      expiryDate !== "" &&
+      cvv.length === 3) ||
+    (cvv.length === 4 && !cardNumberError && !expiryError && !cvvError);
+
   const SelectedCardComponent = selectedCardComponent;
 
   return (
@@ -105,6 +113,7 @@ const GiftCardsPaymentScreen = ({ route }) => {
         <View style={styles.titleContainer}>
           <Text style={styles.headerTitle}>Sufra Gift Cards</Text>
         </View>
+        <View style={styles.spacer} />
       </View>
 
       {/* Main Content */}
@@ -140,16 +149,20 @@ const GiftCardsPaymentScreen = ({ route }) => {
               value={cardNumber}
               onChangeText={(text) => {
                 const digitsOnly = text.replace(/\D/g, "");
-                const formatted = digitsOnly.replace(/(.{4})/g, "$1 ").trim();
+                const limitedDigits = digitsOnly.slice(0, 16);
+                const formatted = limitedDigits
+                  .replace(/(.{4})/g, "$1 ")
+                  .trim();
                 setCardNumber(formatted);
-                if (digitsOnly.length >= 12) {
+
+                if (limitedDigits.length >= 12) {
                   setCardNumberError(
-                    luhnCheck(digitsOnly) ? "" : "Card number is incorrect"
+                    luhnCheck(limitedDigits) ? "" : "Card number is incorrect"
                   );
                 } else setCardNumberError("Card number is incorrect");
               }}
               onBlur={() => {
-                const digitsOnly = cardNumber.replace(/\D/g, "");
+                const digitsOnly = cardNumber.replace(/\D/g, "").slice(0, 19);
                 setCardNumberError(
                   luhnCheck(digitsOnly) ? "" : "Card number is incorrect"
                 );
@@ -157,6 +170,7 @@ const GiftCardsPaymentScreen = ({ route }) => {
               borderColor={cardNumberError ? "#FF617E" : "#E6E6E6"}
               labelColor={cardNumberError ? "#FF617E" : "#717171"}
               errorText={cardNumberError}
+              keyboardType="numeric"
             />
 
             <View style={styles.rowInputs}>
@@ -175,6 +189,7 @@ const GiftCardsPaymentScreen = ({ route }) => {
                       validateExpiry(formatted) ? "" : "Invalid expiry date"
                     );
                   }}
+                  autoCapitalize="none"
                   onBlur={() =>
                     setExpiryError(
                       validateExpiry(expiryDate) ? "" : "Invalid expiry date"
@@ -191,7 +206,7 @@ const GiftCardsPaymentScreen = ({ route }) => {
                   label="CVV"
                   value={cvv}
                   onChangeText={(text) => {
-                    const digits = text.replace(/\D/g, "");
+                    const digits = text.replace(/\D/g, "").slice(0, 4);
                     setCvv(digits);
                     setCvvError(validateCvv(digits) ? "" : "Invalid CVV");
                   }}
@@ -275,7 +290,11 @@ const GiftCardsPaymentScreen = ({ route }) => {
 
         <View style={styles.bottomContainer}>
           <TouchableOpacity
-            style={styles.paymentButton}
+            style={[
+              styles.paymentButton,
+              { backgroundColor: isFormValid ? "#F6B01F" : "#E6E6E6" },
+            ]}
+            disabled={!isFormValid}
             onPress={() => {
               const PaymentData = {
                 selectedAmount,
@@ -291,8 +310,13 @@ const GiftCardsPaymentScreen = ({ route }) => {
           </TouchableOpacity>
 
           <Text style={styles.termsText}>
-            By placing this order you agree to all{" "}
-            <Text style={styles.termsLink}>Terms & conditions.</Text>
+            by placing this order you agree to all{" "}
+            <Text
+              style={styles.termsLink}
+              onPress={() => alert("Terms & conditions clicked")}
+            >
+              terms & conditions.
+            </Text>
           </Text>
         </View>
       </View>
@@ -310,7 +334,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: scale(16),
     backgroundColor: "#ffffff",
-    borderBottomWidth: 1,
+    borderBottomWidth: scale(1),
     borderBottomColor: "#E6EAF1",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -466,7 +490,7 @@ const styles = StyleSheet.create({
   termsText: {
     fontFamily: "Rubik-Regular",
     fontWeight: "400",
-    fontSize: 12,
+    fontSize: scale(12),
     lineHeight: 17,
     textAlign: "center",
     color: "#000",
@@ -474,7 +498,7 @@ const styles = StyleSheet.create({
   termsLink: {
     fontFamily: "Rubik-SemiBold",
     fontWeight: "600",
-    fontSize: 12,
+    fontSize: scale(12),
     lineHeight: 17,
     textAlign: "center",
     textDecorationLine: "underline",
@@ -482,9 +506,8 @@ const styles = StyleSheet.create({
     color: "#017851",
   },
 
-  // FloatingLabelInput ke andar TextInput ke liye
   input: {
-    height: scale(55), // consistent height
+    height: scale(55),
     borderWidth: scale(1),
     borderRadius: scale(6),
     paddingHorizontal: scale(12),
@@ -493,12 +516,14 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
 
-  // errorText ke liye
   errorText: {
     color: "#FF617E",
     fontFamily: "Rubik-SemiBold",
     fontWeight: "600",
-    fontSize: 12,
-    marginTop: scale(2), // thoda gap error ke liye
+    fontSize: scale(12),
+    marginTop: scale(2),
+  },
+  spacer: {
+    width: scale(36),
   },
 });
