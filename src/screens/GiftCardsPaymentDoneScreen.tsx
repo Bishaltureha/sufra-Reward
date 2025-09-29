@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    height: scale(56),
+    height: scale(40),
     alignItems: "center",
     paddingHorizontal: scale(16),
     backgroundColor: "#ffffff",

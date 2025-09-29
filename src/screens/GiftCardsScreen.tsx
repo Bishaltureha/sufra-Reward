@@ -189,10 +189,7 @@ const GiftCardsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
@@ -409,7 +406,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#ffffff" },
   header: {
     flexDirection: "row",
-    height: scale(56),
+    height: scale(40),
     alignItems: "center",
     paddingHorizontal: scale(16),
     backgroundColor: "#ffffff",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,7 @@ import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { scale } from "../utils/dimen";
 import { DrawerParamList } from "../types";
+import LocationModal from "./LocationModal";
 
 interface HeaderBoxProps {
   boxshadow?: ViewStyle;
@@ -21,6 +22,9 @@ interface HeaderBoxProps {
 
 const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
   const navigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
+
+  // 🔹 Modal state
+  const [locationModalVisible, setLocationModalVisible] = useState(false);
 
   const handleDrawerToggle = () => {
     try {
@@ -41,9 +45,15 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
         <TouchableOpacity onPress={handleDrawerToggle}>
           <Drawerlogo />
         </TouchableOpacity>
+
         <View style={styles.textContainer}>
           <Text style={styles.deliveryText}>Door Delivery</Text>
-          <TouchableOpacity style={styles.locationButton}>
+
+          {/* 🔹 Click to open LocationModal */}
+          <TouchableOpacity
+            style={styles.locationButton}
+            onPress={() => setLocationModalVisible(true)}
+          >
             <Text style={styles.locationText}>Enable Location</Text>
             <MaterialIcons
               name="keyboard-arrow-down"
@@ -54,7 +64,6 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
         </View>
       </View>
 
-      {/* Right section - Buttons with notification dot */}
       <View style={styles.rightSection}>
         <TouchableOpacity style={styles.circularButton}>
           <SearchIcon />
@@ -63,10 +72,7 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
         <View style={styles.buttonWithBadge}>
           <TouchableOpacity
             style={styles.circularButton}
-            onPress={() => {
-              console.log("Button pressed");
-              navigation.navigate("Notification");
-            }}
+            onPress={() => navigation.navigate("Notification")}
           >
             <BellIcon />
           </TouchableOpacity>
@@ -74,6 +80,20 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
           <View style={styles.notificationDot} />
         </View>
       </View>
+
+      {/* 🔹 Location Modal */}
+      <LocationModal
+        visible={locationModalVisible}
+        onClose={() => setLocationModalVisible(false)}
+        onEnableLocation={(locationData) => {
+          console.log("Location Data:", locationData);
+          setLocationModalVisible(false);
+        }}
+        onManualAddress={() => {
+          console.log("Manual Address pressed");
+          setLocationModalVisible(false);
+        }}
+      />
     </View>
   );
 };

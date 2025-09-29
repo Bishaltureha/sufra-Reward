@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from "react";
 import * as Location from "expo-location";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Modal,
-  Alert,
-  Linking,
-} from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { scale } from "../utils/dimen";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import FreeDelivery from "../../assets/svg/FreeDelivery";
 import Star from "../../assets/svg/Star";
 import Error from "../../assets/svg/Error";
-import BigLocationLogo from "../../assets/svg/BigLocationLogo";
+import LocationModal from "./LocationModal";
 
 const DeliveryCard = ({ item, onCardPress, onFavoritePress }) => {
   const [isFavorite, setIsFavorite] = useState(item.isFavorite || false);
@@ -95,72 +86,12 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress }) => {
   );
 };
 
-// Location Modal
-const LocationModal = ({
-  visible,
-  onClose,
-  onEnableLocation,
-  onManualAddress,
-}) => {
-  return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContainer}>
-          {/* Close Button */}
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={onClose}
-            activeOpacity={0.7}
-          >
-            <Icon name="close" size={scale(18)} color="#FFFFFF" />
-          </TouchableOpacity>
-
-          {/* Modal Content */}
-          <View style={styles.modalContentCenter}>
-            <BigLocationLogo height={scale(106)} width={scale(106)} />
-            <Text style={styles.modalMainTitle}>
-              Missing Location Information!
-            </Text>
-            <Text style={styles.modalSubDescription}>
-              Enable location access or manually add{"\n"}your address to
-              proceed.
-            </Text>
-
-            <TouchableOpacity
-              style={styles.enableLocationButton}
-              onPress={onEnableLocation}
-            >
-              <Text style={styles.enableLocationButtonText}>
-                Enable Location
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.manualAddressButton}
-              onPress={onManualAddress}
-            >
-              <Text style={styles.manualAddressButtonText}>
-                Add Address Manually
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-};
-
 const DeliveringToYouSection = ({
   title = "Delivering to you",
   data = [],
   onCardPress,
   onFavoritePress,
-  onManualAddressPress, // Optional callback for manual address
+  onManualAddressPress,
 }) => {
   const [locationModalVisible, setLocationModalVisible] = useState(false);
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
@@ -188,68 +119,23 @@ const DeliveringToYouSection = ({
     setLocationModalVisible(true);
   };
 
-  const handleCloseModal = () => {
-    setLocationModalVisible(false);
-  };
-
-  const handleEnableLocation = async () => {
+  const handleEnableLocation = async (locationData) => {
     try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      const servicesEnabled = await Location.hasServicesEnabledAsync();
+      setIsLocationEnabled(servicesEnabled);
+      setLocationModalVisible(false);
 
-      if (status === "granted") {
-        const servicesEnabled = await Location.hasServicesEnabledAsync();
-        setIsLocationEnabled(servicesEnabled);
-        setLocationModalVisible(false);
-
-        if (!servicesEnabled) {
-          Alert.alert(
-            "Location Services Disabled",
-            "Please enable location services in your device settings.",
-            [
-              { text: "Cancel", style: "cancel" },
-              {
-                text: "Open Settings",
-                onPress: () => Linking.openSettings(),
-              },
-            ]
-          );
-        }
-      } else if (status === "denied") {
-        Alert.alert(
-          "Permission Denied",
-          "Location permission is required to show nearby services. You can enable it in Settings.",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Open Settings",
-              onPress: () => Linking.openSettings(),
-            },
-          ]
-        );
-        setIsLocationEnabled(false);
-      }
+      console.log("Location Data:", locationData);
+      // Yahan tumhara location data handle karo
     } catch (error) {
-      console.error("Error requesting location permission:", error);
-      Alert.alert(
-        "Error",
-        "Failed to request location permission. Please try again."
-      );
-      setIsLocationEnabled(false);
+      console.error("Error handling location:", error);
     }
   };
 
   const handleManualAddress = () => {
     setLocationModalVisible(false);
-    // Call the parent component's handler if provided
     if (onManualAddressPress) {
       onManualAddressPress();
-    } else {
-      // Default behavior: show an alert or navigate to address input screen
-      Alert.alert(
-        "Manual Address",
-        "This feature will allow you to enter your address manually.",
-        [{ text: "OK" }]
-      );
     }
   };
 
@@ -278,12 +164,17 @@ const DeliveringToYouSection = ({
         />
       ))}
 
-      {/* Location Modal */}
       <LocationModal
         visible={locationModalVisible}
-        onClose={handleCloseModal}
-        onEnableLocation={handleEnableLocation}
-        onManualAddress={handleManualAddress}
+        onClose={() => setLocationModalVisible(false)}
+        onEnableLocation={(locationData) => {
+          console.log("Location Data:", locationData);
+          setLocationModalVisible(false);
+        }}
+        onManualAddress={() => {
+          console.log("Manual Address pressed");
+          setLocationModalVisible(false);
+        }}
       />
     </View>
   );
@@ -481,95 +372,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: scale(2),
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "flex-end",
-  },
-  modalContainer: {
-    width: "100%",
-    height: scale(462),
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: scale(30),
-    borderTopRightRadius: scale(30),
-    position: "absolute",
-    bottom: 0,
-  },
-  closeButton: {
-    position: "absolute",
-    top: scale(20),
-    right: scale(20),
-    width: scale(30),
-    height: scale(30),
-    borderRadius: scale(15),
-    backgroundColor: "#A5ACBD",
-    opacity: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-    zIndex: 1,
-  },
-  modalContentCenter: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: scale(50),
-    paddingHorizontal: scale(16),
-    gap: scale(10),
-  },
-  modalMainTitle: {
-    fontFamily: "Rubik-Bold",
-    fontWeight: "700",
-    fontSize: scale(22),
-    color: "#4A4A4A",
-    textAlign: "center",
-  },
-  modalSubDescription: {
-    textAlign: "center",
-    fontFamily: "Rubik-Regular",
-    fontWeight: "400",
-    fontSize: scale(15),
-    color: "#6D6D6D",
-    lineHeight: scale(22),
-  },
-  enableLocationButton: {
-    width: "100%",
-    height: scale(52),
-    borderRadius: scale(5),
-    backgroundColor: "#017851",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: scale(16),
-  },
-  enableLocationButtonText: {
-    fontFamily: "Rubik-Medium",
-    fontWeight: "500",
-    fontSize: scale(18),
-    color: "#FFFFFF",
-    textAlign: "center",
-  },
-  manualAddressButton: {
-    width: "100%",
-    height: scale(52),
-    borderRadius: scale(5),
-    backgroundColor: "#F6B01F",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: scale(8),
-  },
-  manualAddressButtonText: {
-    fontFamily: "Rubik-Medium",
-    fontWeight: "500",
-    fontSize: scale(18),
-    color: "#000000",
-    textAlign: "center",
   },
 });
 
