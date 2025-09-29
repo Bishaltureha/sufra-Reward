@@ -187,6 +187,7 @@ const DeliveryContent = () => {
         data={deliveringData}
         onCardPress={handleDeliveringCardPress}
         onFavoritePress={handleDeliveringFavoritePress}
+        onManualAddressPress={undefined}
       />
 
       <EarnMorePointsSection containerStyle={undefined} />

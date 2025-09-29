@@ -61,7 +61,13 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
         </TouchableOpacity>
 
         <View style={styles.buttonWithBadge}>
-          <TouchableOpacity style={styles.circularButton}>
+          <TouchableOpacity
+            style={styles.circularButton}
+            onPress={() => {
+              console.log("Button pressed");
+              navigation.navigate("Notification");
+            }}
+          >
             <BellIcon />
           </TouchableOpacity>
           {/* Notification dot */}

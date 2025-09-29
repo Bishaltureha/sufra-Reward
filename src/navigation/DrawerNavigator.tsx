@@ -12,6 +12,7 @@ import MyPaymentMethodsScreen from "../screens/MyPaymentMethodsScreen";
 import GetHelpScreen from "../screens/GetHelpScreen";
 import FAQScreen from "../screens/FAQScreen";
 import GiftCardStack from "./GiftCardStack";
+import NotificationScreen from "../screens/NotificationScreen";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -48,6 +49,7 @@ export default function DrawerNavigator() {
       />
       <Drawer.Screen name="GetHelp" component={GetHelpScreen} />
       <Drawer.Screen name="FAQ" component={FAQScreen} />
+      <Drawer.Screen name="Notification" component={NotificationScreen} />
     </Drawer.Navigator>
   );
 }

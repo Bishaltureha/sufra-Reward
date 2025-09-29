@@ -178,7 +178,13 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
       <View style={styles.header}>
         <Image source={require("../../assets/image/logo.png")} />
         <View style={styles.buttonWithBadge}>
-          <TouchableOpacity style={styles.circularButton}>
+          <TouchableOpacity
+            style={styles.circularButton}
+            onPress={() => {
+              console.log("Button pressed");
+              navigation.navigate("Notification");
+            }}
+          >
             <BellIcon />
           </TouchableOpacity>
           {/* Notification dot */}

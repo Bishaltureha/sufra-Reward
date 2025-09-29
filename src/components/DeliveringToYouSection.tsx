@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-
 import * as Location from "expo-location";
-
 import {
   StyleSheet,
   View,
@@ -9,6 +7,8 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  Alert,
+  Linking,
 } from "react-native";
 import { scale } from "../utils/dimen";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -96,7 +96,12 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress }) => {
 };
 
 // Location Modal
-const LocationModal = ({ visible, onClose, onEnableLocation }) => {
+const LocationModal = ({
+  visible,
+  onClose,
+  onEnableLocation,
+  onManualAddress,
+}) => {
   return (
     <Modal
       animationType="slide"
@@ -135,7 +140,10 @@ const LocationModal = ({ visible, onClose, onEnableLocation }) => {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.manualAddressButton}>
+            <TouchableOpacity
+              style={styles.manualAddressButton}
+              onPress={onManualAddress}
+            >
               <Text style={styles.manualAddressButtonText}>
                 Add Address Manually
               </Text>
@@ -152,12 +160,17 @@ const DeliveringToYouSection = ({
   data = [],
   onCardPress,
   onFavoritePress,
+  onManualAddressPress, // Optional callback for manual address
 }) => {
   const [locationModalVisible, setLocationModalVisible] = useState(false);
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
 
   useEffect(() => {
-    const checkLocation = async () => {
+    checkLocation();
+  }, []);
+
+  const checkLocation = async () => {
+    try {
       const { status } = await Location.getForegroundPermissionsAsync();
       if (status !== "granted") {
         setIsLocationEnabled(false);
@@ -165,10 +178,11 @@ const DeliveringToYouSection = ({
       }
       const servicesEnabled = await Location.hasServicesEnabledAsync();
       setIsLocationEnabled(servicesEnabled);
-    };
-
-    checkLocation();
-  }, []);
+    } catch (error) {
+      console.error("Error checking location:", error);
+      setIsLocationEnabled(false);
+    }
+  };
 
   const handleEnableLocationPress = () => {
     setLocationModalVisible(true);
@@ -179,13 +193,63 @@ const DeliveringToYouSection = ({
   };
 
   const handleEnableLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status === "granted") {
-      const servicesEnabled = await Location.hasServicesEnabledAsync();
-      setIsLocationEnabled(servicesEnabled);
-      setLocationModalVisible(false);
-    } else {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status === "granted") {
+        const servicesEnabled = await Location.hasServicesEnabledAsync();
+        setIsLocationEnabled(servicesEnabled);
+        setLocationModalVisible(false);
+
+        if (!servicesEnabled) {
+          Alert.alert(
+            "Location Services Disabled",
+            "Please enable location services in your device settings.",
+            [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Open Settings",
+                onPress: () => Linking.openSettings(),
+              },
+            ]
+          );
+        }
+      } else if (status === "denied") {
+        Alert.alert(
+          "Permission Denied",
+          "Location permission is required to show nearby services. You can enable it in Settings.",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Open Settings",
+              onPress: () => Linking.openSettings(),
+            },
+          ]
+        );
+        setIsLocationEnabled(false);
+      }
+    } catch (error) {
+      console.error("Error requesting location permission:", error);
+      Alert.alert(
+        "Error",
+        "Failed to request location permission. Please try again."
+      );
       setIsLocationEnabled(false);
+    }
+  };
+
+  const handleManualAddress = () => {
+    setLocationModalVisible(false);
+    // Call the parent component's handler if provided
+    if (onManualAddressPress) {
+      onManualAddressPress();
+    } else {
+      // Default behavior: show an alert or navigate to address input screen
+      Alert.alert(
+        "Manual Address",
+        "This feature will allow you to enter your address manually.",
+        [{ text: "OK" }]
+      );
     }
   };
 
@@ -219,6 +283,7 @@ const DeliveringToYouSection = ({
         visible={locationModalVisible}
         onClose={handleCloseModal}
         onEnableLocation={handleEnableLocation}
+        onManualAddress={handleManualAddress}
       />
     </View>
   );
@@ -243,7 +308,7 @@ const styles = StyleSheet.create({
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: scale(2),
     },
     shadowOpacity: 0.07,
     shadowRadius: 3,
@@ -281,14 +346,13 @@ const styles = StyleSheet.create({
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: scale(2),
     },
     shadowOpacity: 0.15,
     shadowRadius: 3,
     elevation: 3,
     gap: scale(5),
   },
-  // Regular delivery time styles
   regularTimeRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -306,7 +370,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     marginLeft: scale(5),
   },
-  // Opening time special styles
   opensTimeRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -315,19 +378,19 @@ const styles = StyleSheet.create({
     fontFamily: "Rubik-SemiBold",
     fontWeight: "600",
     fontSize: scale(14),
-    color: "#F6B01F", // Orange color for "Opens"
+    color: "#F6B01F",
   },
   atText: {
     fontFamily: "Rubik-Regular",
     fontWeight: "400",
     fontSize: scale(14),
-    color: "#4A4A4A", // Gray for "at"
+    color: "#4A4A4A",
   },
   timeValueText: {
     fontFamily: "Rubik-SemiBold",
     fontWeight: "600",
     fontSize: scale(14),
-    color: "#4A4A4A", // Gray SemiBold for "9 am"
+    color: "#4A4A4A",
   },
   cardContent: {
     paddingHorizontal: scale(16),
@@ -419,7 +482,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: scale(2),
   },
-  // Modal Styles
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -434,7 +496,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
   },
-  // Close Button Style
   closeButton: {
     position: "absolute",
     top: scale(20),
@@ -456,7 +517,6 @@ const styles = StyleSheet.create({
     elevation: 2,
     zIndex: 1,
   },
-  // Modal Content Styles
   modalContentCenter: {
     justifyContent: "center",
     alignItems: "center",

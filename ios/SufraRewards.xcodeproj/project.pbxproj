@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01D07234312D02CD0A49F0D0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D61D9896062ECD3093FEFA56 /* PrivacyInfo.xcprivacy */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		7FB0A1301501D5E3CEBEB06A /* libPods-SufraRewards.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E35C19A5FD61EF67BE0FB76 /* libPods-SufraRewards.a */; };
-		A71C6230A17499D6688415D8 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47728A1DF1096E40BAA4393 /* ExpoModulesProvider.swift */; };
+		5CF52D85EFDF81C517FEC779 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697A07B3631801F949B5063 /* ExpoModulesProvider.swift */; };
+		9FF621D826EB827EED6CC949 /* libPods-SufraRewards.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FE144C9308B6B5E0CA8652F /* libPods-SufraRewards.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		BC601483B6C97E9B4C0C3240 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 36F4A963E121299FA1DD6AE0 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,13 +20,13 @@
 		13B07F961A680F5B00A75B9A /* SufraRewards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SufraRewards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = SufraRewards/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = SufraRewards/Info.plist; sourceTree = "<group>"; };
-		1D86875B5E3C5F3182C0F05D /* Pods-SufraRewards.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SufraRewards.debug.xcconfig"; path = "Target Support Files/Pods-SufraRewards/Pods-SufraRewards.debug.xcconfig"; sourceTree = "<group>"; };
-		36F4A963E121299FA1DD6AE0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = SufraRewards/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		3E35C19A5FD61EF67BE0FB76 /* libPods-SufraRewards.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SufraRewards.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		46C1C25D30E3A91C6166420A /* Pods-SufraRewards.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SufraRewards.release.xcconfig"; path = "Target Support Files/Pods-SufraRewards/Pods-SufraRewards.release.xcconfig"; sourceTree = "<group>"; };
+		1697A07B3631801F949B5063 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-SufraRewards/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		1FE144C9308B6B5E0CA8652F /* libPods-SufraRewards.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SufraRewards.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EC2518065FDF9A18D229246 /* Pods-SufraRewards.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SufraRewards.release.xcconfig"; path = "Target Support Files/Pods-SufraRewards/Pods-SufraRewards.release.xcconfig"; sourceTree = "<group>"; };
+		9E6E70DC89CACAE49DD5CC98 /* Pods-SufraRewards.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SufraRewards.debug.xcconfig"; path = "Target Support Files/Pods-SufraRewards/Pods-SufraRewards.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = SufraRewards/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		D47728A1DF1096E40BAA4393 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-SufraRewards/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		D61D9896062ECD3093FEFA56 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = SufraRewards/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = SufraRewards/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* SufraRewards-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SufraRewards-Bridging-Header.h"; path = "SufraRewards/SufraRewards-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,13 +37,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FB0A1301501D5E3CEBEB06A /* libPods-SufraRewards.a in Frameworks */,
+				9FF621D826EB827EED6CC949 /* libPods-SufraRewards.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11ECAAEC0087D3DB56097954 /* SufraRewards */ = {
+			isa = PBXGroup;
+			children = (
+				1697A07B3631801F949B5063 /* ExpoModulesProvider.swift */,
+			);
+			name = SufraRewards;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* SufraRewards */ = {
 			isa = PBXGroup;
 			children = (
@@ -53,7 +61,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				36F4A963E121299FA1DD6AE0 /* PrivacyInfo.xcprivacy */,
+				D61D9896062ECD3093FEFA56 /* PrivacyInfo.xcprivacy */,
 			);
 			name = SufraRewards;
 			sourceTree = "<group>";
@@ -62,19 +70,27 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				3E35C19A5FD61EF67BE0FB76 /* libPods-SufraRewards.a */,
+				1FE144C9308B6B5E0CA8652F /* libPods-SufraRewards.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		34C41F8A34EC606262F2E3A4 /* Pods */ = {
+		60BA9372BAF95773B6888C03 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				1D86875B5E3C5F3182C0F05D /* Pods-SufraRewards.debug.xcconfig */,
-				46C1C25D30E3A91C6166420A /* Pods-SufraRewards.release.xcconfig */,
+				9E6E70DC89CACAE49DD5CC98 /* Pods-SufraRewards.debug.xcconfig */,
+				2EC2518065FDF9A18D229246 /* Pods-SufraRewards.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		694B876A3BC395939A7FCDCB /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				11ECAAEC0087D3DB56097954 /* SufraRewards */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -91,8 +107,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				34C41F8A34EC606262F2E3A4 /* Pods */,
-				95B70D151543C21F2BAE7323 /* ExpoModulesProviders */,
+				60BA9372BAF95773B6888C03 /* Pods */,
+				694B876A3BC395939A7FCDCB /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -107,14 +123,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		95B70D151543C21F2BAE7323 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				BCD57AF6146890219F372DA3 /* SufraRewards */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -122,14 +130,6 @@
 			);
 			name = Supporting;
 			path = SufraRewards/Supporting;
-			sourceTree = "<group>";
-		};
-		BCD57AF6146890219F372DA3 /* SufraRewards */ = {
-			isa = PBXGroup;
-			children = (
-				D47728A1DF1096E40BAA4393 /* ExpoModulesProvider.swift */,
-			);
-			name = SufraRewards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "SufraRewards" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				3BB42BE908DD04D3A69579FD /* [Expo] Configure project */,
+				2BA158DD92503C38B1EFF0C7 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				FC793B2A14F5847AE6BB9B9C /* [CP] Embed Pods Frameworks */,
+				7B3ADAD2D37A968BDD306C64 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				BC601483B6C97E9B4C0C3240 /* PrivacyInfo.xcprivacy in Resources */,
+				01D07234312D02CD0A49F0D0 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,7 +242,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3BB42BE908DD04D3A69579FD /* [Expo] Configure project */ = {
+		2BA158DD92503C38B1EFF0C7 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -265,6 +265,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-SufraRewards/expo-configure-project.sh\"\n";
+		};
+		7B3ADAD2D37A968BDD306C64 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SufraRewards/Pods-SufraRewards-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SufraRewards/Pods-SufraRewards-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -334,28 +356,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SufraRewards/Pods-SufraRewards-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FC793B2A14F5847AE6BB9B9C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SufraRewards/Pods-SufraRewards-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/React-Core-prebuilt/React.framework/React",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ReactNativeDependencies/ReactNativeDependencies.framework/ReactNativeDependencies",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactNativeDependencies.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SufraRewards/Pods-SufraRewards-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -364,7 +364,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				A71C6230A17499D6688415D8 /* ExpoModulesProvider.swift in Sources */,
+				5CF52D85EFDF81C517FEC779 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,7 +373,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1D86875B5E3C5F3182C0F05D /* Pods-SufraRewards.debug.xcconfig */;
+			baseConfigurationReference = 9E6E70DC89CACAE49DD5CC98 /* Pods-SufraRewards.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -409,7 +409,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 46C1C25D30E3A91C6166420A /* Pods-SufraRewards.release.xcconfig */;
+			baseConfigurationReference = 2EC2518065FDF9A18D229246 /* Pods-SufraRewards.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

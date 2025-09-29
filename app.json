@@ -23,6 +23,7 @@
         "ExpoLocalization_supportsRTL": true,
         "CFBundleLocalizations": ["en", "ar"],
         "NSLocationWhenInUseUsageDescription": "We need your location to show nearby services and deliver to you faster.", 
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "We need your location to provide better service, even when the app is in the background.",
         "NSLocationAlwaysUsageDescription": "We need your location to provide better service, even when the app is in the background."
   },
       "bundleIdentifier": "com.sufrarewards"
