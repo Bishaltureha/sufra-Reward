@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    height: scale(40),
+    height: scale(50),
     alignItems: "center",
     paddingHorizontal: scale(16),
     backgroundColor: "#ffffff",
@@ -215,7 +215,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
   },
   drawerButton: { padding: scale(4), marginRight: scale(8) },
   titleContainer: { flex: 1, alignItems: "center", justifyContent: "center" },

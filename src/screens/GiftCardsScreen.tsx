@@ -2,13 +2,11 @@ import {
   Animated,
   Dimensions,
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import React, { useRef, useState } from "react";
@@ -30,6 +28,7 @@ import GiftCard5 from "../../assets/svg/giftCards/GiftCard5";
 import CustomCheckbox from "../components/CustomCheckbox";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
@@ -129,42 +128,41 @@ const GiftCardsScreen = () => {
       !senderEmail ||
       !senderPhone
     ) {
-      alert("⚠️ Please fill all required fields");
+      alert("Please fill all required fields");
       return;
     }
 
     // Email validation
     if (!isValidEmail(recipientEmail)) {
-      alert("⚠️ Recipient email is not valid");
+      alert("Recipient email is not valid");
       return;
     }
     if (recipientEmail !== verifyRecipientEmail) {
-      alert("⚠️ Recipient emails do not match");
+      alert("Recipient emails do not match");
       return;
     }
     if (!isValidEmail(senderEmail)) {
-      alert("⚠️ Sender email is not valid");
+      alert("Sender email is not valid");
       return;
     }
 
     // Phone validation
     const phoneRegex = /^[0-9]{8,15}$/;
     if (!phoneRegex.test(recipientPhone)) {
-      alert("⚠️ Recipient phone is invalid");
+      alert("Recipient phone is invalid");
       return;
     }
     if (!phoneRegex.test(senderPhone)) {
-      alert("⚠️ Sender phone is invalid");
+      alert("Sender phone is invalid");
       return;
     }
 
     // Gift amount check
     if (!selectedAmount) {
-      alert("⚠️ Please select a gift amount");
+      alert("Please select a gift amount");
       return;
     }
 
-    // ✅ Fix: selectedCard defined
     const selectedCard = realCards[activeThumbIndex ?? 0];
 
     const formData = {
@@ -189,83 +187,82 @@ const GiftCardsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={"padding"}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.drawerButton}
-            onPress={handleDrawerToggle}
-          >
-            <Drawerlogo />
-          </TouchableOpacity>
-          <View style={styles.titleContainer}>
-            <Text style={styles.headerTitle}>Sufra Gift Cards</Text>
-          </View>
-          <View style={styles.spacer} />
-        </View>
-
-        <ScrollView
-          style={styles.mainScrollView}
-          showsVerticalScrollIndicator={false}
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.drawerButton}
+          onPress={handleDrawerToggle}
         >
-          {/* Carousel */}
-          <Animated.FlatList
-            ref={flatListRef}
-            data={giftCards}
-            keyExtractor={(item) => item.key}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={ITEM_WIDTH}
-            decelerationRate="fast"
-            bounces={false}
-            style={{ flexGrow: 0 }}
-            contentContainerStyle={{ marginTop: scale(10) }}
-            onScroll={onScroll}
-            scrollEventThrottle={16}
-            renderItem={({ item, index }) => {
-              if (!item.comp)
-                return <View style={{ width: SPACER_ITEM_SIZE }} />;
-              const inputRange = [
-                (index - 2) * ITEM_WIDTH,
-                (index - 1) * ITEM_WIDTH,
-                index * ITEM_WIDTH,
-              ];
-              const scaleAnim = scrollX.interpolate({
-                inputRange,
-                outputRange: [0.8, 1, 0.8],
-                extrapolate: "clamp",
-              });
-              const opacityAnim = scrollX.interpolate({
-                inputRange,
-                outputRange: [0.6, 1, 0.6],
-                extrapolate: "clamp",
-              });
-              const CardComponent = item.comp;
-              return (
-                <View style={{ width: ITEM_WIDTH }}>
-                  <Animated.View
-                    style={[
-                      styles.cardContainer,
-                      {
-                        transform: [{ scale: scaleAnim }],
-                        opacity: opacityAnim,
-                      },
-                    ]}
-                  >
-                    <CardComponent width={scale(300)} height={scale(169)} />
-                  </Animated.View>
-                </View>
-              );
-            }}
-          />
+          <Drawerlogo />
+        </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <Text style={styles.headerTitle}>Sufra Gift Cards</Text>
+        </View>
+        <View style={styles.spacer} />
+      </View>
 
-          {/* Thumbnails */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.thumbnailScroll}
-            contentContainerStyle={styles.thumbnailContainer}
-          >
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContent}
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        extraScrollHeight={scale(20)}
+        keyboardOpeningTime={0}
+      >
+        {/* Carousel */}
+        <Animated.FlatList
+          ref={flatListRef}
+          data={giftCards}
+          keyExtractor={(item) => item.key}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={ITEM_WIDTH}
+          decelerationRate="fast"
+          bounces={false}
+          style={{ flexGrow: 0 }}
+          contentContainerStyle={{ marginTop: scale(10) }}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          renderItem={({ item, index }) => {
+            if (!item.comp) return <View style={{ width: SPACER_ITEM_SIZE }} />;
+            const inputRange = [
+              (index - 2) * ITEM_WIDTH,
+              (index - 1) * ITEM_WIDTH,
+              index * ITEM_WIDTH,
+            ];
+            const scaleAnim = scrollX.interpolate({
+              inputRange,
+              outputRange: [0.8, 1, 0.8],
+              extrapolate: "clamp",
+            });
+            const opacityAnim = scrollX.interpolate({
+              inputRange,
+              outputRange: [0.6, 1, 0.6],
+              extrapolate: "clamp",
+            });
+            const CardComponent = item.comp;
+            return (
+              <View style={{ width: ITEM_WIDTH }}>
+                <Animated.View
+                  style={[
+                    styles.cardContainer,
+                    {
+                      transform: [{ scale: scaleAnim }],
+                      opacity: opacityAnim,
+                    },
+                  ]}
+                >
+                  <CardComponent width={scale(300)} height={scale(169)} />
+                </Animated.View>
+              </View>
+            );
+          }}
+        />
+
+        {/* Thumbnails */}
+        <View style={styles.thumbnailScroll}>
+          <View style={styles.thumbnailContainer}>
             {realCards.map((card, index) => {
               const CardComponent = card.comp;
               const isSelected = activeThumbIndex === index;
@@ -282,120 +279,119 @@ const GiftCardsScreen = () => {
                 </TouchableOpacity>
               );
             })}
-          </ScrollView>
-
-          {/* Gift Amount */}
-          <View style={styles.formContainer}>
-            <Text style={styles.sectionTitle}>Gift Amount (SR)</Text>
-            <View style={styles.boxcontainer}>
-              {amounts.map((amount, index) => {
-                const isSelected = selectedAmount === amount;
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={[styles.box, isSelected && styles.boxSelected]}
-                    onPress={() => setSelectedAmount(amount)}
-                  >
-                    <Text
-                      style={[
-                        styles.amountText,
-                        isSelected && styles.amountTextSelected,
-                      ]}
-                    >
-                      {amount}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-
-            {/* Info Box */}
-            <View style={styles.infoContainer}>
-              <Text style={styles.infoText}>
-                Looking to buy gift cards in bulk or in larger{"\n"}amounts?
-                Contact us at{" "}
-                <Text style={{ fontWeight: "600" }}>giftcards@sufra.sa</Text>,
-                and
-                {"\n"}we'll be happy to assist!
-              </Text>
-            </View>
-
-            {/* Who are you gifting to */}
-            <Text style={styles.sectionTitle}>Who are you gifting to?</Text>
-            <View style={styles.checkboxContainer}>
-              <CustomCheckbox
-                checked={isBuyingForMyself}
-                onChange={setIsBuyingForMyself}
-              />
-              <Text style={styles.checkboxText}>Buying for myself</Text>
-            </View>
-
-            {/* Recipient Info */}
-            <View style={styles.inputContainer}>
-              <FloatingLabelInput
-                label="Recipient Name*"
-                value={recipientName}
-                onChangeText={setRecipientName}
-              />
-              <FloatingLabelInput
-                label="Recipient Email*"
-                value={recipientEmail}
-                onChangeText={setRecipientEmail}
-              />
-              <FloatingLabelInput
-                label="Verify Recipient Email*"
-                value={verifyRecipientEmail}
-                onChangeText={setVerifyRecipientEmail}
-              />
-              <FloatingLabelInput
-                label="Recipient Phone Number*"
-                value={recipientPhone}
-                onChangeText={setRecipientPhone}
-              />
-            </View>
-
-            <Text style={styles.sectionTitle}>Personal Note</Text>
-            <TextInput
-              style={styles.personalNoteInput}
-              value={personalNote}
-              onChangeText={setPersonalNote}
-              placeholder="Add a personal message..."
-              placeholderTextColor="#999999"
-              multiline
-            />
-
-            <Text style={styles.sectionTitle}>From</Text>
-            <View style={styles.inputContainer}>
-              <FloatingLabelInput
-                label="Sender Name*"
-                value={senderName}
-                onChangeText={setSenderName}
-              />
-              <FloatingLabelInput
-                label="Sender Email*"
-                value={senderEmail}
-                onChangeText={setSenderEmail}
-              />
-              <FloatingLabelInput
-                label="Sender Phone Number*"
-                value={senderPhone}
-                onChangeText={setSenderPhone}
-              />
-            </View>
-
-            <TouchableOpacity
-              style={[
-                styles.checkoutButton,
-                !isFormValid && { backgroundColor: "#ccc" },
-              ]}
-              onPress={handleButton}
-              disabled={!isFormValid}
-            >
-              <Text style={styles.checkoutButtonText}>Checkout</Text>
-            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </View>
+
+        {/* Gift Amount */}
+        <View style={styles.formContainer}>
+          <Text style={styles.sectionTitle}>Gift Amount (SR)</Text>
+          <View style={styles.boxcontainer}>
+            {amounts.map((amount, index) => {
+              const isSelected = selectedAmount === amount;
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={[styles.box, isSelected && styles.boxSelected]}
+                  onPress={() => setSelectedAmount(amount)}
+                >
+                  <Text
+                    style={[
+                      styles.amountText,
+                      isSelected && styles.amountTextSelected,
+                    ]}
+                  >
+                    {amount}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Info Box */}
+          <View style={styles.infoContainer}>
+            <Text style={styles.infoText}>
+              Looking to buy gift cards in bulk or in larger{"\n"}amounts?
+              Contact us at{" "}
+              <Text style={{ fontWeight: "600" }}>giftcards@sufra.sa</Text>, and
+              {"\n"}we'll be happy to assist!
+            </Text>
+          </View>
+
+          {/* Who are you gifting to */}
+          <Text style={styles.sectionTitle}>Who are you gifting to?</Text>
+          <View style={styles.checkboxContainer}>
+            <CustomCheckbox
+              checked={isBuyingForMyself}
+              onChange={setIsBuyingForMyself}
+            />
+            <Text style={styles.checkboxText}>Buying for myself</Text>
+          </View>
+
+          {/* Recipient Info */}
+          <View style={styles.inputContainer}>
+            <FloatingLabelInput
+              label="Recipient Name*"
+              value={recipientName}
+              onChangeText={setRecipientName}
+            />
+            <FloatingLabelInput
+              label="Recipient Email*"
+              value={recipientEmail}
+              onChangeText={setRecipientEmail}
+            />
+            <FloatingLabelInput
+              label="Verify Recipient Email*"
+              value={verifyRecipientEmail}
+              onChangeText={setVerifyRecipientEmail}
+            />
+            <FloatingLabelInput
+              label="Recipient Phone Number*"
+              value={recipientPhone}
+              onChangeText={setRecipientPhone}
+            />
+          </View>
+
+          <Text style={styles.sectionTitle}>Personal Note</Text>
+          <TextInput
+            style={styles.personalNoteInput}
+            value={personalNote}
+            onChangeText={setPersonalNote}
+            placeholder="Add a personal message..."
+            placeholderTextColor="#999999"
+            multiline
+          />
+
+          <Text style={styles.sectionTitle}>From</Text>
+          <View style={styles.inputContainer}>
+            <FloatingLabelInput
+              label="Sender Name*"
+              value={senderName}
+              onChangeText={setSenderName}
+            />
+            <FloatingLabelInput
+              label="Sender Email*"
+              value={senderEmail}
+              onChangeText={setSenderEmail}
+            />
+            <FloatingLabelInput
+              label="Sender Phone Number*"
+              value={senderPhone}
+              onChangeText={setSenderPhone}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.checkoutButton,
+              !isFormValid && { backgroundColor: "#ccc" },
+            ]}
+            onPress={handleButton}
+            disabled={!isFormValid}
+          >
+            <Text style={styles.checkoutButtonText}>Checkout</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };
@@ -406,7 +402,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#ffffff" },
   header: {
     flexDirection: "row",
-    height: scale(40),
+    height: scale(50),
     alignItems: "center",
     paddingHorizontal: scale(16),
     backgroundColor: "#ffffff",
@@ -416,7 +412,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
   },
   spacer: {
     width: scale(36),
@@ -431,7 +426,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignSelf: "center",
   },
-  mainScrollView: { flex: 1 },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: scale(20),
+  },
   cardContainer: {
     marginHorizontal: scale(10),
     borderRadius: scale(12),
@@ -443,7 +441,10 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 4,
   },
-  thumbnailScroll: { height: scale(80), flexGrow: 0 },
+  thumbnailScroll: {
+    height: scale(80),
+    marginTop: scale(10),
+  },
   thumbnailContainer: {
     flexDirection: "row",
     paddingHorizontal: scale(24),
@@ -457,6 +458,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     alignItems: "center",
     justifyContent: "center",
+    marginRight: scale(8),
   },
   thumbnailWrapperActive: {
     borderColor: "#000000",
@@ -546,6 +548,7 @@ const styles = StyleSheet.create({
     fontFamily: "Rubik-Regular",
     color: "#4A4A4A",
     textAlignVertical: "top",
+    marginTop: scale(10),
   },
   checkoutButton: {
     width: "100%",

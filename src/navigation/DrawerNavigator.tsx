@@ -13,6 +13,9 @@ import GetHelpScreen from "../screens/GetHelpScreen";
 import FAQScreen from "../screens/FAQScreen";
 import GiftCardStack from "./GiftCardStack";
 import NotificationScreen from "../screens/NotificationScreen";
+import MyOrdersScreen from "../screens/MyOrdersScreen";
+import { scale } from "../utils/dimen";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -25,14 +28,16 @@ export default function DrawerNavigator() {
         headerShown: false,
         drawerType: "front",
         overlayColor: "transparent",
-        swipeEnabled: true,
+        swipeEnabled: false,
         drawerHideStatusBarOnOpen: true,
+        drawerStyle: {
+          width: scale(320),
+        },
       }}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="GiftCards" component={GiftCardStack} />
-
       <Drawer.Screen
         name="TopTabScreen"
         component={TopTabScreen}
@@ -47,9 +52,12 @@ export default function DrawerNavigator() {
         name="MyPaymentMethods"
         component={MyPaymentMethodsScreen}
       />
-      <Drawer.Screen name="GetHelp" component={GetHelpScreen} />
+      <Drawer.Screen name="MyOrders" component={MyOrdersScreen} />
       <Drawer.Screen name="FAQ" component={FAQScreen} />
+      <Drawer.Screen name="GetHelp" component={GetHelpScreen} />
+
       <Drawer.Screen name="Notification" component={NotificationScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
     </Drawer.Navigator>
   );
 }

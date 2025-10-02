@@ -1,4 +1,12 @@
-import { StyleSheet, View, TouchableOpacity, Image, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Image,
+  Text,
+  Platform,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderBox from "../components/HeaderBox";
@@ -9,6 +17,7 @@ import { scale, screenWidth } from "../utils/dimen";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "Home"
@@ -37,6 +46,7 @@ const HomeScreen = () => {
 
   const handleViewDealsPress = () => {
     console.log("View Deals tapped!");
+    navigation.navigate("Deals");
   };
 
   const handleBrandPress = (brandIndex) => {
@@ -49,68 +59,105 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderBox
-        boxshadow={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          elevation: 4,
-        }}
-      />
-
-      <View style={{ backgroundColor: "#f5f5f5", marginTop: scale(16) }}>
-        <View style={styles.statsContainer}>
-          <StatsCard type="rewards" onPress={handleRewardsPress} />
-          <StatsCard type="tier" onPress={handleTierPress} />
-        </View>
-
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={styles.imgButton}
-            onPress={handleDeliveryPress}
-            activeOpacity={0.8}
-            accessibilityLabel="Delivery option"
-            accessibilityHint="Tap to select delivery service"
-          >
-            <Image
-              style={styles.buttonImage}
-              source={require("../../assets/image/delivery_en.png")}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.imgButton}
-            onPress={handleDineInPress}
-            activeOpacity={0.8}
-            accessibilityLabel="Dine-in option"
-            accessibilityHint="Tap to select dine-in service"
-          >
-            <Image
-              style={styles.buttonImage}
-              source={require("../../assets/image/dinein_en.png")}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-        </View>
-
-        <OfferBanner onOfferPress={handleOfferPress} />
-
-        <BrandsContainer
-          onBrandPress={handleBrandPress}
-          onViewDealsPress={handleViewDealsPress}
-          showViewDeals={true}
+      <View style={{ backgroundColor: "#fff" }}>
+        <HeaderBox
+          boxshadow={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            borderBottomWidth: 0.5,
+            borderBottomColor: "rgba(0, 0, 0, 0.1)",
+            backgroundColor: "#fff",
+          }}
+        />
+        <View
+          style={{
+            height: Platform.OS === "android" ? 0 : 0,
+            backgroundColor: "rgba(0,0,0,1)",
+          }}
         />
       </View>
 
-      <View style={styles.bottomButtonsContainer}>
-        <TouchableOpacity style={styles.dineInButton}>
-          <Text style={styles.dineInButtonText}>Find Dine-in Spots</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.loyaltyButton}>
-          <Text style={styles.loyaltyButtonText}>Show Loyalty ID</Text>
-        </TouchableOpacity>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View
+          style={{
+            backgroundColor: "#f5f5f5",
+            paddingTop: scale(16),
+            paddingBottom: scale(16),
+          }}
+        >
+          <View style={styles.statsContainer}>
+            <StatsCard type="rewards" onPress={handleRewardsPress} />
+            <StatsCard type="tier" onPress={handleTierPress} />
+          </View>
+
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={styles.imgButton}
+              onPress={handleDeliveryPress}
+              activeOpacity={0.8}
+              accessibilityLabel="Delivery option"
+              accessibilityHint="Tap to select delivery service"
+            >
+              <Image
+                style={styles.buttonImage}
+                source={require("../../assets/image/delivery_en.png")}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.imgButton}
+              onPress={handleDineInPress}
+              activeOpacity={0.8}
+              accessibilityLabel="Dine-in option"
+              accessibilityHint="Tap to select dine-in service"
+            >
+              <Image
+                style={styles.buttonImage}
+                source={require("../../assets/image/dinein_en.png")}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <OfferBanner onOfferPress={handleOfferPress} />
+
+          <BrandsContainer
+            onBrandPress={handleBrandPress}
+            onViewDealsPress={handleViewDealsPress}
+            showViewDeals={true}
+          />
+        </View>
+      </ScrollView>
+
+      {/* Bottom buttons with shadow - same structure as header */}
+      <View style={{}}>
+        <View
+          style={{
+            height: Platform.OS === "android" ? 0 : 0,
+            backgroundColor: "rgba(0,0,0,1)",
+          }}
+        />
+        <View style={styles.bottomButtonsContainer}>
+          <TouchableOpacity
+            style={styles.dineInButton}
+            onPress={() => navigation.navigate("FindStores")}
+          >
+            <Text style={styles.dineInButtonText}>Find Dine-in Spots</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.loyaltyButton}
+            onPress={() => navigation.navigate("Loyalty")}
+          >
+            <Text style={styles.loyaltyButtonText}>Show Loyalty ID</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -122,6 +169,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  scrollContent: {
+    paddingBottom: scale(160),
   },
   statsContainer: {
     flexDirection: "row",
@@ -158,11 +212,10 @@ const styles = StyleSheet.create({
     height: scale(138),
     backgroundColor: "#ffffff",
     position: "absolute",
-    bottom: 15,
+    bottom: 0,
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
-    // Shadow for iOS
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -170,7 +223,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    // Shadow for Android
     elevation: 4,
   },
   dineInButton: {

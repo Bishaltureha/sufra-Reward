@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  KeyboardAvoidingView,
-  ScrollView,
-  TextInput,
-} from "react-native";
+import { StyleSheet, View, Platform, TextInput } from "react-native";
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
@@ -15,6 +9,7 @@ import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 import RTLTextInput from "../components/RTLTextInput";
 import { scale } from "../utils/dimen";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Otp">;
 
@@ -83,20 +78,25 @@ const OtpScreen = ({ navigation }: Props) => {
   const isOtpComplete = code.length === OTP_LENGTH;
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Header with Logo */}
-        <Header
-          image={<Logo height={scale(35)} width={scale(123)} />}
-          title={undefined}
-          onBackPress={undefined}
-          titleStyle={undefined}
-          containerStyle={undefined}
-        />
+    <View style={styles.container}>
+      {/* Header with Logo */}
+      <Header
+        image={<Logo height={scale(35)} width={scale(123)} />}
+        title={undefined}
+        onBackPress={undefined}
+        titleStyle={undefined}
+        containerStyle={undefined}
+      />
 
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContent}
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        extraScrollHeight={scale(20)}
+        keyboardOpeningTime={0}
+      >
         <View style={styles.subContent}>
           <RTLText style={styles.title}>{t("otp.title")}</RTLText>
 
@@ -141,20 +141,20 @@ const OtpScreen = ({ navigation }: Props) => {
             </RTLText>
           </View>
         </View>
-      </ScrollView>
 
-      {/* Fixed Confirm Button */}
-      <View style={styles.footer}>
-        <CustomButton
-          title={t("common.confirm")}
-          backgroundColor={isOtpComplete ? "#ffab00" : "#B0B0B0"}
-          onPress={handleConfirm}
-          disabled={!isOtpComplete}
-          style={styles.buttonStyle}
-          textColor="#000000"
-        />
-      </View>
-    </KeyboardAvoidingView>
+        {/* Fixed Confirm Button */}
+        <View style={styles.footer}>
+          <CustomButton
+            title={t("common.confirm")}
+            backgroundColor={isOtpComplete ? "#ffab00" : "#B0B0B0"}
+            onPress={handleConfirm}
+            disabled={!isOtpComplete}
+            style={styles.buttonStyle}
+            textColor="#000000"
+          />
+        </View>
+      </KeyboardAwareScrollView>
+    </View>
   );
 };
 
@@ -165,11 +165,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
-  scroll: {
+  scrollContent: {
     flexGrow: 1,
+    justifyContent: "space-between",
   },
   subContent: {
-    flex: 1,
     padding: scale(20),
   },
   title: {
@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: scale(20),
+    paddingBottom: scale(34),
   },
   buttonStyle: {
     paddingVertical: scale(16),

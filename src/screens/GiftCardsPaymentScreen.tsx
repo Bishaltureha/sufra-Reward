@@ -43,6 +43,21 @@ const luhnCheck = (num: string) => {
   return sum % 10 === 0;
 };
 
+// Visa
+("4111111111111111");
+("4012888888881881");
+
+// Mastercard
+("5555555555554444");
+("5105105105105100");
+
+// American Express
+("378282246310005");
+("371449635398431");
+
+// Discover
+("6011111111111117");
+("6011000990139424");
 // Validate MM/YY
 const validateExpiry = (text: string) => {
   if (!text.includes("/")) return false;
@@ -330,7 +345,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   header: {
     flexDirection: "row",
-    height: scale(40),
+    height: scale(50),
     alignItems: "center",
     paddingHorizontal: scale(16),
     backgroundColor: "#ffffff",
@@ -340,7 +355,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
   },
   drawerButton: { padding: scale(4), marginRight: scale(8) },
   titleContainer: { flex: 1, alignItems: "center", justifyContent: "center" },

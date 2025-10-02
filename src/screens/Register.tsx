@@ -1,4 +1,4 @@
-import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
@@ -9,6 +9,7 @@ import PhoneNumberInput from "../components/PhoneNumberInputtext";
 import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 import { scale } from "../utils/dimen";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Register">;
 
@@ -66,49 +67,56 @@ const Register = ({ navigation }: Props) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={"padding"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-    >
+    <View style={styles.container}>
       <Header
         image={<Logo height={scale(35)} width={scale(123)} />}
         title={undefined}
-        onBackPress={() => navigation.goBack()}
+        // onBackPress={() => navigation.goBack()}
+        onBackPress={() => navigation.navigate("Welcome")}
         titleStyle={undefined}
         containerStyle={undefined}
       />
 
-      <View style={styles.subContent}>
-        <RTLText style={styles.title}>{t("register.title")}</RTLText>
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContent}
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        extraScrollHeight={scale(20)}
+        keyboardOpeningTime={0}
+      >
+        <View style={styles.subContent}>
+          <RTLText style={styles.title}>{t("register.title")}</RTLText>
 
-        <View style={styles.phoneInputContainer}>
-          <PhoneNumberInput
-            defaultCountry="AE"
-            placeholder={t("phone.placeholder")}
-            onCountryChange={handleCountryChange}
-            onPhoneChange={handlePhoneChange}
-            value={phone}
-            style={styles.phoneInput}
-          />
+          <View style={styles.phoneInputContainer}>
+            <PhoneNumberInput
+              defaultCountry="AE"
+              placeholder={t("phone.placeholder")}
+              onCountryChange={handleCountryChange}
+              onPhoneChange={handlePhoneChange}
+              value={phone}
+              style={styles.phoneInput}
+            />
 
-          {phone && !isValidPhone && (
-            <RTLText style={styles.errorText}>{t("phone.invalid")}</RTLText>
-          )}
+            {phone && !isValidPhone && (
+              <RTLText style={styles.errorText}>{t("phone.invalid")}</RTLText>
+            )}
+          </View>
         </View>
-      </View>
 
-      <View style={styles.footer}>
-        <CustomButton
-          title={t("common.continue")}
-          backgroundColor={isValidPhone ? "#ffab00" : "#E0E0E0"}
-          onPress={handleContinue}
-          style={styles.buttonStyle}
-          textColor={isValidPhone ? "#000000" : "#999999"}
-          disabled={!isValidPhone}
-        />
-      </View>
-    </KeyboardAvoidingView>
+        <View style={styles.footer}>
+          <CustomButton
+            title={"continue"}
+            backgroundColor={isValidPhone ? "#ffab00" : "#E0E0E0"}
+            onPress={handleContinue}
+            style={styles.buttonStyle}
+            textColor={isValidPhone ? "#000000" : "#999999"}
+            disabled={!isValidPhone}
+          />
+        </View>
+      </KeyboardAwareScrollView>
+    </View>
   );
 };
 
@@ -119,8 +127,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+  },
   subContent: {
-    flex: 1,
     padding: scale(20),
   },
   title: {
@@ -153,7 +164,8 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: scale(20),
-    paddingBottom: Platform.OS === "ios" ? scale(34) : scale(20),
+    // paddingBottom: Platform.OS === "ios" ? scale(34) : scale(20),
+    paddingBottom: scale(34),
   },
   buttonStyle: {
     paddingVertical: scale(16),

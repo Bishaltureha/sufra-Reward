@@ -13,10 +13,13 @@ import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { DrawerParamList } from "../types";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 
-type DealsScreenNavigationProp = DrawerNavigationProp<DrawerParamList, "Deals">;
+type ProfileScreenNavigationProp = DrawerNavigationProp<
+  DrawerParamList,
+  "Profile"
+>;
 
-const DealsScreen = () => {
-  const navigation = useNavigation<DealsScreenNavigationProp>();
+const ProfileScreen = () => {
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
 
   const handleDrawerToggle = () => {
     try {
@@ -40,7 +43,7 @@ const DealsScreen = () => {
             <Drawerlogo />
           </TouchableOpacity>
           <View style={styles.titleContainer}>
-            <Text style={styles.headerTitle}>Deals</Text>
+            <Text style={styles.headerTitle}>Profile</Text>
           </View>
           <View style={styles.spacer} />
         </View>
@@ -55,7 +58,7 @@ const DealsScreen = () => {
   );
 };
 
-export default DealsScreen;
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },

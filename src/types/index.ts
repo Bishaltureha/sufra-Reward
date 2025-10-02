@@ -14,6 +14,12 @@ export type RootStackParamList = {
   DineInScreen: undefined;
   TopTabScreen: { screen?: "Delivery" | "DineIn" };
   Notification: undefined;
+  Deals: undefined;
+  GetHelp: undefined;
+  FAQ: undefined;
+  Profile: undefined;
+  FindStores: undefined;
+  Loyalty: undefined;
 };
 
 export type DrawerParamList = {
@@ -29,6 +35,7 @@ export type DrawerParamList = {
   GetHelp: undefined;
   FAQ: undefined;
   Notification: undefined;
+  Profile: undefined;
 };
 export type GiftCardStackParamList = {
   GiftCardsMain: undefined;

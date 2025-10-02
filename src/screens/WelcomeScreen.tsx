@@ -106,12 +106,18 @@ const WelcomeScreen = ({ navigation }: Props) => {
               flagSource={
                 locale === "ar"
                   ? require("../../assets/image/Saudi.png")
-                  : require("../../assets/image/Usa.png")
+                  : require("../../assets/image/usa.png")
               }
               label={locale.toUpperCase()}
               onPress={() => navigation.navigate("CountryandLanguage")}
               style={styles.languageButton}
             />
+            // <LanguageButton
+            //   style={styles.languageButton}
+            //   flagSource={undefined}
+            //   label={undefined}
+            //   onPress={undefined}
+            // />
           )}
           <CustomButton
             title={t("welcome.continueAsGuest")}
@@ -143,7 +149,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
             textColor="#000000"
           />
           <CustomButton
-            title={t("welcome.register")}
+            title={"register"}
             backgroundColor="#ffffff"
             borderColor="black"
             borderWidth={scale(1.5)}
@@ -246,7 +252,7 @@ const styles = StyleSheet.create({
   guestButton: {
     position: "absolute",
     right: scale(10),
-    width: scale(150), // 36.5% approx of 400
+    width: scale(150),
     height: scale(35),
     shadowColor: "#000",
     shadowOffset: { width: 0, height: scale(2) },
