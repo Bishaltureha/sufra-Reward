@@ -95,6 +95,7 @@ const DeliveringToYouSection = ({
 }) => {
   const [locationModalVisible, setLocationModalVisible] = useState(false);
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     checkLocation();
@@ -102,13 +103,18 @@ const DeliveringToYouSection = ({
 
   const checkLocation = async () => {
     try {
+      // Permission check
       const { status } = await Location.getForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setIsLocationEnabled(false);
-        return;
-      }
+
+      // GPS/Location services check
       const servicesEnabled = await Location.hasServicesEnabledAsync();
-      setIsLocationEnabled(servicesEnabled);
+
+      // Dono true hone chahiye
+      if (status === "granted" && servicesEnabled) {
+        setIsLocationEnabled(true);
+      } else {
+        setIsLocationEnabled(false);
+      }
     } catch (error) {
       console.error("Error checking location:", error);
       setIsLocationEnabled(false);
@@ -121,19 +127,30 @@ const DeliveringToYouSection = ({
 
   const handleEnableLocation = async (locationData) => {
     try {
-      const servicesEnabled = await Location.hasServicesEnabledAsync();
-      setIsLocationEnabled(servicesEnabled);
+      console.log("Location Data received:", locationData);
+
+      // Location data save karo
+      setUserLocation(locationData);
+
+      // Location enabled state ko true karo
+      setIsLocationEnabled(true);
+
+      // Modal close karo
       setLocationModalVisible(false);
 
-      console.log("Location Data:", locationData);
-      // Yahan tumhara location data handle karo
+      // Parent component ko bhi inform karo (optional)
+      // onLocationReceived && onLocationReceived(locationData);
     } catch (error) {
       console.error("Error handling location:", error);
+      setIsLocationEnabled(false);
     }
   };
 
   const handleManualAddress = () => {
     setLocationModalVisible(false);
+    // Manual address ke baad bhi location enabled consider karo
+    setIsLocationEnabled(true);
+
     if (onManualAddressPress) {
       onManualAddressPress();
     }
@@ -167,14 +184,8 @@ const DeliveringToYouSection = ({
       <LocationModal
         visible={locationModalVisible}
         onClose={() => setLocationModalVisible(false)}
-        onEnableLocation={(locationData) => {
-          console.log("Location Data:", locationData);
-          setLocationModalVisible(false);
-        }}
-        onManualAddress={() => {
-          console.log("Manual Address pressed");
-          setLocationModalVisible(false);
-        }}
+        onEnableLocation={handleEnableLocation}
+        onManualAddress={handleManualAddress}
       />
     </View>
   );

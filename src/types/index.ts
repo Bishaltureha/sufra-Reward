@@ -20,6 +20,11 @@ export type RootStackParamList = {
   Profile: undefined;
   FindStores: undefined;
   Loyalty: undefined;
+  BrandDetails: {
+    brandImage: any;
+    brandName: string;
+    brandId: number;
+  };
 };
 
 export type DrawerParamList = {

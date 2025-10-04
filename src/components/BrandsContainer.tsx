@@ -8,20 +8,31 @@ import {
   StyleSheet,
 } from "react-native";
 import { scale } from "../utils/dimen";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types";
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface BrandsContainerProps {
-  onBrandPress: (index: number) => void;
+  onBrandPress?: (index: number) => void;
   onViewDealsPress?: () => void;
-  showViewDeals?: boolean; // 👈 new prop
+  showViewDeals?: boolean;
 }
 
 const BrandsContainer: React.FC<BrandsContainerProps> = ({
   onBrandPress,
   onViewDealsPress,
-  showViewDeals = true, // default true
+  showViewDeals = true,
 }) => {
+  const navigation = useNavigation<NavigationProp>();
+
   const brands = [
-    { id: 1, image: require("../../assets/image/box1.png"), name: "Brand 1" },
+    {
+      id: 1,
+      image: require("../../assets/image/box1.png"),
+      name: "Fire Grill",
+    },
     { id: 2, image: require("../../assets/image/box2.png"), name: "Brand 2" },
     { id: 3, image: require("../../assets/image/box3.png"), name: "Brand 3" },
     { id: 4, image: require("../../assets/image/box4.png"), name: "Brand 4" },
@@ -31,11 +42,27 @@ const BrandsContainer: React.FC<BrandsContainerProps> = ({
     { id: 8, image: require("../../assets/image/box8.png"), name: "Brand 8" },
   ];
 
+  const handleBrandPress = (index: number) => {
+    const selectedBrand = brands[index];
+
+    // Navigate to BrandDetails screen with brand data
+    navigation.navigate("BrandDetails", {
+      brandImage: selectedBrand.image,
+      brandName: selectedBrand.name,
+      brandId: selectedBrand.id,
+    });
+
+    // Optional: Call the parent onBrandPress if provided
+    if (onBrandPress) {
+      onBrandPress(index);
+    }
+  };
+
   const renderBrandItem = (brand: (typeof brands)[0], index: number) => (
     <TouchableOpacity
       key={brand.id}
       style={styles.brandItem}
-      onPress={() => onBrandPress(index)}
+      onPress={() => handleBrandPress(index)}
       activeOpacity={0.8}
       accessibilityLabel={`${brand.name} brand`}
       accessibilityHint="Tap to view brand details"
