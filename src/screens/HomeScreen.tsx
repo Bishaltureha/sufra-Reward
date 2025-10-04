@@ -15,11 +15,11 @@ import BrandsContainer from "../components/BrandsContainer";
 import OfferBanner from "../components/OfferBanner";
 import { scale, screenWidth } from "../utils/dimen";
 import { useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
+  MainStackParamList,
   "Home"
 >;
 

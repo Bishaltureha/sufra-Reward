@@ -3,15 +3,19 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
 import CustomButton from "../components/CustomButton";
-import { RootStackParamList } from "../types";
+import { AuthStackParamList, RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { CompositeScreenProps } from "@react-navigation/native";
 import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 import RTLTextInput from "../components/RTLTextInput";
 import { scale } from "../utils/dimen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Otp">;
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<AuthStackParamList, "Otp">,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 const OTP_LENGTH = 4;
 const RESEND_TIMEOUT = 120;

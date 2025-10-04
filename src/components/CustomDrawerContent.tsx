@@ -285,7 +285,7 @@
 //         <Image
 //           source={
 //             selectedLanguage === "EN"
-//               ? require("../../assets/image/usa.png")
+//               ? require("../../assets/image/Usa.png")
 //               : require("../../assets/image/Saudi.png")
 //           }
 //           style={styles.flag}
@@ -310,7 +310,7 @@
 //           >
 //             {selectedLanguage === "EN" && <Thick style={styles.checkIcon} />}
 //             <Image
-//               source={require("../../assets/image/usa.png")}
+//               source={require("../../assets/image/Usa.png")}
 //               style={styles.flag}
 //             />
 //             <Text style={styles.languageOptionText}>English</Text>
@@ -855,7 +855,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
         <Image
           source={
             selectedLanguage === "EN"
-              ? require("../../assets/image/usa.png")
+              ? require("../../assets/image/Usa.png")
               : require("../../assets/image/Saudi.png")
           }
           style={styles.flag}
@@ -880,7 +880,7 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
           >
             {selectedLanguage === "EN" && <Thick style={styles.checkIcon} />}
             <Image
-              source={require("../../assets/image/usa.png")}
+              source={require("../../assets/image/Usa.png")}
               style={styles.flag}
             />
             <Text style={styles.languageOptionText}>English</Text>

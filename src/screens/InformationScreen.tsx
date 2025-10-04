@@ -1,10 +1,11 @@
-import { StyleSheet, View, Platform, Alert } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
 import CustomButton from "../components/CustomButton";
-import { RootStackParamList } from "../types";
+import { AuthStackParamList, RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { CompositeScreenProps } from "@react-navigation/native";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 import CustomCheckbox from "../components/CustomCheckbox";
 import { useLocalization } from "../context/LocalizationContext";
@@ -12,7 +13,11 @@ import RTLText from "../components/RTLText";
 import { scale } from "../utils/dimen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { setJSON } from "../utils/storage";
-type Props = NativeStackScreenProps<RootStackParamList, "InformationScreen">;
+
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<AuthStackParamList, "InformationScreen">,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 const InformationScreen = ({ navigation }: Props) => {
   const { t } = useLocalization();
@@ -81,7 +86,7 @@ const InformationScreen = ({ navigation }: Props) => {
     console.log("Form Data saved to MMKV:", formData);
 
     // Navigate to Home
-    navigation.navigate("Home");
+    navigation.navigate("MainStack", { screen: "Home" });
   };
 
   return (

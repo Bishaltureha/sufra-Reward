@@ -1,15 +1,29 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
+
 export type RootStackParamList = {
   Splash: undefined;
+  OnboardingStack: NavigatorScreenParams<OnboardingStackParamList>;
+  AuthStack: NavigatorScreenParams<AuthStackParamList>;
+  MainStack: NavigatorScreenParams<MainStackParamList>;
+};
+
+export type OnboardingStackParamList = {
   Welcome: undefined;
-  DiscoverSufraBenefits: undefined;
-  CountryandLanguage: undefined;
   Language: undefined;
-  Home: undefined;
+  CountryandLanguage: undefined;
+  DiscoverSufraBenefits: undefined;
+};
+
+export type AuthStackParamList = {
   Login: undefined;
   Otp: undefined;
   Register: undefined;
   ForgetPassword: undefined;
   InformationScreen: undefined;
+};
+
+export type MainStackParamList = {
+  Home: undefined;
   DeliveryScreen: undefined;
   DineInScreen: undefined;
   TopTabScreen: { screen?: "Delivery" | "DineIn" };

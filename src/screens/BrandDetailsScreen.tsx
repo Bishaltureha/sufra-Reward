@@ -14,7 +14,7 @@ import {
 import React, { useState, useRef, useEffect } from "react";
 import { RouteProp, useRoute, useNavigation } from "@react-navigation/native";
 import { scale } from "../utils/dimen";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Error from "../../assets/svg/Error";
 import LocationModal from "../components/LocationModal";
@@ -25,7 +25,7 @@ import CollectYourOrderContainer from "../components/BrandDetailsScreen/CollectY
 import RedBoxLocationPermission from "../components/BrandDetailsScreen/RedBoxLocationpermission";
 import Trash from "../../assets/svg/Trash";
 
-type BrandDetailsRouteProp = RouteProp<RootStackParamList, "BrandDetails">;
+type BrandDetailsRouteProp = RouteProp<MainStackParamList, "BrandDetails">;
 
 const categories = [
   "Bestsellers",

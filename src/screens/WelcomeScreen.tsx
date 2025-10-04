@@ -1,15 +1,19 @@
 import { StyleSheet, View, FlatList, Dimensions, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import CustomButton from "../components/CustomButton";
 import LanguageButton from "../components/LanguageButton";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { OnboardingStackParamList, RootStackParamList } from "../types";
 import { scale, screenWidth } from "../utils/dimen";
 import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Welcome">;
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<OnboardingStackParamList, "Welcome">,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 const { width, height } = Dimensions.get("window");
 
@@ -52,6 +56,33 @@ const WelcomeScreen = ({ navigation }: Props) => {
 
     setCurrentIndex(index);
   };
+
+  const renderItem = useCallback(
+    ({ item, index }) => (
+      <View style={styles.slide}>
+        <View style={styles.imageWrapper}>
+          <Image
+            source={item.image}
+            style={
+              index === 0 ? styles.imageBackground1 : styles.imageBackground
+            }
+          />
+        </View>
+        <View style={styles.textWrapper}>
+          <View style={styles.textContainer}>
+            <RTLText style={styles.title}>
+              {onboardingData[currentIndex].title}
+            </RTLText>
+            <RTLText style={styles.subTitle}>
+              {onboardingData[currentIndex].subtitle}
+            </RTLText>
+          </View>
+        </View>
+      </View>
+    ),
+    []
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.top}>
@@ -64,30 +95,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
           onScroll={onScroll}
           scrollEventThrottle={16}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <View style={styles.slide}>
-              <View style={styles.imageWrapper}>
-                <Image
-                  source={item.image}
-                  style={
-                    index === 0
-                      ? styles.imageBackground1
-                      : styles.imageBackground
-                  }
-                />
-              </View>
-              <View style={styles.textWrapper}>
-                <View style={styles.textContainer}>
-                  <RTLText style={styles.title}>
-                    {onboardingData[currentIndex].title}
-                  </RTLText>
-                  <RTLText style={styles.subTitle}>
-                    {onboardingData[currentIndex].subtitle}
-                  </RTLText>
-                </View>
-              </View>
-            </View>
-          )}
+          renderItem={renderItem}
         />
         <View style={styles.pagination}>
           {onboardingData.map((_, index) => (
@@ -106,7 +114,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
               flagSource={
                 locale === "ar"
                   ? require("../../assets/image/Saudi.png")
-                  : require("../../assets/image/usa.png")
+                  : require("../../assets/image/Usa.png")
               }
               label={locale.toUpperCase()}
               onPress={() => navigation.navigate("CountryandLanguage")}
@@ -122,7 +130,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
           <CustomButton
             title={t("welcome.continueAsGuest")}
             backgroundColor="#ffffff"
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate("MainStack")}
             style={styles.guestButton}
             textStyle={styles.guestButtonText}
             textColor=""
@@ -142,18 +150,17 @@ const WelcomeScreen = ({ navigation }: Props) => {
             onPress={
               currentIndex === 2
                 ? () => navigation.navigate("DiscoverSufraBenefits")
-                : // : () => navigation.navigate("Login")
-                  () => navigation.navigate("Register")
+                : () => navigation.navigate("AuthStack")
             }
             style={styles.bottomButton}
             textColor="#000000"
           />
           <CustomButton
-            title={"register"}
+            title={t("welcome.register")}
             backgroundColor="#ffffff"
             borderColor="black"
             borderWidth={scale(1.5)}
-            onPress={() => navigation.navigate("Register")}
+            onPress={() => navigation.navigate("AuthStack")}
             style={styles.bottomButton}
             textColor="#4A4A4A"
           />

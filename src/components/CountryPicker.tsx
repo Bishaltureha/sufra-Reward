@@ -1,5 +1,12 @@
 import React, { useMemo, useState, useCallback } from "react";
-import { View, Modal, FlatList, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import {
+  View,
+  Modal,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { countries } from "../utils/countries";
@@ -65,19 +72,16 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
     );
   }, [searchQuery, validCountries]);
 
-  const handleCountrySelect = useCallback(
-    (country: Country) => {
-      onSelect(country);
-      setSearchQuery("");
-      onClose();
-    },
-    [onSelect, onClose]
-  );
+  const handleCountrySelect = useCallback((country: Country) => {
+    onSelect(country);
+    setSearchQuery("");
+    onClose();
+  }, []);
 
   const handleClose = useCallback(() => {
     setSearchQuery("");
     onClose();
-  }, [onClose]);
+  }, []);
 
   const clearSearch = useCallback(() => {
     setSearchQuery("");
@@ -105,7 +109,11 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
           {/* Flag */}
           <View style={styles.flagContainer}>
             {item.image4x3 && typeof item.image4x3 === "function" ? (
-              <item.image4x3 width={scale(24)} height={scale(18)} style={styles.flagSvg} />
+              <item.image4x3
+                width={scale(24)}
+                height={scale(18)}
+                style={styles.flagSvg}
+              />
             ) : item.emoji ? (
               <RTLText style={styles.emojiFlag}>{item.emoji}</RTLText>
             ) : (
@@ -124,7 +132,7 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
         </TouchableOpacity>
       );
     },
-    [selectedCountry, handleCountrySelect]
+    [selectedCountry]
   );
 
   return (
@@ -186,7 +194,11 @@ const CountryPicker: React.FC<CountryPickerProps> = ({
               keyboardShouldPersistTaps="handled"
               ListEmptyComponent={() => (
                 <View style={styles.noResultsContainer}>
-                  <MaterialIcons name="search-off" size={scale(48)} color="#ccc" />
+                  <MaterialIcons
+                    name="search-off"
+                    size={scale(48)}
+                    color="#ccc"
+                  />
                   <RTLText style={styles.noResultsText}>
                     {t("countryPicker.noResultsTitle")}
                   </RTLText>
@@ -346,5 +358,4 @@ const styles = StyleSheet.create({
     marginTop: scale(4),
     textAlign: "center",
   },
-})
-;
+});

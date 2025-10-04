@@ -10,7 +10,6 @@ import { saveLanguage } from "../utils/storage";
 import RNRestart from "react-native-restart";
 import { Platform } from "react-native";
 
-// Types exposed by the hook
 export type LocalizationContextType = {
   t: (scope: string, options?: Record<string, unknown>) => string;
   locale: string;

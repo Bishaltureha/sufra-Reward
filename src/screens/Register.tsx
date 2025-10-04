@@ -1,17 +1,21 @@
-import { StyleSheet, View, Platform } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
 import CustomButton from "../components/CustomButton";
-import { RootStackParamList } from "../types";
+import { AuthStackParamList, RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { CompositeScreenProps } from "@react-navigation/native";
 import PhoneNumberInput from "../components/PhoneNumberInputtext";
 import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 import { scale } from "../utils/dimen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Register">;
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<AuthStackParamList, "Register">,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 interface Country {
   code: string;
@@ -71,8 +75,7 @@ const Register = ({ navigation }: Props) => {
       <Header
         image={<Logo height={scale(35)} width={scale(123)} />}
         title={undefined}
-        // onBackPress={() => navigation.goBack()}
-        onBackPress={() => navigation.navigate("Welcome")}
+        onBackPress={() => navigation.goBack()}
         titleStyle={undefined}
         containerStyle={undefined}
       />
@@ -91,7 +94,7 @@ const Register = ({ navigation }: Props) => {
 
           <View style={styles.phoneInputContainer}>
             <PhoneNumberInput
-              defaultCountry="AE"
+              defaultCountry="SA"
               placeholder={t("phone.placeholder")}
               onCountryChange={handleCountryChange}
               onPhoneChange={handlePhoneChange}
@@ -107,7 +110,7 @@ const Register = ({ navigation }: Props) => {
 
         <View style={styles.footer}>
           <CustomButton
-            title={"continue"}
+            title={t("common.continue")}
             backgroundColor={isValidPhone ? "#ffab00" : "#E0E0E0"}
             onPress={handleContinue}
             style={styles.buttonStyle}

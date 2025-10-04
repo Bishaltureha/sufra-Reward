@@ -138,7 +138,7 @@ const OfferBanner = ({ onOfferPress }) => {
             <Image
               style={styles.offerImage}
               source={offer.image}
-              resizeMode="cover"
+              resizeMode="contain"
             />
           </TouchableOpacity>
         ))}
@@ -242,8 +242,10 @@ const styles = StyleSheet.create({
   },
   offerContainer: {
     width: screenWidth - scale(64),
+    borderRadius: scale(10),
   },
   offerImage: {
+    overflow: "hidden",
     width: "100%",
     height: scale(201),
     borderRadius: scale(10),
