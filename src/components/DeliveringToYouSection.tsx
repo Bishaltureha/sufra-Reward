@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import * as Location from "expo-location";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { scale } from "../utils/dimen";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -7,13 +6,29 @@ import FreeDelivery from "../../assets/svg/FreeDelivery";
 import Star from "../../assets/svg/Star";
 import Error from "../../assets/svg/Error";
 import LocationModal from "./LocationModal";
+import { useLocation } from "../hooks/useLocation";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { toggleFavorite } from "../store/slice/favorites";
 
-const DeliveryCard = ({ item, onCardPress, onFavoritePress }) => {
-  const [isFavorite, setIsFavorite] = useState(item.isFavorite || false);
+const DeliveryCard = ({ item, onCardPress }) => {
+  const dispatch = useAppDispatch();
+  const favorites = useAppSelector((state) => state.favorites.items);
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    onFavoritePress && onFavoritePress(item.id, !isFavorite);
+  // Check if this item is in favorites
+  const isFavorite = favorites.some(
+    (fav) => fav.id === item.id && fav.type === "restaurant"
+  );
+
+  const handleToggleFavorite = () => {
+    dispatch(
+      toggleFavorite({
+        id: item.id,
+        type: "restaurant",
+        name: item.restaurantName,
+        image: item.image,
+        addedAt: Date.now(),
+      })
+    );
   };
 
   const renderDeliveryTime = () => {
@@ -43,8 +58,10 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress }) => {
     >
       <Image style={styles.cardImage} source={item.image} />
 
-      {/* Favorite Button */}
-      <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
+      <TouchableOpacity
+        onPress={handleToggleFavorite}
+        style={styles.favoriteButton}
+      >
         <Icon
           name={isFavorite ? "favorite" : "favorite-outline"}
           size={20}
@@ -52,7 +69,6 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress }) => {
         />
       </TouchableOpacity>
 
-      {/* Delivery Time Badge */}
       <View style={styles.timeContainer}>
         <Icon name="access-time" size={14} color="#4A4A4A" />
         {renderDeliveryTime()}
@@ -69,13 +85,11 @@ const DeliveryCard = ({ item, onCardPress, onFavoritePress }) => {
         <Text style={styles.freeDeliveryText}>{item.delivery}</Text>
       </View>
 
-      {/* Free Delivery Badge */}
       <View style={styles.badgeContainer}>
         <FreeDelivery height={scale(14)} width={scale(14)} />
         <Text style={styles.badgeContainerText}>Free Delivery</Text>
       </View>
 
-      {/* Star Badge */}
       {item.hasDoublePoints && (
         <View style={styles.badgeStarContainer}>
           <Star />
@@ -90,67 +104,17 @@ const DeliveringToYouSection = ({
   title = "Delivering to you",
   data = [],
   onCardPress,
-  onFavoritePress,
   onManualAddressPress,
 }) => {
+  const { isEnabled: isLocationEnabled } = useLocation();
   const [locationModalVisible, setLocationModalVisible] = useState(false);
-  const [isLocationEnabled, setIsLocationEnabled] = useState(false);
-  const [userLocation, setUserLocation] = useState(null);
-
-  useEffect(() => {
-    checkLocation();
-  }, []);
-
-  const checkLocation = async () => {
-    try {
-      // Permission check
-      const { status } = await Location.getForegroundPermissionsAsync();
-
-      // GPS/Location services check
-      const servicesEnabled = await Location.hasServicesEnabledAsync();
-
-      // Dono true hone chahiye
-      if (status === "granted" && servicesEnabled) {
-        setIsLocationEnabled(true);
-      } else {
-        setIsLocationEnabled(false);
-      }
-    } catch (error) {
-      console.error("Error checking location:", error);
-      setIsLocationEnabled(false);
-    }
-  };
 
   const handleEnableLocationPress = () => {
     setLocationModalVisible(true);
   };
 
-  const handleEnableLocation = async (locationData) => {
-    try {
-      console.log("Location Data received:", locationData);
-
-      // Location data save karo
-      setUserLocation(locationData);
-
-      // Location enabled state ko true karo
-      setIsLocationEnabled(true);
-
-      // Modal close karo
-      setLocationModalVisible(false);
-
-      // Parent component ko bhi inform karo (optional)
-      // onLocationReceived && onLocationReceived(locationData);
-    } catch (error) {
-      console.error("Error handling location:", error);
-      setIsLocationEnabled(false);
-    }
-  };
-
   const handleManualAddress = () => {
     setLocationModalVisible(false);
-    // Manual address ke baad bhi location enabled consider karo
-    setIsLocationEnabled(true);
-
     if (onManualAddressPress) {
       onManualAddressPress();
     }
@@ -177,15 +141,12 @@ const DeliveringToYouSection = ({
           key={item.id || index}
           item={item}
           onCardPress={onCardPress}
-          onFavoritePress={onFavoritePress}
         />
       ))}
 
       <LocationModal
         visible={locationModalVisible}
         onClose={() => setLocationModalVisible(false)}
-        onEnableLocation={handleEnableLocation}
-        onManualAddress={handleManualAddress}
       />
     </View>
   );

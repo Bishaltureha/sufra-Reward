@@ -12,7 +12,13 @@ import {
   Linking,
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
-import { RouteProp, useRoute, useNavigation } from "@react-navigation/native";
+import { useLocation } from "../hooks/useLocation";
+import {
+  RouteProp,
+  useRoute,
+  useNavigation,
+  NavigationProp,
+} from "@react-navigation/native";
 import { scale } from "../utils/dimen";
 import { RootStackParamList } from "../types";
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -23,7 +29,7 @@ import YourPastOrders from "../components/BrandDetailsScreen/YourPastOrders";
 import BrandDetailsDeliveryBox from "../components/BrandDetailsScreen/BrandDetailsDeliveryBox";
 import CollectYourOrderContainer from "../components/BrandDetailsScreen/CollectYourOrderContainer";
 import RedBoxLocationPermission from "../components/BrandDetailsScreen/RedBoxLocationpermission";
-import Trash from "../../assets/svg/Trash";
+import ProductCard from "../components/BrandDetailsScreen/ProductCard";
 
 type BrandDetailsRouteProp = RouteProp<RootStackParamList, "BrandDetails">;
 
@@ -152,61 +158,9 @@ const categoryData = [
   { name: "Beverages", items: MealsmenuItems },
 ];
 
-const ProductCard = ({
-  item,
-  onAdd,
-  quantity,
-  onIncrement,
-  onDecrement,
-}: any) => {
-  return (
-    <View style={styles.productCard}>
-      <Image source={item.image} style={styles.productImage} />
-
-      {quantity > 0 ? (
-        <View style={styles.quantitySelector}>
-          <TouchableOpacity
-            onPress={() => onDecrement(item.id)}
-            activeOpacity={0.7}
-          >
-            {quantity >= 2 ? (
-              <AntDesign name="minus" size={scale(15)} color="#017851" />
-            ) : (
-              <Trash />
-            )}
-          </TouchableOpacity>
-          <Text style={styles.quantityText}>{quantity}</Text>
-          <TouchableOpacity
-            onPress={() => onIncrement(item.id)}
-            activeOpacity={0.7}
-          >
-            <AntDesign name="plus" size={scale(15)} color="#017851" />
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => onAdd(item)}
-          activeOpacity={0.7}
-        >
-          <AntDesign name="plus" size={scale(19)} color="#017851" />
-        </TouchableOpacity>
-      )}
-
-      <Text style={styles.productName}>{item.name}</Text>
-      <View style={styles.priceContainer}>
-        <Text style={styles.price}>{item.price} SR</Text>
-        {item.originalPrice && (
-          <Text style={styles.originalPrice}>{item.originalPrice} SR</Text>
-        )}
-      </View>
-    </View>
-  );
-};
-
 const BrandDetailsScreen = () => {
   const route = useRoute<BrandDetailsRouteProp>();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { brandImage, brandName, brandId } = route.params;
   const [activeTab, setActiveTab] = useState<"Delivery" | "Pick-up">(
     "Delivery"
@@ -217,42 +171,48 @@ const BrandDetailsScreen = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const categoryScrollRef = useRef<ScrollView>(null);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
-  const [isLocationEnabled, setIsLocationEnabled] = useState(false);
+  // const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const [locationModalVisible, setLocationModalVisible] = useState(false);
-  const [locationError, setLocationError] = useState<string | null>(null);
-  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
-  const [currentLocation, setCurrentLocation] =
-    useState<Location.LocationObject | null>(null);
+  // const [locationError, setLocationError] = useState<string | null>(null);
+  // const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  // const [currentLocation, setCurrentLocation] =
+  //   useState<Location.LocationObject | null>(null);
   const [cartItems, setCartItems] = useState<{ [key: string]: number }>({});
 
   const sectionPositions = useRef<{ [key: string]: number }>({});
 
-  useEffect(() => {
-    checkLocation();
-  }, []);
+  const {
+    isEnabled: isLocationEnabled,
+    coords: currentLocation,
+    isLoading: isLoadingLocation,
+    error: locationError,
+  } = useLocation();
+  // useEffect(() => {
+  //   checkLocation();
+  // }, []);
 
-  const checkLocation = async () => {
-    try {
-      setLocationError(null);
-      const servicesEnabled = await Location.hasServicesEnabledAsync();
-      if (!servicesEnabled) {
-        setIsLocationEnabled(false);
-        setLocationError("Location services disabled");
-        return;
-      }
-      const { status } = await Location.getForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setIsLocationEnabled(false);
-        setLocationError("Location permission not granted");
-        return;
-      }
-      setIsLocationEnabled(true);
-    } catch (error) {
-      console.error("Error checking location:", error);
-      setIsLocationEnabled(false);
-      setLocationError("Failed to check location");
-    }
-  };
+  // const checkLocation = async () => {
+  //   try {
+  //     setLocationError(null);
+  //     const servicesEnabled = await Location.hasServicesEnabledAsync();
+  //     if (!servicesEnabled) {
+  //       setIsLocationEnabled(false);
+  //       setLocationError("Location services disabled");
+  //       return;
+  //     }
+  //     const { status } = await Location.getForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       setIsLocationEnabled(false);
+  //       setLocationError("Location permission not granted");
+  //       return;
+  //     }
+  //     setIsLocationEnabled(true);
+  //   } catch (error) {
+  //     console.error("Error checking location:", error);
+  //     setIsLocationEnabled(false);
+  //     setLocationError("Failed to check location");
+  //   }
+  // };
 
   const handleScroll = (event: any) => {
     const scrollY = event.nativeEvent.contentOffset.y;
@@ -290,77 +250,114 @@ const BrandDetailsScreen = () => {
     setLocationModalVisible(true);
   };
 
-  const handleEnableLocation = async (locationData: any) => {
-    try {
-      setIsLoadingLocation(true);
-      setLocationError(null);
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setLocationError("Location permission denied");
-        Alert.alert(
-          "Location Access Required",
-          "Please enable location services in your device settings to calculate distance.",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Open Settings",
-              onPress: () => {
-                if (Platform.OS === "ios") {
-                  Linking.openURL("app-settings:");
-                } else {
-                  Linking.openSettings();
-                }
-              },
-            },
-          ]
-        );
-        setLocationModalVisible(false);
-        return;
-      }
-      const servicesEnabled = await Location.hasServicesEnabledAsync();
-      if (!servicesEnabled) {
-        setLocationError("Location services disabled");
-        Alert.alert(
-          "Location Services Disabled",
-          "Please enable location services in your device settings.",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Open Settings",
-              onPress: () => {
-                if (Platform.OS === "ios") {
-                  Linking.openURL("app-settings:");
-                } else {
-                  Linking.openSettings();
-                }
-              },
-            },
-          ]
-        );
-        setLocationModalVisible(false);
-        return;
-      }
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-        timeInterval: 10000,
-      });
-      setCurrentLocation(location);
-      setIsLocationEnabled(true);
-      setLocationModalVisible(false);
-      console.log("Location Data:", location);
-    } catch (error: any) {
-      console.error("Error handling location:", error);
-      let errorMessage = "Failed to get location. Please try again.";
-      if (error.message?.includes("timeout")) {
-        errorMessage = "Location request timed out. Please try again.";
-      } else if (error.message?.includes("permission")) {
-        errorMessage = "Location permission denied.";
-      }
-      setLocationError(errorMessage);
-      Alert.alert("Location Error", errorMessage, [{ text: "OK" }]);
-    } finally {
-      setIsLoadingLocation(false);
-    }
+  // const handleEnableLocation = async (locationData: any) => {
+  //   try {
+  //     setIsLoadingLocation(true);
+  //     setLocationError(null);
+  //     const { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       setLocationError("Location permission denied");
+  //       Alert.alert(
+  //         "Location Access Required",
+  //         "Please enable location services in your device settings to calculate distance.",
+  //         [
+  //           { text: "Cancel", style: "cancel" },
+  //           {
+  //             text: "Open Settings",
+  //             onPress: () => {
+  //               if (Platform.OS === "ios") {
+  //                 Linking.openURL("app-settings:");
+  //               } else {
+  //                 Linking.openSettings();
+  //               }
+  //             },
+  //           },
+  //         ]
+  //       );
+  //       setLocationModalVisible(false);
+  //       return;
+  //     }
+  //     const servicesEnabled = await Location.hasServicesEnabledAsync();
+  //     if (!servicesEnabled) {
+  //       setLocationError("Location services disabled");
+  //       Alert.alert(
+  //         "Location Services Disabled",
+  //         "Please enable location services in your device settings.",
+  //         [
+  //           { text: "Cancel", style: "cancel" },
+  //           {
+  //             text: "Open Settings",
+  //             onPress: () => {
+  //               if (Platform.OS === "ios") {
+  //                 Linking.openURL("app-settings:");
+  //               } else {
+  //                 Linking.openSettings();
+  //               }
+  //             },
+  //           },
+  //         ]
+  //       );
+  //       setLocationModalVisible(false);
+  //       return;
+  //     }
+  //     const location = await Location.getCurrentPositionAsync({
+  //       accuracy: Location.Accuracy.Balanced,
+  //       timeInterval: 10000,
+  //     });
+  //     setCurrentLocation(location);
+  //     setIsLocationEnabled(true);
+  //     setLocationModalVisible(false);
+  //     console.log("Location Data:", location);
+  //   } catch (error: any) {
+  //     console.error("Error handling location:", error);
+  //     let errorMessage = "Failed to get location. Please try again.";
+  //     if (error.message?.includes("timeout")) {
+  //       errorMessage = "Location request timed out. Please try again.";
+  //     } else if (error.message?.includes("permission")) {
+  //       errorMessage = "Location permission denied.";
+  //     }
+  //     setLocationError(errorMessage);
+  //     Alert.alert("Location Error", errorMessage, [{ text: "OK" }]);
+  //   } finally {
+  //     setIsLoadingLocation(false);
+  //   }
+  // };
+
+  // ✅ Distance calculation (if needed)
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) => {
+    const R = 6371; // Earth's radius in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+  // ✅ Get actual distance for Pick-up
+  const getPickupDistance = () => {
+    if (!currentLocation) return "N/A";
+
+    // Example store coordinates (replace with actual store location)
+    const storeLatitude = 15.2048; // Dubai example
+    const storeLongitude = 55.2708;
+
+    const distance = calculateDistance(
+      currentLocation.latitude,
+      currentLocation.longitude,
+      storeLatitude,
+      storeLongitude
+    );
+
+    return `${distance.toFixed(1)} km`;
   };
 
   const handleManualAddress = () => {
@@ -413,6 +410,10 @@ const BrandDetailsScreen = () => {
     sectionPositions.current[category] = y;
   };
 
+  const handleCardPress = (item: any) => {
+    navigation.navigate("ProductDetails", { productData: item });
+    // navigation.navigate("ProductDetailsWithImage", { productData: item });
+  };
   const renderProductItem =
     (menuItems: any[]) =>
     ({ item, index }: any) => {
@@ -424,16 +425,14 @@ const BrandDetailsScreen = () => {
             item={item}
             onAdd={handleAddProduct}
             quantity={cartItems[item.id] || 0}
-            onIncrement={handleIncrement}
-            onDecrement={handleDecrement}
+            handleCardPress={() => handleCardPress(item)}
           />
           {nextItem ? (
             <ProductCard
               item={nextItem}
               onAdd={handleAddProduct}
               quantity={cartItems[nextItem.id] || 0}
-              onIncrement={handleIncrement}
-              onDecrement={handleDecrement}
+              handleCardPress={() => handleCardPress(nextItem)} // ADD THIS
             />
           ) : (
             <View style={styles.productCard} />
@@ -441,6 +440,38 @@ const BrandDetailsScreen = () => {
         </View>
       );
     };
+  // const renderPickupDistance = () => {
+  //   if (isLoadingLocation) {
+  //     return (
+  //       <View style={styles.distanceContainer}>
+  //         <Text style={styles.deliveryText}>Distance</Text>
+  //         <Text style={styles.loadingText}>Loading...</Text>
+  //       </View>
+  //     );
+  //   }
+
+  //   if (!isLocationEnabled || locationError) {
+  //     return (
+  //       <TouchableOpacity
+  //         style={styles.distanceContainer}
+  //         onPress={handleEnableLocationPress}
+  //       >
+  //         <Text style={styles.deliveryText}>Distance</Text>
+  //         <View style={styles.enableLocationRowInline}>
+  //           <Error />
+  //           <Text style={styles.enableLocationTextSmall}>Enable Location</Text>
+  //         </View>
+  //       </TouchableOpacity>
+  //     );
+  //   }
+
+  //   return (
+  //     <Text style={styles.deliveryText}>
+  //       Distance{"\n"}
+  //       <Text style={styles.deliveryTextBold}>2 km</Text>
+  //     </Text>
+  //   );
+  // };
 
   const renderPickupDistance = () => {
     if (isLoadingLocation) {
@@ -470,11 +501,10 @@ const BrandDetailsScreen = () => {
     return (
       <Text style={styles.deliveryText}>
         Distance{"\n"}
-        <Text style={styles.deliveryTextBold}>2 km</Text>
+        <Text style={styles.deliveryTextBold}>{getPickupDistance()}</Text>
       </Text>
     );
   };
-
   return (
     <View style={styles.container}>
       <StatusBar
@@ -723,13 +753,7 @@ const BrandDetailsScreen = () => {
         </View>
 
         <View style={styles.contentArea}>
-          {!isLocationEnabled && (
-            <RedBoxLocationPermission
-              onEnable={() => {
-                checkLocation();
-              }}
-            />
-          )}
+          {!isLocationEnabled && <RedBoxLocationPermission />}
           {categoryData.map((category) => (
             <View
               key={category.name}
@@ -751,8 +775,6 @@ const BrandDetailsScreen = () => {
       <LocationModal
         visible={locationModalVisible}
         onClose={() => setLocationModalVisible(false)}
-        onEnableLocation={handleEnableLocation}
-        onManualAddress={handleManualAddress}
       />
     </View>
   );
@@ -764,11 +786,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+    marginBottom: scale(40),
   },
   brandImage: {
     width: "100%",
     height: scale(220),
     resizeMode: "cover",
+  },
+  productCard: {
+    width: scale(173),
+    marginBottom: scale(10),
+  },
+  productsContainer: {
+    paddingTop: scale(10),
+  },
+  productRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: scale(3),
   },
   imageContainer: {
     position: "relative",
@@ -813,62 +848,7 @@ const styles = StyleSheet.create({
   spacer: {
     width: scale(45),
   },
-  productsContainer: {
-    paddingTop: scale(10),
-  },
-  productRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: scale(3),
-  },
-  productCard: {
-    width: scale(173),
-    marginBottom: scale(10),
-  },
-  productImage: {
-    width: scale(173),
-    height: scale(173),
-    borderRadius: scale(10),
-    marginTop: scale(10),
-  },
-  addButton: {
-    width: scale(40),
-    height: scale(40),
-    borderRadius: scale(20),
-    backgroundColor: "#E6E6E6",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    left: scale(125),
-    top: scale(135),
-  },
-  productName: {
-    marginTop: scale(6),
-    fontFamily: "Rubik-Medium",
-    fontWeight: "500",
-    fontSize: scale(13),
-    color: "#4A4A4A",
-  },
-  priceContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    alignItems: "flex-end",
-  },
-  price: {
-    marginTop: scale(3),
-    fontFamily: "Rubik-Bold",
-    fontWeight: "700",
-    fontSize: scale(15),
-    color: "#017851",
-  },
-  originalPrice: {
-    marginStart: scale(6),
-    fontFamily: "Rubik-Regular",
-    fontWeight: "400",
-    fontSize: scale(14),
-    color: "#717171",
-    textDecorationLine: "line-through",
-  },
+
   contentContainer: {
     flex: 1,
     marginTop: scale(-20),
@@ -878,7 +858,7 @@ const styles = StyleSheet.create({
     padding: scale(16),
   },
   contentContainerExpanded: {
-    marginTop: scale(-70),
+    marginTop: scale(-80),
   },
   brandInfoRow: {
     flexDirection: "row",
@@ -1127,30 +1107,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: scale(4),
     elevation: 3,
-  },
-  quantitySelector: {
-    width: scale(124),
-    height: scale(40),
-    backgroundColor: "#FFFFFF",
-    borderRadius: scale(20),
-    borderWidth: scale(1),
-    borderColor: "#E6E6E6",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    position: "absolute",
-    left: scale(25),
-    top: scale(135),
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: scale(2) },
-    shadowOpacity: 0.1,
-    shadowRadius: scale(4),
-    elevation: 3,
-  },
-  quantityText: {
-    fontFamily: "Rubik-SemiBold",
-    fontWeight: "600",
-    fontSize: scale(16),
-    color: "#4A4A4A",
   },
 });

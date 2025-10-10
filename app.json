@@ -55,6 +55,12 @@
             "android": ["en", "ar"]
           }
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow app to use your location."
+        }
       ]
     ]
   }

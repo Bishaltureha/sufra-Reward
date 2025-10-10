@@ -49,11 +49,11 @@ const HomeScreen = () => {
     navigation.navigate("Deals");
   };
 
-  const handleBrandPress = (brandIndex) => {
+  const handleBrandPress = (brandIndex: any) => {
     console.log(`Brand ${brandIndex} tapped!`);
   };
 
-  const handleOfferPress = (offerIndex) => {
+  const handleOfferPress = (offerIndex: any) => {
     console.log(`Offer ${offerIndex} tapped!`);
   };
 

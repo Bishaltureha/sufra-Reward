@@ -149,7 +149,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
             textColor="#000000"
           />
           <CustomButton
-            title={"register"}
+            title={"Register"}
             backgroundColor="#ffffff"
             borderColor="black"
             borderWidth={scale(1.5)}

@@ -7,18 +7,20 @@ import {
   Platform,
   Linking,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { scale } from "../../utils/dimen";
 import WhiteLocation from "../../../assets/svg/WhiteLocation";
 import LocationModal from "../LocationModal";
 import * as Location from "expo-location";
 
 interface RedBoxLocationPermissionProps {
-  onEnable?: () => void; // external callback
+  onLocationEnabled?: (location: Location.LocationObject) => void;
+  onLocationDisabled?: () => void;
 }
 
 const RedBoxLocationPermission: React.FC<RedBoxLocationPermissionProps> = ({
-  onEnable,
+  onLocationEnabled,
+  onLocationDisabled,
 }) => {
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const [locationModalVisible, setLocationModalVisible] = useState(false);
@@ -27,7 +29,7 @@ const RedBoxLocationPermission: React.FC<RedBoxLocationPermissionProps> = ({
   const [currentLocation, setCurrentLocation] =
     useState<Location.LocationObject | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     checkLocation();
   }, []);
 
@@ -39,6 +41,7 @@ const RedBoxLocationPermission: React.FC<RedBoxLocationPermissionProps> = ({
 
       if (status === "granted" && servicesEnabled) {
         setIsLocationEnabled(true);
+        onLocationDisabled?.(); // Notify parent that box should hide
       } else {
         setIsLocationEnabled(false);
         if (!servicesEnabled) {
@@ -69,7 +72,7 @@ const RedBoxLocationPermission: React.FC<RedBoxLocationPermissionProps> = ({
         setLocationError("Location permission denied");
         Alert.alert(
           "Location Access Required",
-          "Please enable location services in your device settings to calculate distance.",
+          "Please enable location services in your device settings.",
           [
             { text: "Cancel", style: "cancel" },
             {
@@ -121,6 +124,10 @@ const RedBoxLocationPermission: React.FC<RedBoxLocationPermissionProps> = ({
       setCurrentLocation(location);
       setIsLocationEnabled(true);
       setLocationModalVisible(false);
+
+      // Notify parent component
+      onLocationEnabled?.(location);
+
       console.log("Location Data:", location);
     } catch (error: any) {
       console.error("Error handling location:", error);
@@ -138,11 +145,19 @@ const RedBoxLocationPermission: React.FC<RedBoxLocationPermissionProps> = ({
       setIsLoadingLocation(false);
     }
   };
+
   const handleManualAddress = () => {
     setLocationModalVisible(false);
     setIsLocationEnabled(true);
+    onLocationEnabled?.(null as any); // Notify parent even for manual address
     console.log("Manual address pressed");
   };
+
+  // Don't render if location is already enabled
+  if (isLocationEnabled) {
+    return null;
+  }
+
   return (
     <>
       <View style={styles.container}>

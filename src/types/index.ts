@@ -25,6 +25,40 @@ export type RootStackParamList = {
     brandName: string;
     brandId: number;
   };
+  ProductDetails: {
+    productData: any;
+  };
+  ProductDetailsWithImage: {
+    productData: any;
+  };
+  AddNewAddress: undefined;
+  Recommendation: undefined;
+  CartScreen: undefined;
+  Payment: {
+    deliveryAddress?: {
+      latitude: number;
+      longitude: number;
+      fullAddress: string;
+      addressName: string;
+      city: string;
+      area: string;
+      street: string;
+      buildingName: string;
+      floor: string;
+      doorNo: string;
+      instructions: string;
+    };
+  };
+  SelectDeliveryAddress: undefined;
+  ConfirmAddress: {
+    latitude: number;
+    longitude: number;
+    address: string;
+    name?: string;
+    street?: string;
+    city?: string;
+    region?: string;
+  };
 };
 
 export type DrawerParamList = {

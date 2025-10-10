@@ -55,7 +55,8 @@ const FloatingLabelInput = ({
         style={[
           styles.input,
           { borderColor },
-          isFocused && { borderColor: "#000" }, // override on focus
+          isFocused && !errorText && { borderColor: "#000" }, // black only if no error
+          errorText && { borderColor: "#FF617E" },
         ]}
         value={value}
         onChangeText={onChangeText}

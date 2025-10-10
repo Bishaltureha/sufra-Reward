@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
@@ -10,13 +10,28 @@ import {
 import { scale } from "../utils/dimen";
 import FreeDelivery from "../../assets/svg/FreeDelivery";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { toggleFavorite } from "../store/slice/favorites";
 
-const OrderAgainCard = ({ item, onFavoritePress, onCardPress }) => {
-  const [isFavorite, setIsFavorite] = useState(item.isFavorite || false);
+const OrderAgainCard = ({ item, onCardPress }) => {
+  const dispatch = useAppDispatch();
+  const favorites = useAppSelector((state) => state.favorites.items);
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    onFavoritePress && onFavoritePress(item.id, !isFavorite);
+  // Check if this item is in favorites
+  const isFavorite = favorites.some(
+    (fav) => fav.id === item.id && fav.type === "order-again"
+  );
+
+  const handleToggleFavorite = () => {
+    dispatch(
+      toggleFavorite({
+        id: item.id,
+        type: "order-again",
+        name: item.restaurantName,
+        image: item.image,
+        addedAt: Date.now(),
+      })
+    );
   };
 
   return (
@@ -36,7 +51,10 @@ const OrderAgainCard = ({ item, onFavoritePress, onCardPress }) => {
       )}
 
       {/* Favorite Button */}
-      <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
+      <TouchableOpacity
+        onPress={handleToggleFavorite}
+        style={styles.favoriteButton}
+      >
         <Icon
           name={isFavorite ? "favorite" : "favorite-outline"}
           size={20}
@@ -71,7 +89,6 @@ const OrderAgainCard = ({ item, onFavoritePress, onCardPress }) => {
 const OrderAgainSection = ({
   title = "Order Again",
   data = [],
-  onFavoritePress,
   onCardPress,
   containerStyle,
 }) => {
@@ -89,7 +106,6 @@ const OrderAgainSection = ({
           <OrderAgainCard
             key={item.id || index}
             item={item}
-            onFavoritePress={onFavoritePress}
             onCardPress={onCardPress}
           />
         ))}
@@ -210,15 +226,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: scale(5),
-    // iOS Shadow Properties
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.15, // #00000026 = 38/255 ≈ 0.15
+    shadowOpacity: 0.15,
     shadowRadius: 3,
-    // Android Shadow Property
     elevation: 3,
   },
   timeText: {
