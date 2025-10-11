@@ -13,6 +13,7 @@ const RTLTextInput = React.forwardRef<TextInput, RTLTextInputProps>(
 const styles = StyleSheet.create({
   input: {
     textAlign: isRTL ? "right" : "left",
+    outlineColor: "transparent",
   },
 });
 

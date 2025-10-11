@@ -12,13 +12,13 @@ import React, { useState, useRef } from "react";
 import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import { scale } from "../utils/dimen";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import YellowStar from "../../assets/svg/YellowStar";
 import Regular from "../../assets/svg/Regular";
 import Double from "../../assets/svg/Double";
 
 type ProductDetailsWithImageRouteProp = RouteProp<
-  RootStackParamList,
+  MainStackParamList,
   "ProductDetailsWithImage"
 >;
 

@@ -12,14 +12,14 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { scale } from "../utils/dimen";
 import SearchIcon from "../../assets/svg/SearchIcon";
 import LoctionPointer from "../../assets/svg/LoctionPointer";
 
 export default function AddNewAddress() {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
 
   const [region, setRegion] = useState({
     latitude: 24.7136,

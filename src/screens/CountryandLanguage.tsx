@@ -3,12 +3,12 @@ import React from "react";
 import Header from "../components/Header";
 import CircularRightArrow from "../../assets/svg/CircularRightArrow";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
+import { OnboardingStackParamList } from "../types";
 import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 import { scale } from "../utils/dimen";
 
-type Props = NativeStackScreenProps<RootStackParamList, "CountryandLanguage">;
+type Props = NativeStackScreenProps<OnboardingStackParamList, "CountryandLanguage">;
 
 const CountryandLanguage = ({ navigation }: Props) => {
   const { t } = useLocalization();

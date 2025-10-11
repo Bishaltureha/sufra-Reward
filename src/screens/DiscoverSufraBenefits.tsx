@@ -4,7 +4,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import Header from "../components/Header";
 import CustomButton from "../components/CustomButton";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { OnboardingStackParamList, RootStackParamList } from "../types";
 import Tiers from "../../assets/svg/Tiers";
 import Logo from "../../assets/svg/Logo";
 import TierBox from "../components/TierBox";
@@ -13,9 +14,9 @@ import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 import { scale } from "../utils/dimen";
 
-type Props = NativeStackScreenProps<
-  RootStackParamList,
-  "DiscoverSufraBenefits"
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<OnboardingStackParamList, "DiscoverSufraBenefits">,
+  NativeStackScreenProps<RootStackParamList>
 >;
 
 const DiscoverSufraBenefits = ({ navigation }: Props) => {
@@ -93,7 +94,7 @@ const DiscoverSufraBenefits = ({ navigation }: Props) => {
         <CustomButton
           title={t("common.registerNow")}
           backgroundColor="#ffab00"
-          onPress={() => navigation.navigate("Register")}
+          onPress={() => navigation.navigate("AuthStack", { screen: "Register" })}
           style={styles.buttonStyle}
           textStyle={undefined}
           textColor={"#000000"}

@@ -22,7 +22,7 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import RuningTime from "../../assets/svg/RuningTime";
 import LocationofCart from "../../assets/svg/LocationofCart";
 import GreenFire from "../../assets/svg/GreenFire";
@@ -36,15 +36,14 @@ import WhiteTicket from "../../assets/svg/WhiteTicket";
 import GreenCreditCard from "../../assets/svg/GreenCreditCard";
 import WhiteCreditCard from "../../assets/svg/WhiteCreditCard";
 import { LinearGradient } from "expo-linear-gradient";
-import FloatingLabelInput from "../components/FloatingLabelInput";
 import CardPaymentForm from "../components/CardPaymentForm";
 import CustomCheckbox from "../components/CustomCheckbox";
 
-type PaymentRouteProp = RouteProp<RootStackParamList, "Payment">;
+type PaymentRouteProp = RouteProp<MainStackParamList, "Payment">;
 const Payment = () => {
   const route = useRoute<PaymentRouteProp>();
   const deliveryAddress = route.params?.deliveryAddress;
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
   const [showPriceBreakdown, setShowPriceBreakdown] = useState(false);
   const [appliedPromos, setAppliedPromos] = useState<number[]>([0]);
   const [selectedPayment, setSelectedPayment] = useState<string>("applePay");

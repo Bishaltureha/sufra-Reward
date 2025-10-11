@@ -7,11 +7,8 @@ import {
   StatusBar,
   TouchableOpacity,
   FlatList,
-  Alert,
-  Platform,
-  Linking,
 } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useLocation } from "../hooks/useLocation";
 import {
   RouteProp,
@@ -20,18 +17,17 @@ import {
   NavigationProp,
 } from "@react-navigation/native";
 import { scale } from "../utils/dimen";
-import { RootStackParamList } from "../types";
-import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { MainStackParamList } from "../types";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Error from "../../assets/svg/Error";
 import LocationModal from "../components/LocationModal";
-import * as Location from "expo-location";
 import YourPastOrders from "../components/BrandDetailsScreen/YourPastOrders";
 import BrandDetailsDeliveryBox from "../components/BrandDetailsScreen/BrandDetailsDeliveryBox";
 import CollectYourOrderContainer from "../components/BrandDetailsScreen/CollectYourOrderContainer";
 import RedBoxLocationPermission from "../components/BrandDetailsScreen/RedBoxLocationpermission";
 import ProductCard from "../components/BrandDetailsScreen/ProductCard";
 
-type BrandDetailsRouteProp = RouteProp<RootStackParamList, "BrandDetails">;
+type BrandDetailsRouteProp = RouteProp<MainStackParamList, "BrandDetails">;
 
 const categories = [
   "Bestsellers",
@@ -160,7 +156,7 @@ const categoryData = [
 
 const BrandDetailsScreen = () => {
   const route = useRoute<BrandDetailsRouteProp>();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
   const { brandImage, brandName, brandId } = route.params;
   const [activeTab, setActiveTab] = useState<"Delivery" | "Pick-up">(
     "Delivery"

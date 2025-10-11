@@ -17,7 +17,7 @@ import {
   Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Trash from "../../assets/svg/Trash";
 import YellowStar from "../../assets/svg/YellowStar";
@@ -26,7 +26,7 @@ import ToggleSwitch from "../components/ToggleSwitch";
 type Props = {};
 
 const CartScreen = (props: Props) => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
   const [showAllIngredients, setShowAllIngredients] = useState(false);
   const [burgerQuantity, setBurgerQuantity] = useState(1);
   const [pieQuantity, setPieQuantity] = useState(1);

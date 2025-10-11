@@ -4,10 +4,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { scale } from "../utils/dimen";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 
 const SelectDeliveryAddress = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
   const handleBack = () => navigation.goBack();

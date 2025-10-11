@@ -10,9 +10,9 @@ import {
 import { scale } from "../utils/dimen";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
 
 interface BrandsContainerProps {
   onBrandPress?: (index: number) => void;

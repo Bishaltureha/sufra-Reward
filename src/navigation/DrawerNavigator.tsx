@@ -1,5 +1,6 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import { I18nManager, View } from "react-native";
 import HomeScreen from "../screens/HomeScreen";
 import { DrawerParamList } from "../types";
 import CustomDrawerContent from "../components/CustomDrawerContent";
@@ -20,6 +21,8 @@ import ProfileScreen from "../screens/ProfileScreen";
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
 export default function DrawerNavigator() {
+  const isRTL = I18nManager.isRTL;
+
   return (
     <Drawer.Navigator
       id={undefined}
@@ -27,10 +30,12 @@ export default function DrawerNavigator() {
       screenOptions={{
         headerShown: false,
         drawerType: "front",
-        overlayColor: "transparent",
+        drawerPosition: isRTL ? "right" : "left",
+        overlayColor: "rgba(0,0,0,0.5)",
         swipeEnabled: false,
         drawerHideStatusBarOnOpen: true,
         drawerStyle: {
+          direction: isRTL ? "rtl" : "ltr",
           width: scale(320),
         },
       }}

@@ -4,8 +4,8 @@ import { scale } from "../utils/dimen";
 import { Ionicons } from "@expo/vector-icons";
 
 interface CustomCheckboxProps {
-  checked: boolean; // controlled by parent
-  onChange: (checked: boolean) => void; // callback to parent
+  checked: boolean;
+  onChange: (checked: boolean) => void;
 }
 
 const CustomCheckbox = ({ checked, onChange }: CustomCheckboxProps) => {

@@ -17,16 +17,16 @@ import {
 } from "@react-navigation/native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
 import { scale } from "../utils/dimen";
-import { RootStackParamList } from "../types";
+import { MainStackParamList, RootStackParamList } from "../types";
 import YellowStar from "../../assets/svg/YellowStar";
 import Regular from "../../assets/svg/Regular";
 import Double from "../../assets/svg/Double";
 
-type ProductDetailsRouteProp = RouteProp<RootStackParamList, "ProductDetails">;
+type ProductDetailsRouteProp = RouteProp<MainStackParamList, "ProductDetails">;
 
 const ProductDetails = () => {
   const route = useRoute<ProductDetailsRouteProp>();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
   const { productData } = route.params;
   const [isFavorite, setIsFavorite] = useState(false);
   const [activeTab, setActiveTab] = useState(0);

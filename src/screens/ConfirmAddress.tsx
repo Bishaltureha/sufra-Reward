@@ -9,7 +9,7 @@ import {
   ImageBackground,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import {
   NavigationProp,
   useNavigation,
@@ -22,10 +22,10 @@ import { scale } from "../utils/dimen";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 import LoctionPointer from "../../assets/svg/LoctionPointer";
 
-type ConfirmAddressRouteProp = RouteProp<RootStackParamList, "ConfirmAddress">;
+type ConfirmAddressRouteProp = RouteProp<MainStackParamList, "ConfirmAddress">;
 
 const ConfirmAddress = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
   const route = useRoute<ConfirmAddressRouteProp>();
 
   // Get the location data from route params

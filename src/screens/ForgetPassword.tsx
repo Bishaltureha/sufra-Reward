@@ -3,14 +3,18 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
 import CustomButton from "../components/CustomButton";
-import { RootStackParamList } from "../types";
+import { AuthStackParamList, RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { CompositeScreenProps } from "@react-navigation/native";
 import PhoneNumberInput from "../components/PhoneNumberInputtext";
 import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 import { scale } from "../utils/dimen";
 
-type Props = NativeStackScreenProps<RootStackParamList, "ForgetPassword">;
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<AuthStackParamList, "ForgetPassword">,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 interface Country {
   code: string;
@@ -59,7 +63,7 @@ const ForgetPassword = ({ navigation }: Props) => {
       // console.log("Sending to:", fullNumber);
 
       // Navigate to verification screen or show success message
-      navigation.navigate("Home");
+      navigation.navigate("MainStack", { screen: "Home" });
     } else {
       console.log("Please enter a valid phone number");
       // You could show an error message here

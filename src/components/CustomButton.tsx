@@ -11,7 +11,7 @@ type Props = {
   textStyle?: object;
   borderColor?: string;
   borderWidth?: number;
-  disabled?: boolean; // ✅ proper typing here
+  disabled?: boolean;
   textColor: string;
 };
 
@@ -24,7 +24,7 @@ const CustomButton = ({
   borderColor,
   borderWidth,
   textColor,
-  disabled = false, // ✅ default value
+  disabled = false,
 }: Props) => {
   return (
     <TouchableOpacity

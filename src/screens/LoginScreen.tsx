@@ -9,8 +9,9 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
 import CustomButton from "../components/CustomButton";
-import { RootStackParamList } from "../types";
+import { AuthStackParamList, RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { CompositeScreenProps } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import PhoneNumberInput from "../components/PhoneNumberInputtext";
 import { useLocalization } from "../context/LocalizationContext";
@@ -18,7 +19,10 @@ import RTLText from "../components/RTLText";
 import RTLTextInput from "../components/RTLTextInput";
 import { scale } from "../utils/dimen";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Login">;
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<AuthStackParamList, "Login">,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 interface Country {
   code: string;
@@ -69,7 +73,7 @@ const LoginScreen = ({ navigation }: Props) => {
       const cleanNumber = phoneNumber.replace(/\D/g, "");
       const fullNumber = `${selectedCountry.dial_code}${cleanNumber}`;
       // console.log("Login with:", fullNumber);
-      navigation.navigate("Home");
+      navigation.navigate("MainStack", { screen: "Home" });
     } else {
       // console.log("Please enter valid phone number and password");
       // You could show an alert or error message here

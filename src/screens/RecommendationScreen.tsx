@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { scale } from "../utils/dimen";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import YellowStar from "../../assets/svg/YellowStar";
 
 type Props = {};
@@ -43,7 +43,7 @@ const RecommendationScreen = (props: Props) => {
   const [quantity, setQuantity] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
 
   const handleBack = () => {
     navigation.goBack();
