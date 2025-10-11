@@ -81,3 +81,10 @@ export function loadLanguage(): { lang?: string; isRTL?: boolean } {
     isRTL: getBoolean(StorageKeys.IS_RTL),
   };
 }
+
+export function getLanguage(): { language: string; isRTL: boolean } {
+  return {
+    language: getString(StorageKeys.LANGUAGE) || "en",
+    isRTL: getBoolean(StorageKeys.IS_RTL) || false,
+  };
+}

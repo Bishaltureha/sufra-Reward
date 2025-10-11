@@ -1,4 +1,4 @@
-import { StyleSheet, View, Platform, TextInput } from "react-native";
+import { StyleSheet, View, Platform, TextInput, I18nManager } from "react-native";
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
@@ -44,17 +44,41 @@ const OtpScreen = ({ navigation }: Props) => {
     return `${m}:${s < 10 ? "0" : ""}${s}`;
   }, []);
 
-  // ✅ Handle OTP input
+  // ✅ Handle OTP input with RTL support
   const handleChange = useCallback(
     (text: string, index: number) => {
       const newOtp = [...otp];
       newOtp[index] = text;
       setOtp(newOtp);
 
-      if (text && index < OTP_LENGTH - 1) {
-        inputRefs.current[index + 1]?.focus();
-      } else if (!text && index > 0) {
-        inputRefs.current[index - 1]?.focus();
+      const isRTL = I18nManager.isRTL;
+
+      if (text) {
+        // Move to next input
+        if (isRTL) {
+          // In RTL, move left (previous index)
+          if (index > 0) {
+            inputRefs.current[index - 1]?.focus();
+          }
+        } else {
+          // In LTR, move right (next index)
+          if (index < OTP_LENGTH - 1) {
+            inputRefs.current[index + 1]?.focus();
+          }
+        }
+      } else {
+        // On delete, move to previous input
+        if (isRTL) {
+          // In RTL, move right (next index)
+          if (index < OTP_LENGTH - 1) {
+            inputRefs.current[index + 1]?.focus();
+          }
+        } else {
+          // In LTR, move left (previous index)
+          if (index > 0) {
+            inputRefs.current[index - 1]?.focus();
+          }
+        }
       }
     },
     [otp]
@@ -65,7 +89,9 @@ const OtpScreen = ({ navigation }: Props) => {
     if (timeLeft === 0) {
       setTimeLeft(RESEND_TIMEOUT);
       setOtp(Array(OTP_LENGTH).fill(""));
-      inputRefs.current[0]?.focus();
+      // Focus first input based on direction
+      const firstInputIndex = I18nManager.isRTL ? OTP_LENGTH - 1 : 0;
+      inputRefs.current[firstInputIndex]?.focus();
     }
   }, [timeLeft]);
 

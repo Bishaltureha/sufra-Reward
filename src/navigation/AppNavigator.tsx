@@ -17,7 +17,11 @@ export default function AppNavigator() {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="OnboardingStack" component={OnboardingStackNavigator} />
+      <Stack.Screen
+        name="OnboardingStack"
+        component={OnboardingStackNavigator}
+        options={{ animation: "fade" }}
+      />
       <Stack.Screen name="AuthStack" component={AuthStackNavigator} />
       <Stack.Screen name="MainStack" component={MainStackNavigator} />
     </Stack.Navigator>

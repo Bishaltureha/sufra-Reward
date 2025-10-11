@@ -577,80 +577,80 @@ import MyFavoritesLogo from "../../assets/svg/drawer/MyFavoritesLogo";
 import MyOrdersLogo from "../../assets/svg/drawer/MyOrdersLogo";
 import MyPaymentMethodsLogo from "../../assets/svg/drawer/MyPaymentMethodsLogo";
 import GiftCardsLogo from "../../assets/svg/drawer/GiftCardsLogo";
-import { MaterialIcons } from "@expo/vector-icons";
-import Thick from "../../assets/svg/drawer/Thick";
 import { getJSON } from "../utils/storage";
 import OrderTrackingLogo from "../../assets/svg/drawer/OrderTrackingLogo";
+import { useLocalization } from "../context/LocalizationContext";
+import LanguageSelector from "./LanguageSelector";
 
 interface DrawerItem {
   name: string;
-  label: string;
+  translationKey: string;
   icon: string;
   requiresAuth?: boolean;
   showOnlyWhenLoggedOut?: boolean;
 }
 
 const drawerItems: DrawerItem[] = [
-  { name: "Home", label: "Home", icon: "HomeLogo" },
-  { name: "GiftCards", label: "Gift Cards", icon: "GiftCardsLogo" },
+  { name: "Home", translationKey: "drawer.home", icon: "HomeLogo" },
+  { name: "GiftCards", translationKey: "drawer.giftCards", icon: "GiftCardsLogo" },
   {
     name: "Delivery",
-    label: "Delivery & Pickup",
+    translationKey: "drawer.delivery",
     icon: "DeliveryLogo",
   },
   {
     name: "DineIn",
-    label: "Dine-in",
+    translationKey: "drawer.dineIn",
     icon: "DineInLogo",
   },
   {
     name: "Deals",
-    label: "Deals",
+    translationKey: "drawer.deals",
     icon: "DealsLogo",
   },
   {
     name: "BookCatering",
-    label: "Book Catering",
+    translationKey: "drawer.bookCatering",
     icon: "BookCateringLogo",
   },
   {
     name: "OrderTracking",
-    label: "Order Tracking",
+    translationKey: "drawer.orderTracking",
     icon: "OrderTrackingLogo",
     showOnlyWhenLoggedOut: true,
   },
   {
     name: "MyFavorites",
-    label: "My Favorites",
+    translationKey: "drawer.myFavorites",
     icon: "MyFavoritesLogo",
     requiresAuth: true,
   },
   {
     name: "MyOrders",
-    label: "My Orders",
+    translationKey: "drawer.myOrders",
     icon: "MyOrdersLogo",
     requiresAuth: true,
   },
   {
     name: "MyAddresses",
-    label: "My Addresses",
+    translationKey: "drawer.myAddresses",
     icon: "MyAddressesLogo",
     requiresAuth: true,
   },
   {
     name: "MyPaymentMethods",
-    label: "My Payment Methods",
+    translationKey: "drawer.myPaymentMethods",
     icon: "MyPaymentMethodsLogo",
     requiresAuth: true,
   },
   {
     name: "GetHelp",
-    label: "Get Help",
+    translationKey: "drawer.getHelp",
     icon: "GetHelpLogo",
   },
   {
     name: "FAQ",
-    label: "FAQ",
+    translationKey: "drawer.faq",
     icon: "FAQLogo",
   },
 ];
@@ -659,10 +659,8 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
   const [userName, setUserName] = React.useState<string>("");
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
   const { navigation, state } = props;
-  const [languageDropdownOpen, setLanguageDropdownOpen] = React.useState(false);
-  const [selectedLanguage, setSelectedLanguage] = React.useState<"EN" | "AR">(
-    "EN"
-  );
+  const { t } = useLocalization();
+
   useEffect(() => {
     // Load user data from MMKV
     const userData = getJSON<{
@@ -674,14 +672,10 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
       setUserName(`${userData.firstName} ${userData.lastName}`);
       setIsLoggedIn(true);
     } else {
-      setUserName(`Click to Login or \nRegister`);
+      setUserName(t("drawer.loginOrRegister"));
       setIsLoggedIn(false);
     }
   }, []);
-
-  const toggleLanguageDropdown = () => {
-    setLanguageDropdownOpen(!languageDropdownOpen);
-  };
 
   const renderIcon = (item: DrawerItem, isActive: boolean) => {
     const iconColor = isActive ? "#F6B01F" : "#6D6D6D";
@@ -781,11 +775,11 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
                 isActive && styles.activeDrawerItemText,
               ]}
             >
-              {item.label}
+              {t(item.translationKey)}
             </Text>
             {(item.name === "BookCatering" || item.name === "GiftCards") && (
               <View style={styles.newBadge}>
-                <Text style={styles.newBadgeText}>NEW!</Text>
+                <Text style={styles.newBadgeText}>{t("drawer.new")}</Text>
               </View>
             )}
           </View>
@@ -834,8 +828,8 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
         <DrawerStar />
         <View style={styles.Logintext}>
           <Text style={styles.userName}>{userName}</Text>
-          {userName && userName !== `Click to Login or \nRegister` && (
-            <Text style={styles.userDetails}>Click to see account details</Text>
+          {isLoggedIn && (
+            <Text style={styles.userDetails}>{t("drawer.accountDetails")}</Text>
           )}
         </View>
         <View style={styles.arrowBox}>
@@ -848,63 +842,12 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
         {drawerItems.map((item, index) => renderDrawerItem(item, index))}
       </View>
       <View style={styles.divider} />
-      <TouchableOpacity
-        style={styles.bottomContainer}
-        onPress={toggleLanguageDropdown}
-      >
-        <Image
-          source={
-            selectedLanguage === "EN"
-              ? require("../../assets/image/Usa.png")
-              : require("../../assets/image/Saudi.png")
-          }
-          style={styles.flag}
+      <View style={styles.bottomContainer}>
+        <LanguageSelector
+          containerStyle={styles.languageSelectorContainer}
+          dropdownStyle={styles.languageSelectorDropdown}
         />
-        <Text style={styles.languageText}>{selectedLanguage}</Text>
-        <MaterialIcons
-          name="keyboard-arrow-down"
-          size={scale(24)}
-          color="#000"
-        />
-      </TouchableOpacity>
-      {/* Language Dropdown */}
-      {languageDropdownOpen && (
-        <View style={styles.languageDropdown}>
-          {/* English Option */}
-          <TouchableOpacity
-            style={styles.languageOption}
-            onPress={() => {
-              setSelectedLanguage("EN");
-              setLanguageDropdownOpen(false);
-            }}
-          >
-            {selectedLanguage === "EN" && <Thick style={styles.checkIcon} />}
-            <Image
-              source={require("../../assets/image/Usa.png")}
-              style={styles.flag}
-            />
-            <Text style={styles.languageOptionText}>English</Text>
-          </TouchableOpacity>
-
-          <View style={styles.dropdowndivider} />
-
-          {/* Arabic Option */}
-          <TouchableOpacity
-            style={styles.languageOption}
-            onPress={() => {
-              setSelectedLanguage("AR");
-              setLanguageDropdownOpen(false);
-            }}
-          >
-            {selectedLanguage === "AR" && <Thick style={styles.checkIcon} />}
-            <Image
-              source={require("../../assets/image/Saudi.png")}
-              style={styles.flag}
-            />
-            <Text style={styles.languageOptionText}>العربية</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -1049,78 +992,19 @@ const styles = StyleSheet.create({
     minHeight: scale(12),
   },
   bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
     position: "absolute",
     left: scale(35),
     bottom: scale(110),
+  },
+  languageSelectorContainer: {
     width: scale(77),
     height: scale(38),
-    backgroundColor: "#E6EAF1",
-    borderRadius: scale(12),
-    shadowColor: "#000000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 4,
   },
-  languageText: {
-    marginStart: scale(3),
-    fontSize: scale(12),
-    color: "#4A4A4A",
-    fontWeight: "500",
-  },
-  flag: {
-    height: scale(20),
-    width: scale(20),
-    borderRadius: scale(10),
-    resizeMode: "cover",
-    overflow: "hidden",
-  },
-  languageDropdown: {
-    position: "absolute",
-    bottom: scale(155),
-    left: scale(60),
+  languageSelectorDropdown: {
+    bottom: scale(45),
+    left: scale(25),
     width: scale(160),
     height: scale(85),
-    backgroundColor: "#E6EAF1",
-    borderRadius: scale(12),
-    shadowColor: "#000000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 4,
-    paddingVertical: scale(8),
-  },
-  languageOption: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: scale(12),
-    paddingVertical: scale(8),
-  },
-  languageOptionText: {
-    fontSize: scale(14),
-    fontFamily: "Rubik-Regular",
-    color: "#4A4A4A",
-    fontWeight: "500",
-    marginLeft: scale(8),
-  },
-  checkIcon: {
-    marginStart: scale(-15),
-    marginEnd: scale(10),
-  },
-  dropdowndivider: {
-    backgroundColor: "#D1D1D1",
-    width: "100%",
-    height: 0.5,
   },
 });
 

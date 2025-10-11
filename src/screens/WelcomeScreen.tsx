@@ -1,14 +1,21 @@
-import { StyleSheet, View, FlatList, Dimensions, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  Dimensions,
+  I18nManager,
+  Image,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useCallback, useRef, useState } from "react";
 import CustomButton from "../components/CustomButton";
-import LanguageButton from "../components/LanguageButton";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { OnboardingStackParamList, RootStackParamList } from "../types";
 import { scale, screenWidth } from "../utils/dimen";
 import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
+import LanguageSelector from "../components/LanguageSelector";
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<OnboardingStackParamList, "Welcome">,
@@ -18,7 +25,7 @@ type Props = CompositeScreenProps<
 const { width, height } = Dimensions.get("window");
 
 const WelcomeScreen = ({ navigation }: Props) => {
-  const { t, locale } = useLocalization();
+  const { t } = useLocalization();
 
   const onboardingData = [
     {
@@ -70,12 +77,8 @@ const WelcomeScreen = ({ navigation }: Props) => {
         </View>
         <View style={styles.textWrapper}>
           <View style={styles.textContainer}>
-            <RTLText style={styles.title}>
-              {onboardingData[currentIndex].title}
-            </RTLText>
-            <RTLText style={styles.subTitle}>
-              {onboardingData[currentIndex].subtitle}
-            </RTLText>
+            <RTLText style={styles.title}>{item.title}</RTLText>
+            <RTLText style={styles.subTitle}>{item.subtitle}</RTLText>
           </View>
         </View>
       </View>
@@ -110,22 +113,11 @@ const WelcomeScreen = ({ navigation }: Props) => {
         </View>
         <View style={styles.topButtons}>
           {currentIndex === 0 && (
-            <LanguageButton
-              flagSource={
-                locale === "ar"
-                  ? require("../../assets/image/Saudi.png")
-                  : require("../../assets/image/Usa.png")
-              }
-              label={locale.toUpperCase()}
-              onPress={() => navigation.navigate("CountryandLanguage")}
-              style={styles.languageButton}
+            <LanguageSelector
+              containerStyle={styles.languageSelector}
+              dropdownStyle={styles.languageSelectorDropdown}
+              showLabel={false}
             />
-            // <LanguageButton
-            //   style={styles.languageButton}
-            //   flagSource={undefined}
-            //   label={undefined}
-            //   onPress={undefined}
-            // />
           )}
           <CustomButton
             title={t("welcome.continueAsGuest")}
@@ -252,9 +244,17 @@ const styles = StyleSheet.create({
     top: 0,
     width: "100%",
   },
-  languageButton: {
-    width: "20%",
-    alignSelf: "center",
+  languageSelector: {
+    width: scale(50),
+    height: scale(50),
+    borderRadius: scale(25),
+    ...(I18nManager.isRTL
+      ? { marginRight: scale(10) }
+      : { marginLeft: scale(10) }),
+  },
+  languageSelectorDropdown: {
+    ...(I18nManager.isRTL ? { right: 0 } : { left: 0 }),
+    top: scale(55),
   },
   guestButton: {
     position: "absolute",
