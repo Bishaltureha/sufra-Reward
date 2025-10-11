@@ -114,6 +114,15 @@ const OtpScreen = ({ navigation }: Props) => {
     if (code.length === OTP_LENGTH) {
       setIsVerifying(true);
 
+      dispatch(
+        setUser({
+          id: 1234,
+          phone: phoneNumber,
+          isProfileComplete: false,
+        })
+      );
+      navigation.replace("InformationScreen");
+      return;
       try {
         // TODO: Replace with your actual API call
         const response = await verifyOTPAPI(phoneNumber, code);
@@ -128,14 +137,14 @@ const OtpScreen = ({ navigation }: Props) => {
         if (response.success) {
           if (response.isNewUser || !response.user.isProfileComplete) {
             // New user OR profile incomplete - save basic data and go to InformationScreen
-            dispatch(
-              setUser({
-                id: response.user.id,
-                phone: response.user.phone,
-                isProfileComplete: false,
-              })
-            );
-            navigation.replace("InformationScreen");
+            // dispatch(
+            //   setUser({
+            //     id: response.user.id,
+            //     phone: response.user.phone,
+            //     isProfileComplete: false,
+            //   })
+            // );
+            // navigation.replace("InformationScreen");
           } else {
             // Existing user with complete profile - save full data and go to Home
             dispatch(

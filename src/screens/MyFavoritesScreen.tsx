@@ -28,6 +28,9 @@ const MyFavoritesScreen = () => {
   const navigation = useNavigation<MyFavoritesScreenNavigationProp>();
   const dispatch = useAppDispatch();
   const favorites = useAppSelector((state) => state.favorites.items);
+  const [activeTab, setActiveTab] = React.useState<"dishes" | "restaurants">(
+    "dishes"
+  );
 
   const handleDrawerToggle = () => {
     try {
@@ -54,6 +57,15 @@ const MyFavoritesScreen = () => {
       console.log("Navigate to restaurant:", item.name);
     }
   };
+
+  // Filter favorites based on active tab
+  const filteredFavorites = favorites.filter((item) => {
+    if (activeTab === "dishes") {
+      return item.type === "brand" || item.type === "order-again";
+    } else {
+      return item.type === "restaurant";
+    }
+  });
 
   const renderFavoriteItem = ({ item }: any) => (
     <TouchableOpacity
@@ -115,13 +127,45 @@ const MyFavoritesScreen = () => {
         />
       </View>
 
+      {/* Tab Bar */}
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "dishes" && styles.activeTab]}
+          onPress={() => setActiveTab("dishes")}
+          activeOpacity={0.8}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "dishes" && styles.activeTabText,
+            ]}
+          >
+            Dishes
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "restaurants" && styles.activeTab]}
+          onPress={() => setActiveTab("restaurants")}
+          activeOpacity={0.8}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "restaurants" && styles.activeTabText,
+            ]}
+          >
+            Restaurants
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
-        data={favorites}
+        data={filteredFavorites}
         renderItem={renderFavoriteItem}
         keyExtractor={(item) => `${item.type}-${item.id}`}
         contentContainerStyle={[
           styles.listContent,
-          favorites.length === 0 && styles.emptyListContent,
+          filteredFavorites.length === 0 && styles.emptyListContent,
         ]}
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
@@ -159,6 +203,33 @@ const styles = StyleSheet.create({
   },
   spacer: {
     width: scale(36),
+  },
+  tabBar: {
+    flexDirection: "row",
+    backgroundColor: "#ffffff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E6EAF1",
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: scale(14),
+    alignItems: "center",
+    borderBottomWidth: scale(2),
+    borderBottomColor: "transparent",
+  },
+  activeTab: {
+    borderBottomColor: "#017851",
+  },
+  tabText: {
+    fontFamily: "Rubik-Regular",
+    fontWeight: "400",
+    fontSize: scale(16),
+    color: "#9E9E9E",
+  },
+  activeTabText: {
+    fontFamily: "Rubik-SemiBold",
+    fontWeight: "600",
+    color: "#017851",
   },
   listContent: {
     padding: scale(16),

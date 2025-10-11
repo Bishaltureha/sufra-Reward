@@ -18,6 +18,7 @@ import Payment from "../screens/Payment";
 import SelectDeliveryAddress from "../screens/SelectDeliveryAddress";
 import ConfirmAddress from "../screens/ConfirmAddress";
 import { MainStackParamList } from "../types";
+import YourOrder from "../screens/YourOrder";
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -51,6 +52,7 @@ export default function MainStackNavigator() {
         component={SelectDeliveryAddress}
       />
       <Stack.Screen name="ConfirmAddress" component={ConfirmAddress} />
+      <Stack.Screen name="YourOrder" component={YourOrder} />
     </Stack.Navigator>
   );
 }

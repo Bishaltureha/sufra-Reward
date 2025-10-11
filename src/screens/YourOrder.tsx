@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../types";
+import { MainStackParamList } from "../types";
 import { scale } from "../utils/dimen";
 import BigCircleWithTick from "../../assets/svg/BigCircleWithTick";
 import OrderList from "../../assets/svg/OrderList";
@@ -41,7 +41,7 @@ const YourOrder = (props: Props) => {
   const [showAllIngredients, setShowAllIngredients] = useState(false);
   const [currentStep, setCurrentStep] = useState<OrderStatus>("received");
 
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<MainStackParamList>>();
   const orderId = "7547439";
 
   // Order steps configuration
