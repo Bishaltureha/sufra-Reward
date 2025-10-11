@@ -48,6 +48,8 @@ const MyFavoritesScreen = () => {
   const handleFavoritePress = (item: any) => {
     if (item.type === "brand") {
       console.log("Navigate to brand:", item.name);
+    } else if (item.type === "order-again") {
+      console.log("Navigate to order again restaurant:", item.name);
     } else {
       console.log("Navigate to restaurant:", item.name);
     }
@@ -63,7 +65,11 @@ const MyFavoritesScreen = () => {
       <View style={styles.favoriteInfo}>
         <Text style={styles.favoriteName}>{item.name}</Text>
         <Text style={styles.favoriteType}>
-          {item.type === "brand" ? "Brand" : "Restaurant"}
+          {item.type === "brand"
+            ? "Brand"
+            : item.type === "order-again"
+            ? "Order Again"
+            : "Restaurant"}
         </Text>
       </View>
       <TouchableOpacity

@@ -169,7 +169,6 @@ const Payment = () => {
                       </Text>
                     </View>
                   ) : (
-                    // Show "Add New Address" button if no address
                     <TouchableOpacity
                       style={{ justifyContent: "center", alignItems: "center" }}
                       onPress={() => {
@@ -215,20 +214,28 @@ const Payment = () => {
                   >
                     <LocationofCart />
                   </ImageBackground>
-                  {deliveryAddress && (
-                    <View style={styles.addressContainer}>
-                      <Text style={styles.branchName}>
-                        {deliveryAddress.addressName}
-                      </Text>
-                      <Text
-                        style={styles.addressText}
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
-                      >
-                        {deliveryAddress.street}
-                      </Text>
-                    </View>
-                  )}
+
+                  <View style={styles.addressContainer}>
+                    <Text style={styles.branchName}>Home Address</Text>
+                    <Text
+                      style={styles.addressText}
+                      numberOfLines={2}
+                      ellipsizeMode="tail"
+                    >
+                      Al Barsha Marina Mall 2781 Build {"\n"}Riyadh, SA
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#717171",
+                        fontFamily: "Rubik-Medium",
+                        fontWeight: "500",
+
+                        fontSize: scale(12),
+                      }}
+                    >
+                      Mohammed Sbiaa // +966 366 00 81
+                    </Text>
+                  </View>
                 </View>
                 <AntDesign name="right" size={scale(15)} color="#017851" />
               </View>
@@ -609,8 +616,28 @@ const Payment = () => {
             />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.confirmButton}>
-          <Text style={styles.confirmButtonText}>Order Now</Text>
+        <TouchableOpacity
+          style={[
+            styles.confirmButton,
+            !deliveryAddress && styles.confirmButtonDisabled,
+          ]}
+          disabled={!deliveryAddress}
+          onPress={() => {
+            if (deliveryAddress) {
+              // Handle order placement
+              console.log("Order placed with address:", deliveryAddress);
+              navigation.navigate("YourOrder");
+            }
+          }}
+        >
+          <Text
+            style={[
+              styles.confirmButtonText,
+              !deliveryAddress && styles.confirmButtonTextDisabled,
+            ]}
+          >
+            Order Now
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -1158,21 +1185,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: scale(16),
   },
-  confirmButton: {
-    backgroundColor: "#F6B01F",
-    width: "100%",
-    height: scale(48),
-    borderRadius: scale(5),
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  confirmButtonText: {
-    color: "#000000",
-    fontFamily: "Rubik-SemiBold",
-    fontWeight: "600",
-    textAlign: "center",
-    fontSize: scale(18),
-  },
+
   radioButton: {
     width: scale(26),
     height: scale(26),
@@ -1285,5 +1298,29 @@ const styles = StyleSheet.create({
     borderColor: "#017851",
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  confirmButtonDisabled: {
+    backgroundColor: "#E0E0E0",
+    opacity: 0.5,
+  },
+
+  confirmButtonTextDisabled: {
+    color: "#999999",
+  },
+  confirmButton: {
+    backgroundColor: "#F6B01F",
+    width: "100%",
+    height: scale(48),
+    borderRadius: scale(5),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  confirmButtonText: {
+    color: "#000000",
+    fontFamily: "Rubik-SemiBold",
+    fontWeight: "600",
+    textAlign: "center",
+    fontSize: scale(18),
   },
 });

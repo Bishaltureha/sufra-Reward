@@ -183,32 +183,6 @@ const BrandDetailsScreen = () => {
     isLoading: isLoadingLocation,
     error: locationError,
   } = useLocation();
-  // useEffect(() => {
-  //   checkLocation();
-  // }, []);
-
-  // const checkLocation = async () => {
-  //   try {
-  //     setLocationError(null);
-  //     const servicesEnabled = await Location.hasServicesEnabledAsync();
-  //     if (!servicesEnabled) {
-  //       setIsLocationEnabled(false);
-  //       setLocationError("Location services disabled");
-  //       return;
-  //     }
-  //     const { status } = await Location.getForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       setIsLocationEnabled(false);
-  //       setLocationError("Location permission not granted");
-  //       return;
-  //     }
-  //     setIsLocationEnabled(true);
-  //   } catch (error) {
-  //     console.error("Error checking location:", error);
-  //     setIsLocationEnabled(false);
-  //     setLocationError("Failed to check location");
-  //   }
-  // };
 
   const handleScroll = (event: any) => {
     const scrollY = event.nativeEvent.contentOffset.y;
@@ -245,79 +219,6 @@ const BrandDetailsScreen = () => {
   const handleEnableLocationPress = () => {
     setLocationModalVisible(true);
   };
-
-  // const handleEnableLocation = async (locationData: any) => {
-  //   try {
-  //     setIsLoadingLocation(true);
-  //     setLocationError(null);
-  //     const { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       setLocationError("Location permission denied");
-  //       Alert.alert(
-  //         "Location Access Required",
-  //         "Please enable location services in your device settings to calculate distance.",
-  //         [
-  //           { text: "Cancel", style: "cancel" },
-  //           {
-  //             text: "Open Settings",
-  //             onPress: () => {
-  //               if (Platform.OS === "ios") {
-  //                 Linking.openURL("app-settings:");
-  //               } else {
-  //                 Linking.openSettings();
-  //               }
-  //             },
-  //           },
-  //         ]
-  //       );
-  //       setLocationModalVisible(false);
-  //       return;
-  //     }
-  //     const servicesEnabled = await Location.hasServicesEnabledAsync();
-  //     if (!servicesEnabled) {
-  //       setLocationError("Location services disabled");
-  //       Alert.alert(
-  //         "Location Services Disabled",
-  //         "Please enable location services in your device settings.",
-  //         [
-  //           { text: "Cancel", style: "cancel" },
-  //           {
-  //             text: "Open Settings",
-  //             onPress: () => {
-  //               if (Platform.OS === "ios") {
-  //                 Linking.openURL("app-settings:");
-  //               } else {
-  //                 Linking.openSettings();
-  //               }
-  //             },
-  //           },
-  //         ]
-  //       );
-  //       setLocationModalVisible(false);
-  //       return;
-  //     }
-  //     const location = await Location.getCurrentPositionAsync({
-  //       accuracy: Location.Accuracy.Balanced,
-  //       timeInterval: 10000,
-  //     });
-  //     setCurrentLocation(location);
-  //     setIsLocationEnabled(true);
-  //     setLocationModalVisible(false);
-  //     console.log("Location Data:", location);
-  //   } catch (error: any) {
-  //     console.error("Error handling location:", error);
-  //     let errorMessage = "Failed to get location. Please try again.";
-  //     if (error.message?.includes("timeout")) {
-  //       errorMessage = "Location request timed out. Please try again.";
-  //     } else if (error.message?.includes("permission")) {
-  //       errorMessage = "Location permission denied.";
-  //     }
-  //     setLocationError(errorMessage);
-  //     Alert.alert("Location Error", errorMessage, [{ text: "OK" }]);
-  //   } finally {
-  //     setIsLoadingLocation(false);
-  //   }
-  // };
 
   // ✅ Distance calculation (if needed)
   const calculateDistance = (
@@ -436,38 +337,6 @@ const BrandDetailsScreen = () => {
         </View>
       );
     };
-  // const renderPickupDistance = () => {
-  //   if (isLoadingLocation) {
-  //     return (
-  //       <View style={styles.distanceContainer}>
-  //         <Text style={styles.deliveryText}>Distance</Text>
-  //         <Text style={styles.loadingText}>Loading...</Text>
-  //       </View>
-  //     );
-  //   }
-
-  //   if (!isLocationEnabled || locationError) {
-  //     return (
-  //       <TouchableOpacity
-  //         style={styles.distanceContainer}
-  //         onPress={handleEnableLocationPress}
-  //       >
-  //         <Text style={styles.deliveryText}>Distance</Text>
-  //         <View style={styles.enableLocationRowInline}>
-  //           <Error />
-  //           <Text style={styles.enableLocationTextSmall}>Enable Location</Text>
-  //         </View>
-  //       </TouchableOpacity>
-  //     );
-  //   }
-
-  //   return (
-  //     <Text style={styles.deliveryText}>
-  //       Distance{"\n"}
-  //       <Text style={styles.deliveryTextBold}>2 km</Text>
-  //     </Text>
-  //   );
-  // };
 
   const renderPickupDistance = () => {
     if (isLoadingLocation) {

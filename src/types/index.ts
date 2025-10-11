@@ -73,6 +73,7 @@ export type MainStackParamList = {
     city?: string;
     region?: string;
   };
+  YourOrder: undefined;
 };
 
 export type DrawerParamList = {
