@@ -1,6 +1,13 @@
 // export default CustomDrawerContent;
 import React, { useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Linking,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { scale } from "../utils/dimen";
@@ -103,6 +110,21 @@ const drawerItems: DrawerItem[] = [
   },
 ];
 
+// WhatsApp Configuration
+const WHATSAPP_NUMBER = "+91 83087 46937"; // Replace with your WhatsApp number
+
+const openWhatsApp = () => {
+  const message = "Hi, I'm interested in catering services."; // You can customize this message
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER.replace(
+    /\D/g,
+    ""
+  )}?text=${encodeURIComponent(message)}`;
+
+  Linking.openURL(whatsappUrl).catch(() => {
+    console.log("WhatsApp is not installed on this device.");
+  });
+};
+
 const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
   const [userName, setUserName] = React.useState<string>("");
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
@@ -203,6 +225,9 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
         navigation.navigate("TopTabScreen", { screen: "DineIn" });
       } else if (item.name === "GiftCards") {
         navigation.navigate("GiftCards", { screen: "GiftCardsMain" });
+      } else if (item.name === "BookCatering") {
+        // Open WhatsApp for BookCatering
+        openWhatsApp();
       } else {
         navigation.navigate(item.name as never);
       }

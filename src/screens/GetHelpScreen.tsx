@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Linking,
 } from "react-native";
 import React from "react";
 import Drawerlogo from "../../assets/svg/Drawerlogo";
@@ -12,6 +13,7 @@ import { scale } from "../utils/dimen";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { DrawerParamList } from "../types";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 type GetHelpScreenNavigationProp = DrawerNavigationProp<
   DrawerParamList,
@@ -32,27 +34,53 @@ const GetHelpScreen = () => {
       }
     }
   };
+
+  const handleCall = () => {
+    Linking.openURL("tel:8002492222").catch((err) =>
+      console.error("Failed to open dialer:", err)
+    );
+  };
+
+  const handleReportProblem = () => {
+    // Navigate to report problem screen or open email
+    Linking.openURL("mailto:info@sufra.sa?subject=Report a Problem").catch(
+      (err) => console.error("Failed to open email:", err)
+    );
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{ backgroundColor: "#fff" }}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.drawerButton}
-            onPress={handleDrawerToggle}
-          >
-            <Drawerlogo />
-          </TouchableOpacity>
-          <View style={styles.titleContainer}>
-            <Text style={styles.headerTitle}>Get Help</Text>
-          </View>
-          <View style={styles.spacer} />
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.drawerButton}
+          onPress={handleDrawerToggle}
+        >
+          <Drawerlogo />
+        </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <Text style={styles.headerTitle}>Get Help</Text>
         </View>
-        <View
-          style={{
-            height: Platform.OS === "android" ? 0 : 0,
-            backgroundColor: "rgba(0,0,0,1)",
-          }}
-        />
+        <View style={styles.spacer} />
+      </View>
+
+      <View style={styles.content}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleCall}>
+          <Text style={styles.menuText}>Call 800 249 2222</Text>
+          <MaterialIcons
+            name="keyboard-arrow-right"
+            size={scale(24)}
+            color="#017851"
+          />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.menuItem} onPress={handleReportProblem}>
+          <Text style={styles.menuText}>Report a problem</Text>
+          <MaterialIcons
+            name="keyboard-arrow-right"
+            size={scale(24)}
+            color="#017851"
+          />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -61,7 +89,10 @@ const GetHelpScreen = () => {
 export default GetHelpScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   header: {
     flexDirection: "row",
     height: scale(50),
@@ -74,9 +105,17 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
+    elevation: 2,
   },
-  drawerButton: { padding: scale(4), marginRight: scale(8) },
-  titleContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
+  drawerButton: {
+    padding: scale(4),
+    marginRight: scale(8),
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   headerTitle: {
     fontFamily: "Rubik-SemiBold",
     fontWeight: "600",
@@ -86,5 +125,21 @@ const styles = StyleSheet.create({
   },
   spacer: {
     width: scale(36),
+  },
+  content: {
+    backgroundColor: "#fff",
+  },
+  menuItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: scale(16),
+    paddingHorizontal: scale(16),
+    backgroundColor: "#fff",
+  },
+  menuText: {
+    fontFamily: "Rubik-Regular",
+    fontSize: scale(16),
+    color: "#017851",
   },
 });

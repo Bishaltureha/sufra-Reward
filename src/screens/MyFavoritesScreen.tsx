@@ -88,7 +88,7 @@ const MyFavoritesScreen = () => {
         onPress={() => handleRemoveFavorite(item.id, item.type)}
         style={styles.removeButton}
       >
-        <Icon name="favorite" size={24} color="#FF617E" />
+        <Icon name="favorite" size={24} color="#057A55" />
       </TouchableOpacity>
     </TouchableOpacity>
   );
