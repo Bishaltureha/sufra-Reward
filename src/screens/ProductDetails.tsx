@@ -21,12 +21,15 @@ import { MainStackParamList, RootStackParamList } from "../types";
 import YellowStar from "../../assets/svg/YellowStar";
 import Regular from "../../assets/svg/Regular";
 import Double from "../../assets/svg/Double";
+import { useAppDispatch } from "../store/hooks";
+import { addToCart } from "../store/slice/cart";
 
 type ProductDetailsRouteProp = RouteProp<MainStackParamList, "ProductDetails">;
 
 const ProductDetails = () => {
   const route = useRoute<ProductDetailsRouteProp>();
   const navigation = useNavigation<NavigationProp<MainStackParamList>>();
+  const dispatch = useAppDispatch();
   const { productData } = route.params;
   const [isFavorite, setIsFavorite] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -149,11 +152,57 @@ const ProductDetails = () => {
     if (selectedProteinSize !== null) {
       setProteinSizeConfirmed(true);
       closeModal();
-      // Add your cart logic here
+
+      // Get selected protein, extras, and different options
+      const selectedProteinData = proteinOptions.find(
+        (p) => p.id === selectedProtein
+      );
+      const selectedExtrasData = selectedExtras
+        .map((id) => Extra.find((e) => e.id === id))
+        .filter(Boolean);
+      const selectedDifferentData = selectedDifferent
+        .map((id) => Different.find((d) => d.id === id))
+        .filter(Boolean);
+
+      // Add to cart with full customization
+      dispatch(
+        addToCart({
+          product: {
+            id: productData.id,
+            name: productData.name,
+            image: productData.image,
+            price: productData.price,
+            originalPrice: productData.originalPrice,
+            quantity: quantity,
+          },
+          customization: {
+            protein: selectedProteinData
+              ? {
+                  id: selectedProteinData.id,
+                  name: selectedProteinData.name,
+                  price: selectedProteinData.price,
+                }
+              : undefined,
+            extras: selectedExtrasData.map((e) => ({
+              id: e!.id,
+              name: e!.name,
+              price: e!.price,
+            })),
+            different: selectedDifferentData.map((d) => ({
+              id: d!.id,
+              name: d!.name,
+              price: d!.price,
+            })),
+            proteinSize: selectedProteinSize === 0 ? "Regular" : "Double",
+            proteinSizePrice: selectedProteinSize === 0 ? 10 : 16,
+          },
+        })
+      );
 
       navigation.navigate("Recommendation");
     }
   };
+
   const isAddToCartEnabled = () => {
     const hasProtein = selectedProtein !== null;
     const hasExtras = selectedExtras.length === 2; // Requires exactly 2

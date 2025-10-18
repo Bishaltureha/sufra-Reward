@@ -27,10 +27,10 @@ export default function MainStackNavigator() {
     <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={DrawerNavigator} />
       <Stack.Screen name="TopTabScreen" component={TopTabScreen} />
-      <Stack.Screen name="Deals" component={DealsScreen} />
+      {/* <Stack.Screen name="Deals" component={DealsScreen} /> */}
       <Stack.Screen name="GetHelp" component={GetHelpScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="FAQ" component={FAQScreen} />
+      {/* <Stack.Screen name="FAQ" component={FAQScreen} /> */}
       <Stack.Screen name="FindStores" component={FindStoresScreen} />
       <Stack.Screen name="Loyalty" component={LoyaltyScreen} />
       <Stack.Screen name="BrandDetails" component={BrandDetailsScreen} />

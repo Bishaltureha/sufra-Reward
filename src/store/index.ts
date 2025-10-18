@@ -14,6 +14,7 @@ import { storage } from "../utils/storage"; // Your existing MMKV storage
 import userReducer from "./slice/user";
 import locationReducer from "./slice/location";
 import favoritesReducer from "./slice/favorites";
+import cartReducer from "./slice/cart";
 
 // MMKV Storage Adapter for Redux Persist
 const mmkvStorage = {
@@ -36,7 +37,7 @@ const persistConfig = {
   key: "sufra-root",
   version: 1,
   storage: mmkvStorage,
-  whitelist: ["user", "location", "favorites"], // Persist all three
+  whitelist: ["user", "location", "favorites", "cart"], // Persist all four
 };
 
 // Combine all reducers
@@ -44,6 +45,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   location: locationReducer,
   favorites: favoritesReducer,
+  cart: cartReducer,
   // Add more reducers here as needed
 });
 

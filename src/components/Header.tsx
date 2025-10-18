@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
     marginStart: scale(8),
   },
   spacer: {
-    width: scale(36),
+    width: scale(40),
   },
 });

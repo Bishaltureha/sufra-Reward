@@ -33,7 +33,8 @@ const HomeScreen = () => {
 
   const handleDineInPress = () => {
     console.log("Dine-in tapped!");
-    navigation.navigate("TopTabScreen", { screen: "DineIn" });
+
+    navigation.navigate("Deals");
   };
 
   const handleRewardsPress = () => {
