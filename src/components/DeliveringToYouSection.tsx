@@ -113,6 +113,12 @@ const DeliveringToYouSection = ({
     setLocationModalVisible(true);
   };
 
+  const handleEnableLocation = async (locationData: any) => {
+    // Location was successfully enabled
+    setLocationModalVisible(false);
+    console.log("Location enabled:", locationData);
+  };
+
   const handleManualAddress = () => {
     setLocationModalVisible(false);
     if (onManualAddressPress) {
@@ -147,6 +153,8 @@ const DeliveringToYouSection = ({
       <LocationModal
         visible={locationModalVisible}
         onClose={() => setLocationModalVisible(false)}
+        onEnableLocation={handleEnableLocation}
+        onManualAddress={handleManualAddress}
       />
     </View>
   );

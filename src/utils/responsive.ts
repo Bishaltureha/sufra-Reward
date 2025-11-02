@@ -37,3 +37,7 @@ const scale = Math.min(scaleWidth, scaleHeight);
 // export const scaleSpacing = (size: number) => {
 //   return scaleWidthSize(size);
 // };
+
+// Mobile
+// Tablet
+// Website

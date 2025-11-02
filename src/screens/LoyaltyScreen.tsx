@@ -4,12 +4,13 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  ColorValue,
 } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
-import LinearGradient from "react-native-linear-gradient";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { scale } from "../utils/dimen";
 import Header from "../components/Header";
 import Qrcode from "../../assets/svg/Qrcode";
+import { LinearGradient } from "expo-linear-gradient";
 import LoyaltyCardBg from "../../assets/svg/LoyaltyCardBg";
 import Star from "../../assets/svg/Star";
 import RuningTime from "../../assets/svg/RuningTime";
@@ -21,6 +22,8 @@ import GreenBackGroundBirthdayCake from "../../assets/svg/GreenBackGroundBirthda
 import GreenBackgroundWithCart from "../../assets/svg/GreenBackgroundWithCart";
 import WelcomeWithGreenBackground from "../../assets/svg/WelcomeWithGreenBackground";
 import GreenStar from "../../assets/svg/GreenStar";
+import { MainStackParamList } from "../types";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 interface Props {
   userName?: string;
@@ -31,15 +34,45 @@ interface Props {
 type TabType = "transaction" | "tier";
 type TierType = "GOLD" | "SILVER" | "DIAMOND";
 
+type LoyaltyScreenRouteProp = RouteProp<MainStackParamList, "Loyalty">;
+
 const LoyaltyScreen = ({
   userName = "Sezen Sayoğlu",
   points = 7381,
   onBackPress,
 }: Props) => {
-  const [activeTab, setActiveTab] = useState<TabType>("transaction");
-  const [currentTier, setCurrentTier] = useState<TierType>("DIAMOND");
+  const route = useRoute<LoyaltyScreenRouteProp>();
+  const scrollViewRef = useRef<ScrollView>(null);
 
-  const currentTierProps = useMemo(() => {
+  const [activeTab, setActiveTab] = useState<TabType>(
+    route.params?.initialTab || "transaction"
+  );
+  const [currentTier, setCurrentTier] = useState<TierType>("DIAMOND");
+  useEffect(() => {
+    if (route.params?.initialTab) {
+      setActiveTab(route.params.initialTab);
+
+      // Dono tabs ke liye scroll karo
+      setTimeout(() => {
+        if (route.params.initialTab === "tier") {
+          scrollViewRef.current?.scrollTo({
+            y: 720, // Tier tab ke liye
+            animated: true,
+          });
+        } else if (route.params.initialTab === "transaction") {
+          scrollViewRef.current?.scrollTo({
+            y: 720, // Transaction tab ke liye (tabs tak)
+            animated: true,
+          });
+        }
+      }, 300);
+    }
+  }, [route.params?.initialTab]);
+
+  const currentTierProps = useMemo((): {
+    gradient: readonly [ColorValue, ColorValue];
+    title: string;
+  } => {
     switch (currentTier) {
       case "GOLD":
         return { gradient: ["#F6B01F", "#E19100"], title: "Legend" };
@@ -129,7 +162,11 @@ const LoyaltyScreen = ({
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      ref={scrollViewRef}
+    >
       {/* Header */}
       <Header
         title="Points"

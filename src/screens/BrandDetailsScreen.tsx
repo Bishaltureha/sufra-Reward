@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "../hooks/useLocation";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import {
   RouteProp,
   useRoute,
@@ -26,6 +27,8 @@ import BrandDetailsDeliveryBox from "../components/BrandDetailsScreen/BrandDetai
 import CollectYourOrderContainer from "../components/BrandDetailsScreen/CollectYourOrderContainer";
 import RedBoxLocationPermission from "../components/BrandDetailsScreen/RedBoxLocationpermission";
 import ProductCard from "../components/BrandDetailsScreen/ProductCard";
+import NewBadge from "../../assets/svg/NewBadge";
+import MultiBrandModalLogo from "../components/MultiBrandModal";
 
 type BrandDetailsRouteProp = RouteProp<MainStackParamList, "BrandDetails">;
 
@@ -167,16 +170,15 @@ const BrandDetailsScreen = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const categoryScrollRef = useRef<ScrollView>(null);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
-  // const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const [locationModalVisible, setLocationModalVisible] = useState(false);
-  // const [locationError, setLocationError] = useState<string | null>(null);
-  // const [isLoadingLocation, setIsLoadingLocation] = useState(false);
-  // const [currentLocation, setCurrentLocation] =
-  //   useState<Location.LocationObject | null>(null);
+  const [multiBrandModalVisible, setMultiBrandModalVisible] = useState(false);
+
   const [cartItems, setCartItems] = useState<{ [key: string]: number }>({});
 
   const sectionPositions = useRef<{ [key: string]: number }>({});
-
+  useEffect(() => {
+    setMultiBrandModalVisible(true);
+  }, []);
   const {
     isEnabled: isLocationEnabled,
     coords: currentLocation,
@@ -636,11 +638,23 @@ const BrandDetailsScreen = () => {
           ))}
         </View>
       </ScrollView>
-
+      <MultiBrandModalLogo
+        visible={multiBrandModalVisible}
+        onClose={() => setMultiBrandModalVisible(false)}
+      />
       <LocationModal
         visible={locationModalVisible}
         onClose={() => setLocationModalVisible(false)}
       />
+      <View style={styles.bottomBar}>
+        <View style={styles.bottomLeftRow}>
+          <NewBadge />
+          <Text style={styles.bottomText}>Add Items from Other Brands</Text>
+        </View>
+        <View style={styles.bottomArrowContainer}>
+          <AntDesign name="up" size={12} color="#6D6D6D" />
+        </View>
+      </View>
     </View>
   );
 };
@@ -868,6 +882,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f4f4f4",
     marginHorizontal: scale(-16),
     marginTop: scale(0),
+    marginBottom: scale(50),
     paddingTop: scale(16),
   },
   contentPlaceholder: {
@@ -917,7 +932,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: scale(100),
+    // height: scale(100),
     backgroundColor: "#F6B01F",
     flexDirection: "row",
     alignItems: "center",
@@ -972,5 +987,43 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: scale(4),
     elevation: 3,
+  },
+  bottomBar: {
+    width: "100%",
+    height: scale(54),
+    backgroundColor: "#F4F4F4",
+    position: "absolute",
+    bottom: 0,
+    padding: scale(16),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    // iOS Shadow
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    // Android Shadow
+    elevation: 4,
+  },
+  bottomLeftRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: scale(16),
+  },
+  bottomText: {
+    color: "#4A4A4A",
+    fontFamily: "Rubik-SemiBold",
+    fontWeight: "600",
+    fontSize: scale(14),
+  },
+  bottomArrowContainer: {
+    backgroundColor: "#E6EAF1",
+    width: scale(30),
+    height: scale(30),
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: scale(15),
   },
 });

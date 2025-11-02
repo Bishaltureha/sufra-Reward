@@ -1,4 +1,3 @@
-//src/components/BrandsContainer.tsx
 import React from "react";
 import {
   View,
@@ -7,13 +6,16 @@ import {
   ScrollView,
   Image,
   StyleSheet,
+  Dimensions,
 } from "react-native";
-import { scale } from "../utils/dimen";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { MainStackParamList } from "../types";
 
-type NavigationProp = NativeStackNavigationProp<MainStackParamList>;
+const { width } = Dimensions.get("window");
+
+// Responsive scaling
+const getResponsiveSize = (baseSize: number) => {
+  const baseWidth = 1728;
+  return Math.max((width / baseWidth) * baseSize, baseSize * 0.7); // Minimum 70% of base size
+};
 
 interface BrandsContainerProps {
   onBrandPress?: (index: number) => void;
@@ -26,8 +28,6 @@ const BrandsContainer: React.FC<BrandsContainerProps> = ({
   onViewDealsPress,
   showViewDeals = true,
 }) => {
-  const navigation = useNavigation<NavigationProp>();
-
   const brands = [
     {
       id: 1,
@@ -45,15 +45,9 @@ const BrandsContainer: React.FC<BrandsContainerProps> = ({
 
   const handleBrandPress = (index: number) => {
     const selectedBrand = brands[index];
+    console.log("Brand pressed:", selectedBrand.name);
 
-    // Navigate to BrandDetails screen with brand data
-    navigation.navigate("BrandDetails", {
-      brandImage: selectedBrand.image,
-      brandName: selectedBrand.name,
-      brandId: selectedBrand.id,
-    });
-
-    // Optional: Call the parent onBrandPress if provided
+    // Call the parent onBrandPress if provided
     if (onBrandPress) {
       onBrandPress(index);
     }
@@ -65,8 +59,6 @@ const BrandsContainer: React.FC<BrandsContainerProps> = ({
       style={styles.brandItem}
       onPress={() => handleBrandPress(index)}
       activeOpacity={0.8}
-      accessibilityLabel={`${brand.name} brand`}
-      accessibilityHint="Tap to view brand details"
     >
       <Image source={brand.image} style={styles.brandImage} />
     </TouchableOpacity>
@@ -78,12 +70,7 @@ const BrandsContainer: React.FC<BrandsContainerProps> = ({
       <View style={styles.brandsHeader}>
         <Text style={styles.brandsTitle}>Our Brands</Text>
         {showViewDeals && onViewDealsPress && (
-          <TouchableOpacity
-            onPress={onViewDealsPress}
-            activeOpacity={0.8}
-            accessibilityLabel="View deals"
-            accessibilityHint="Tap to view all deals"
-          >
+          <TouchableOpacity onPress={onViewDealsPress} activeOpacity={0.8}>
             <Text style={styles.viewDealsText}>View Deals</Text>
           </TouchableOpacity>
         )}
@@ -103,14 +90,13 @@ const BrandsContainer: React.FC<BrandsContainerProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: scale(0),
+    width: "100%",
   },
   brandsHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: scale(16),
-    marginBottom: scale(16),
+    marginBottom: 16,
   },
   brandsTitle: {
     fontSize: 18,
@@ -126,12 +112,11 @@ const styles = StyleSheet.create({
     fontFamily: "Rubik-SemiBold",
   },
   brandsContainer: {
-    paddingHorizontal: scale(16),
-    gap: scale(7),
+    gap: 7,
   },
   brandItem: {
-    width: scale(75),
-    height: scale(75),
+    width: 75,
+    height: 75,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 6,

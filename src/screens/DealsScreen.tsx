@@ -14,11 +14,19 @@ import React, { useState } from "react";
 import Drawerlogo from "../../assets/svg/Drawerlogo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { scale } from "../utils/dimen";
-import { DrawerActions, useNavigation } from "@react-navigation/native";
-import { DrawerParamList } from "../types";
-import { DrawerNavigationProp } from "@react-navigation/drawer";
+import {
+  CompositeNavigationProp,
+  DrawerActions,
+  useNavigation,
+} from "@react-navigation/native";
+import { DrawerParamList, MainStackParamList } from "../types";
+import type { DrawerNavigationProp } from "@react-navigation/drawer";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-type DealsScreenNavigationProp = DrawerNavigationProp<DrawerParamList, "Deals">;
+type DealsScreenNavigationProp = CompositeNavigationProp<
+  DrawerNavigationProp<DrawerParamList, "Deals">,
+  NativeStackNavigationProp<MainStackParamList>
+>;
 
 interface Deal {
   id: string;
@@ -30,6 +38,7 @@ interface Deal {
   restaurantLogo: any;
   dealType: "online" | "dineIn";
   fullDescription: string;
+  brandId: number; // Add this
 }
 
 const DealsScreen = () => {
@@ -62,6 +71,7 @@ const DealsScreen = () => {
       restaurant: "Piatto",
       restaurantLogo: require("../../assets/image/box3.png"),
       dealType: "dineIn",
+      brandId: 3,
     },
     {
       id: "2",
@@ -75,6 +85,7 @@ const DealsScreen = () => {
       restaurant: "Steakhouse",
       restaurantLogo: require("../../assets/image/box1.png"),
       dealType: "online",
+      brandId: 1,
     },
     {
       id: "3",
@@ -87,6 +98,7 @@ const DealsScreen = () => {
       restaurant: "FireGrill",
       restaurantLogo: require("../../assets/image/box2.png"),
       dealType: "online",
+      brandId: 2,
     },
     {
       id: "4",
@@ -100,6 +112,7 @@ const DealsScreen = () => {
       restaurant: "Piatto",
       restaurantLogo: require("../../assets/image/box3.png"),
       dealType: "online",
+      brandId: 3,
     },
     {
       id: "5",
@@ -113,6 +126,7 @@ const DealsScreen = () => {
       restaurant: "Earth Bowlz",
       restaurantLogo: require("../../assets/image/box4.png"),
       dealType: "online",
+      brandId: 4,
     },
     {
       id: "6",
@@ -125,6 +139,7 @@ const DealsScreen = () => {
       restaurant: "Biryani House",
       restaurantLogo: require("../../assets/image/box5.png"),
       dealType: "online",
+      brandId: 5,
     },
   ];
 
@@ -142,6 +157,20 @@ const DealsScreen = () => {
     setSelectedDeal(null);
   };
 
+  const handleActionButton = () => {
+    if (selectedDeal) {
+      closeModal();
+      if (selectedDeal.dealType === "online") {
+        navigation.navigate("BrandDetails", {
+          brandImage: selectedDeal.restaurantLogo,
+          brandName: selectedDeal.restaurant,
+          brandId: selectedDeal.brandId,
+        });
+      } else {
+        navigation.navigate("FindStores");
+      }
+    }
+  };
   const DealCard = ({ deal }: { deal: Deal }) => (
     <View style={styles.dealCard}>
       <Image source={deal.image} style={styles.dealImage} />
@@ -261,6 +290,7 @@ const DealsScreen = () => {
                   ? styles.orderButton
                   : styles.nearbyButton,
               ]}
+              onPress={handleActionButton}
             >
               <Text style={styles.actionButtonText}>
                 {selectedDeal?.dealType === "online"
@@ -291,7 +321,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
   },
   drawerButton: { padding: scale(4), marginRight: scale(8) },
   titleContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
@@ -467,7 +496,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     marginHorizontal: scale(16),
-    marginBottom: scale(16),
+    marginBottom: scale(40),
     paddingVertical: scale(14),
     borderRadius: scale(8),
     alignItems: "center",

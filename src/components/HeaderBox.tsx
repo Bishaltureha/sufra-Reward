@@ -90,7 +90,10 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
       </View>
 
       <View style={styles.rightSection}>
-        <TouchableOpacity style={styles.circularButton}>
+        <TouchableOpacity
+          style={styles.circularButton}
+          onPress={() => navigation.navigate("Search")}
+        >
           <SearchIcon />
         </TouchableOpacity>
 

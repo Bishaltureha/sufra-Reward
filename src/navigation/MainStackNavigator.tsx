@@ -19,6 +19,9 @@ import SelectDeliveryAddress from "../screens/SelectDeliveryAddress";
 import ConfirmAddress from "../screens/ConfirmAddress";
 import { MainStackParamList } from "../types";
 import YourOrder from "../screens/YourOrder";
+import SearchScreen from "../screens/SearchScreen";
+import AddEditAddressScreen from "../screens/AddEditAddressScreen";
+import ViewMap from "../screens/ViewMap";
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -53,6 +56,9 @@ export default function MainStackNavigator() {
       />
       <Stack.Screen name="ConfirmAddress" component={ConfirmAddress} />
       <Stack.Screen name="YourOrder" component={YourOrder} />
+      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="AddEditAddress" component={AddEditAddressScreen} />
+      <Stack.Screen name="ViewMap" component={ViewMap} />
     </Stack.Navigator>
   );
 }

@@ -5,6 +5,7 @@ import {
   Platform,
   ActivityIndicator,
   View,
+  StatusBar,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AppNavigator from "./src/navigation/AppNavigator";
@@ -16,20 +17,29 @@ import { store, persistor } from "./src/store";
 import { navigationRef } from "./src/navigation/navigationRef";
 import { getLanguage } from "./src/utils/storage";
 
+// 👇 Import the package (with your custom type)
+import changeNavigationBarColor from "react-native-navigation-bar-color";
+import { AddressProvider } from "./src/context/AddressContext";
+
 const App = () => {
   useEffect(() => {
-    // Set RTL on web
+    // if (Platform.OS === "android") {
+    //   StatusBar.setHidden(true);
+
+    //   setTimeout(
+    //     () => changeNavigationBarColor("transparent", false, true),
+    //     2000
+    //   );
+    // }
+
+    // Set RTL for web
     if (Platform.OS === "web") {
       const { language, isRTL } = getLanguage();
-
-      // Set direction on HTML element
       const htmlElement = document.documentElement;
       if (htmlElement) {
         htmlElement.setAttribute("dir", isRTL ? "rtl" : "ltr");
         htmlElement.setAttribute("lang", language || "en");
       }
-
-      // Set I18nManager for React Native Web
       I18nManager.forceRTL(isRTL);
       I18nManager.allowRTL(isRTL);
     }
@@ -47,9 +57,11 @@ const App = () => {
       >
         <LocalizationProvider>
           <SafeAreaProvider style={styles.container}>
-            <NavigationContainer ref={navigationRef}>
-              <AppNavigator />
-            </NavigationContainer>
+            <AddressProvider>
+              <NavigationContainer ref={navigationRef}>
+                <AppNavigator />
+              </NavigationContainer>
+            </AddressProvider>
           </SafeAreaProvider>
         </LocalizationProvider>
       </PersistGate>
@@ -60,7 +72,10 @@ const App = () => {
 export default App;
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: "#ffffff" },
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
   loader: {
     flex: 1,
     justifyContent: "center",

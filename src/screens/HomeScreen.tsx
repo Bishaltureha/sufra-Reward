@@ -14,13 +14,17 @@ import StatsCard from "../components/StatsCard";
 import BrandsContainer from "../components/BrandsContainer";
 import OfferBanner from "../components/OfferBanner";
 import { scale, screenWidth } from "../utils/dimen";
-import { useNavigation } from "@react-navigation/native";
-import { MainStackParamList } from "../types";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { DrawerParamList, MainStackParamList } from "../types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<
-  MainStackParamList,
-  "Home"
+type HomeScreenNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<MainStackParamList, "Home">,
+  DrawerNavigationProp<DrawerParamList>
 >;
 
 const HomeScreen = () => {
@@ -34,15 +38,17 @@ const HomeScreen = () => {
   const handleDineInPress = () => {
     console.log("Dine-in tapped!");
 
-    navigation.navigate("Deals");
+    navigation.navigate("TopTabScreen", { screen: "DineIn" });
   };
 
   const handleRewardsPress = () => {
     console.log("Rewards card tapped!");
+    navigation.navigate("Loyalty", { initialTab: "transaction" });
   };
 
   const handleTierPress = () => {
     console.log("Tier card tapped!");
+    navigation.navigate("Loyalty", { initialTab: "tier" });
   };
 
   const handleViewDealsPress = () => {
@@ -146,12 +152,28 @@ const HomeScreen = () => {
           }}
         />
         <View style={styles.bottomButtonsContainer}>
-          <TouchableOpacity
-            style={styles.dineInButton}
-            onPress={() => navigation.navigate("FindStores")}
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 12,
+            }}
           >
-            <Text style={styles.dineInButtonText}>Find Dine-in Spots</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.dineInButton}
+              onPress={() => navigation.navigate("FindStores")}
+            >
+              <Text style={styles.dineInButtonText}>Find Dine-in Spots</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.dineInButton}
+              onPress={() => navigation.navigate("GiftCards")}
+            >
+              <Text style={styles.dineInButtonText}>Buy Gift Cards</Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity
             style={styles.loyaltyButton}
             onPress={() => navigation.navigate("Loyalty")}
@@ -224,10 +246,9 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 4,
   },
   dineInButton: {
-    width: screenWidth - scale(40),
+    width: (screenWidth - scale(50)) / 2,
     height: scale(52),
     borderRadius: 5,
     backgroundColor: "#017851",

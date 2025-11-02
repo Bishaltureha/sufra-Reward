@@ -65,7 +65,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
   };
 
   const renderItem = useCallback(
-    ({ item, index }) => (
+    ({ item, index }: { item: (typeof onboardingData)[0]; index: number }) => (
       <View style={styles.slide}>
         <View style={styles.imageWrapper}>
           <Image
@@ -83,7 +83,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
         </View>
       </View>
     ),
-    []
+    [],
   );
 
   return (
@@ -124,7 +124,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
           <CustomButton
             title={t("welcome.continueAsGuest")}
             backgroundColor="#ffffff"
-            onPress={() => navigation.navigate("MainStack")}
+            onPress={() => navigation.navigate("MainStack" as any)}
             style={styles.guestButton}
             textStyle={styles.guestButtonText}
             textColor=""
@@ -144,7 +144,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
             onPress={
               currentIndex === 2
                 ? () => navigation.navigate("DiscoverSufraBenefits")
-                : () => navigation.navigate("AuthStack")
+                : () => navigation.navigate("AuthStack" as any)
             }
             style={styles.bottomButton}
             textColor="#000000"
@@ -154,7 +154,7 @@ const WelcomeScreen = ({ navigation }: Props) => {
             backgroundColor="#ffffff"
             borderColor="black"
             borderWidth={scale(1.5)}
-            onPress={() => navigation.navigate("AuthStack")}
+            onPress={() => navigation.navigate("AuthStack" as any)}
             style={styles.bottomButton}
             textColor="#4A4A4A"
           />

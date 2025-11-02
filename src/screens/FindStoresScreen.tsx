@@ -17,6 +17,8 @@ import Home from "../../assets/svg/Home";
 import { scale } from "../utils/dimen";
 import LocationfindStore from "../../assets/svg/LocationfindStore";
 import FindStoreLocation from "../../assets/svg/FindStoreLocation";
+import { MainStackParamList, RootStackParamList } from "../types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type Props = {};
 
@@ -44,8 +46,13 @@ interface Store {
   openingTime?: string; // e.g., "Opens at 10 AM"
 }
 
+type NavigationProp = NativeStackNavigationProp<
+  MainStackParamList,
+  "FindStores"
+>;
+
 const FindStoresScreen = (props: Props) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
   const [searchText, setSearchText] = useState("");
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -336,7 +343,10 @@ const FindStoresScreen = (props: Props) => {
           <Ionicons name="chevron-back" size={28} color="#d66745" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Find Stores</Text>
-        <TouchableOpacity style={styles.mapButton}>
+        <TouchableOpacity
+          style={styles.mapButton}
+          onPress={() => navigation.navigate("ViewMap")}
+        >
           <Ionicons name="location" size={20} color="#fff" />
           <Text style={styles.mapButtonText}>MAP</Text>
         </TouchableOpacity>

@@ -7,20 +7,17 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
+  ScrollView,
+  Alert,
 } from "react-native";
+import * as Clipboard from "expo-clipboard";
 import React, { useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { scale } from "../utils/dimen";
 import Drawerlogo from "../../assets/svg/Drawerlogo";
-import {
-  CompositeNavigationProp,
-  DrawerActions,
-  useNavigation,
-} from "@react-navigation/native";
+import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { DrawerParamList, GiftCardStackParamList } from "../types";
-import GiftCard1 from "../../assets/svg/giftCards/GiftCard1";
 import GiftCard2 from "../../assets/svg/giftCards/GiftCard2";
 import GiftCard3 from "../../assets/svg/giftCards/GiftCard3";
 import GiftCard4 from "../../assets/svg/giftCards/GiftCard4";
@@ -29,6 +26,7 @@ import CustomCheckbox from "../components/CustomCheckbox";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { CompositeNavigationProp } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
@@ -43,15 +41,12 @@ const GiftCardsScreen = () => {
   const navigation = useNavigation<GiftCardsScreenNavigationProp>();
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList>(null);
+  const thumbnailScrollRef = useRef<ScrollView>(null);
 
-  // Carousel / selection states
-  const [activeThumbIndex, setActiveThumbIndex] = useState<number | null>(0);
-
-  // Gift amount
-  const amounts = ["100", "250", "500", "1000", "1500"];
+  const [activeThumbIndex, setActiveThumbIndex] = useState<number>(0);
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
-
-  // Form states
+  const [customAmount, setCustomAmount] = useState("");
+  const [isCustomAmountSelected, setIsCustomAmountSelected] = useState(false);
   const [isBuyingForMyself, setIsBuyingForMyself] = useState(true);
   const [recipientName, setRecipientName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
@@ -62,34 +57,7 @@ const GiftCardsScreen = () => {
   const [senderPhone, setSenderPhone] = useState("");
   const [personalNote, setPersonalNote] = useState("");
 
-  const isValidEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-  const isFormValid =
-    recipientName &&
-    recipientEmail &&
-    verifyRecipientEmail &&
-    recipientEmail === verifyRecipientEmail &&
-    isValidEmail(recipientEmail) &&
-    recipientPhone &&
-    senderName &&
-    senderEmail &&
-    isValidEmail(senderEmail) &&
-    senderPhone &&
-    selectedAmount;
-
-  const handleDrawerToggle = () => {
-    try {
-      navigation.dispatch(DrawerActions.openDrawer());
-    } catch {
-      try {
-        navigation.openDrawer();
-      } catch (fallbackError) {
-        console.error("Drawer not working:", fallbackError);
-      }
-    }
-  };
+  const amounts = ["100", "250", "500", "1000", "1500"];
 
   const realCards = [
     { key: "1", comp: GiftCard2 },
@@ -110,63 +78,102 @@ const GiftCardsScreen = () => {
     { key: "right-spacer" },
   ];
 
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const finalAmount = isCustomAmountSelected ? customAmount : selectedAmount;
+
+  const isFormValid =
+    recipientName &&
+    recipientEmail &&
+    verifyRecipientEmail &&
+    recipientEmail === verifyRecipientEmail &&
+    isValidEmail(recipientEmail) &&
+    recipientPhone &&
+    senderName &&
+    senderEmail &&
+    isValidEmail(senderEmail) &&
+    senderPhone &&
+    finalAmount &&
+    (!isCustomAmountSelected ||
+      (parseFloat(customAmount) >= 50 && parseFloat(customAmount) <= 10000));
+
+  const handleDrawerToggle = () => {
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  const handleThumbnailPress = (index: number) => {
+    setActiveThumbIndex(index);
+    flatListRef.current?.scrollToOffset({
+      offset: index * ITEM_WIDTH,
+      animated: true,
+    });
+    thumbnailScrollRef.current?.scrollTo({
+      x: index * (scale(104) + scale(8)) - width / 2 + scale(52),
+      animated: true,
+    });
+  };
+
+  const handleAmountSelect = (amount: string) => {
+    setSelectedAmount(amount);
+    setIsCustomAmountSelected(false);
+    setCustomAmount("");
+  };
+
+  const handleCustomAmountChange = (text: string) => {
+    const numericText = text.replace(/[^0-9]/g, "");
+    setCustomAmount(numericText);
+    if (numericText) {
+      setIsCustomAmountSelected(true);
+      setSelectedAmount(null);
+    } else {
+      setIsCustomAmountSelected(false);
+    }
+  };
+
   const onScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    { useNativeDriver: false }
+    {
+      useNativeDriver: false,
+      listener: (event: any) => {
+        const offsetX = event.nativeEvent.contentOffset.x;
+        const index = Math.round(offsetX / ITEM_WIDTH);
+        if (
+          index >= 0 &&
+          index < realCards.length &&
+          index !== activeThumbIndex
+        ) {
+          setActiveThumbIndex(index);
+        }
+      },
+    }
   );
 
-  const selectedCard = realCards[activeThumbIndex ?? 0];
-
   const handleButton = () => {
-    // Required field check
-    if (
-      !recipientName ||
-      !recipientEmail ||
-      !verifyRecipientEmail ||
-      !recipientPhone ||
-      !senderName ||
-      !senderEmail ||
-      !senderPhone
-    ) {
-      alert("Please fill all required fields");
+    if (!isFormValid) {
+      alert("Please fill all required fields correctly");
       return;
     }
 
-    // Email validation
-    if (!isValidEmail(recipientEmail)) {
-      alert("Recipient email is not valid");
-      return;
-    }
-    if (recipientEmail !== verifyRecipientEmail) {
-      alert("Recipient emails do not match");
-      return;
-    }
-    if (!isValidEmail(senderEmail)) {
-      alert("Sender email is not valid");
-      return;
+    if (isCustomAmountSelected) {
+      const amount = parseFloat(customAmount);
+      if (amount < 50 || amount > 10000) {
+        alert("Custom amount must be between 50 and 10,000 SR");
+        return;
+      }
     }
 
-    // Phone validation
     const phoneRegex = /^[0-9]{8,15}$/;
-    if (!phoneRegex.test(recipientPhone)) {
-      alert("Recipient phone is invalid");
-      return;
-    }
-    if (!phoneRegex.test(senderPhone)) {
-      alert("Sender phone is invalid");
+    if (!phoneRegex.test(recipientPhone) || !phoneRegex.test(senderPhone)) {
+      alert("Phone numbers must be 8-15 digits");
       return;
     }
 
-    // Gift amount check
-    if (!selectedAmount) {
-      alert("Please select a gift amount");
-      return;
-    }
-
-    const selectedCard = realCards[activeThumbIndex ?? 0];
-
+    const selectedCard = realCards[activeThumbIndex];
     const formData = {
-      selectedAmount,
+      selectedAmount: finalAmount,
       activeCardIndex: activeThumbIndex,
       selectedCardKey: selectedCard?.key,
       selectedCardComponent: selectedCard?.comp,
@@ -181,7 +188,6 @@ const GiftCardsScreen = () => {
       senderPhone,
     };
 
-    console.log("Checkout Data:", formData);
     navigation.navigate("Payment", formData);
   };
 
@@ -204,11 +210,9 @@ const GiftCardsScreen = () => {
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
         enableOnAndroid={true}
-        enableAutomaticScroll={true}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         extraScrollHeight={scale(20)}
-        keyboardOpeningTime={0}
       >
         {/* Carousel */}
         <Animated.FlatList
@@ -247,10 +251,7 @@ const GiftCardsScreen = () => {
                 <Animated.View
                   style={[
                     styles.cardContainer,
-                    {
-                      transform: [{ scale: scaleAnim }],
-                      opacity: opacityAnim,
-                    },
+                    { transform: [{ scale: scaleAnim }], opacity: opacityAnim },
                   ]}
                 >
                   <CardComponent width={scale(300)} height={scale(169)} />
@@ -260,39 +261,44 @@ const GiftCardsScreen = () => {
           }}
         />
 
-        {/* Thumbnails */}
-        <View style={styles.thumbnailScroll}>
-          <View style={styles.thumbnailContainer}>
-            {realCards.map((card, index) => {
-              const CardComponent = card.comp;
-              const isSelected = activeThumbIndex === index;
-              return (
-                <TouchableOpacity
-                  key={card.key}
-                  style={[
-                    styles.thumbnailWrapper,
-                    isSelected && styles.thumbnailWrapperActive,
-                  ]}
-                  onPress={() => setActiveThumbIndex(index)}
-                >
-                  <CardComponent width={scale(96)} height={scale(53)} />
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
+        {/* Thumbnails - Now Scrollable */}
+        <ScrollView
+          ref={thumbnailScrollRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.thumbnailContainer}
+          style={styles.thumbnailScroll}
+        >
+          {realCards.map((card, index) => {
+            const CardComponent = card.comp;
+            const isSelected = activeThumbIndex === index;
+            return (
+              <TouchableOpacity
+                key={card.key}
+                style={[
+                  styles.thumbnailWrapper,
+                  isSelected && styles.thumbnailWrapperActive,
+                ]}
+                onPress={() => handleThumbnailPress(index)}
+              >
+                <CardComponent width={scale(96)} height={scale(53)} />
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
 
         {/* Gift Amount */}
         <View style={styles.formContainer}>
           <Text style={styles.sectionTitle}>Gift Amount (SR)</Text>
           <View style={styles.boxcontainer}>
-            {amounts.map((amount, index) => {
-              const isSelected = selectedAmount === amount;
+            {amounts.map((amount) => {
+              const isSelected =
+                selectedAmount === amount && !isCustomAmountSelected;
               return (
                 <TouchableOpacity
-                  key={index}
+                  key={amount}
                   style={[styles.box, isSelected && styles.boxSelected]}
-                  onPress={() => setSelectedAmount(amount)}
+                  onPress={() => handleAmountSelect(amount)}
                 >
                   <Text
                     style={[
@@ -307,12 +313,53 @@ const GiftCardsScreen = () => {
             })}
           </View>
 
+          {/* Custom Amount Input */}
+          <View style={styles.customAmountContainer}>
+            <Text style={styles.customAmountLabel}>
+              Or enter custom amount:
+            </Text>
+            <View
+              style={[
+                styles.customAmountInputWrapper,
+                isCustomAmountSelected && styles.customAmountInputWrapperActive,
+              ]}
+            >
+              <TextInput
+                style={styles.customAmountInput}
+                value={customAmount}
+                onChangeText={handleCustomAmountChange}
+                placeholder="Enter amount (50 - 10,000)"
+                placeholderTextColor="#999999"
+                keyboardType="numeric"
+                maxLength={5}
+              />
+              <Text style={styles.currencyLabel}>SR</Text>
+            </View>
+            {isCustomAmountSelected && customAmount && (
+              <Text style={styles.customAmountHint}>
+                {parseFloat(customAmount) < 50 ||
+                parseFloat(customAmount) > 10000
+                  ? "Amount must be between 50 and 10,000 SR"
+                  : `Custom amount: ${customAmount} SR`}
+              </Text>
+            )}
+          </View>
+
           {/* Info Box */}
           <View style={styles.infoContainer}>
             <Text style={styles.infoText}>
               Looking to buy gift cards in bulk or in larger{"\n"}amounts?
               Contact us at{" "}
-              <Text style={{ fontWeight: "600" }}>giftcards@sufra.sa</Text>, and
+              <Text
+                style={{ fontWeight: "600", textDecorationLine: "underline" }}
+                onPress={async () => {
+                  await Clipboard.setStringAsync("giftcards@sufra.sa");
+                  Alert.alert("Copied!", "Email address copied to clipboard");
+                }}
+              >
+                giftcards@sufra.sa
+              </Text>
+              , and
               {"\n"}we'll be happy to assist!
             </Text>
           </View>
@@ -408,23 +455,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
     borderBottomColor: "#E6EAF1",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
   },
-  spacer: {
-    width: scale(36),
-  },
+  spacer: { width: scale(36) },
   drawerButton: { padding: scale(4), marginRight: scale(8) },
-  titleContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
+  titleContainer: { flex: 1, alignItems: "center" },
   headerTitle: {
     fontFamily: "Rubik-SemiBold",
     fontWeight: "600",
     fontSize: scale(18),
     color: "#4A4A4A",
-    textAlign: "center",
-    alignSelf: "center",
   },
   scrollContent: {
     flexGrow: 1,
@@ -434,7 +473,6 @@ const styles = StyleSheet.create({
     marginHorizontal: scale(10),
     borderRadius: scale(12),
     alignItems: "center",
-    justifyContent: "flex-start",
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
@@ -446,7 +484,6 @@ const styles = StyleSheet.create({
     marginTop: scale(10),
   },
   thumbnailContainer: {
-    flexDirection: "row",
     paddingHorizontal: scale(24),
     alignItems: "center",
   },
@@ -462,7 +499,6 @@ const styles = StyleSheet.create({
   },
   thumbnailWrapperActive: {
     borderColor: "#000000",
-    opacity: 1,
     shadowColor: "#0000001A",
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
@@ -480,7 +516,6 @@ const styles = StyleSheet.create({
   boxcontainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     marginTop: scale(10),
     gap: scale(10),
   },
@@ -490,7 +525,6 @@ const styles = StyleSheet.create({
     borderRadius: scale(6),
     borderWidth: scale(1),
     borderColor: "#4A4A4A",
-    opacity: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
@@ -501,21 +535,62 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: scale(15),
     color: "#6D6D6D",
-    textAlign: "center",
   },
   amountTextSelected: { color: "#ffffff" },
+  customAmountContainer: {
+    marginTop: scale(15),
+  },
+  customAmountLabel: {
+    fontFamily: "Rubik-Regular",
+    fontWeight: "400",
+    fontSize: scale(14),
+    color: "#4A4A4A",
+    marginBottom: scale(8),
+  },
+  customAmountInputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: scale(55),
+    borderRadius: scale(6),
+    borderWidth: scale(1),
+    borderColor: "#4A4A4A",
+    backgroundColor: "#fff",
+    paddingHorizontal: scale(12),
+  },
+  customAmountInputWrapperActive: {
+    borderColor: "#017851",
+    borderWidth: scale(2),
+  },
+  customAmountInput: {
+    flex: 1,
+    fontFamily: "Rubik-SemiBold",
+    fontWeight: "600",
+    fontSize: scale(15),
+    color: "#4A4A4A",
+  },
+  currencyLabel: {
+    fontFamily: "Rubik-SemiBold",
+    fontWeight: "600",
+    fontSize: scale(15),
+    color: "#6D6D6D",
+    marginLeft: scale(8),
+  },
+  customAmountHint: {
+    fontFamily: "Rubik-Regular",
+    fontWeight: "400",
+    fontSize: scale(12),
+    color: "#017851",
+    marginTop: scale(6),
+  },
   infoContainer: {
     backgroundColor: "#E6EAF1",
-    width: "100%",
     height: scale(84),
-    marginTop: scale(10),
-    justifyContent: "center",
-    alignItems: "flex-start",
+    marginTop: scale(15),
     paddingHorizontal: scale(16),
     borderRadius: scale(10),
+    justifyContent: "center",
   },
   infoText: {
-    textAlign: "left",
     color: "#4A4A4A",
     fontFamily: "Rubik",
     fontWeight: "400",
@@ -526,7 +601,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: scale(10),
     marginTop: scale(10),
-    justifyContent: "flex-start",
     alignItems: "center",
   },
   checkboxText: {
@@ -535,15 +609,13 @@ const styles = StyleSheet.create({
     fontSize: scale(14),
     color: "#4A4A4A",
   },
-  inputContainer: { marginTop: scale(10), gap: scale(5), width: "100%" },
+  inputContainer: { marginTop: scale(10), gap: scale(5) },
   personalNoteInput: {
-    width: "100%",
     height: scale(110),
     borderRadius: scale(6),
     borderWidth: 1,
     borderColor: "#E6E6E6",
-    paddingHorizontal: scale(12),
-    paddingVertical: scale(12),
+    padding: scale(12),
     fontSize: scale(14),
     fontFamily: "Rubik-Regular",
     color: "#4A4A4A",
@@ -551,7 +623,6 @@ const styles = StyleSheet.create({
     marginTop: scale(10),
   },
   checkoutButton: {
-    width: "100%",
     height: scale(52),
     borderRadius: scale(5),
     backgroundColor: "#F6B01F",
@@ -560,7 +631,6 @@ const styles = StyleSheet.create({
     marginTop: scale(30),
   },
   checkoutButtonText: {
-    textAlign: "center",
     fontFamily: "Rubik-Medium",
     fontWeight: "500",
     fontSize: scale(18),

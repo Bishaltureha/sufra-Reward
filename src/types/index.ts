@@ -22,6 +22,21 @@ export type AuthStackParamList = {
   InformationScreen: undefined;
 };
 
+// Address interface for type safety
+export interface Address {
+  id?: number;
+  type: "Home" | "Work" | "Other";
+  customType?: string;
+  fullAddress: string;
+  buildingNo: string;
+  floor?: string;
+  apartment?: string;
+  name: string;
+  phone: string;
+  additionalInfo?: string;
+  showMap?: boolean;
+}
+
 export type MainStackParamList = {
   Home: undefined;
   DeliveryScreen: undefined;
@@ -33,7 +48,7 @@ export type MainStackParamList = {
   FAQ: undefined;
   Profile: undefined;
   FindStores: undefined;
-  Loyalty: undefined;
+  Loyalty: { initialTab?: "transaction" | "tier" } | undefined;
   BrandDetails: {
     brandImage: any;
     brandName: string;
@@ -74,6 +89,11 @@ export type MainStackParamList = {
     region?: string;
   };
   YourOrder: undefined;
+  Search: undefined;
+  AddEditAddress: {
+    address?: Address;
+  };
+  ViewMap: undefined;
 };
 
 export type DrawerParamList = {
@@ -90,7 +110,12 @@ export type DrawerParamList = {
   FAQ: undefined;
   Notification: undefined;
   Profile: undefined;
+  OrderTracking: undefined;
+  AddEditAddress: {
+    address?: Address;
+  };
 };
+
 export type GiftCardStackParamList = {
   GiftCardsMain: undefined;
   Payment: {

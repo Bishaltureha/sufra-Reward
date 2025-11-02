@@ -164,7 +164,11 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
             {selectedCountry.dial_code || "+1"}
           </RTLText>
           {editable && (
-            <MaterialIcons name="keyboard-arrow-down" size={scale(20)} color="#666" />
+            <MaterialIcons
+              name="keyboard-arrow-down"
+              size={scale(20)}
+              color="#666"
+            />
           )}
         </TouchableOpacity>
 

@@ -63,11 +63,9 @@ const EarnMorePointsSection = ({
 const styles = StyleSheet.create({
   mainContainer: {
     width: "100%",
-    height: scale(379),
     backgroundColor: "#dee3e0",
     marginTop: scale(30),
-    paddingTop: scale(20),
-    paddingHorizontal: scale(20),
+    padding: scale(20),
   },
   sectionTitle: {
     fontFamily: "Rubik-SemiBold",

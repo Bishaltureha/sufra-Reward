@@ -42,9 +42,9 @@ const GetHelpScreen = () => {
   };
 
   const handleReportProblem = () => {
-    // Navigate to report problem screen or open email
-    Linking.openURL("mailto:info@sufra.sa?subject=Report a Problem").catch(
-      (err) => console.error("Failed to open email:", err)
+    // Navigate to report problem web form
+    Linking.openURL("https://table.alfaco.com.sa/sufra-form/").catch((err) =>
+      console.error("Failed to open report form:", err)
     );
   };
 

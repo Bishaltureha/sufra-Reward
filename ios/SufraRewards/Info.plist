@@ -52,7 +52,7 @@
       <true/>
     </dict>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>We need your location to provide better service, even when the app is in the background.</string>
+    <string>Allow app to use your location.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>We need your location to provide better service, even when the app is in the background.</string>
     <key>NSLocationWhenInUseUsageDescription</key>

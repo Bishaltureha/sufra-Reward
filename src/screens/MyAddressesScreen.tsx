@@ -7,13 +7,14 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import Drawerlogo from "../../assets/svg/Drawerlogo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { scale } from "../utils/dimen";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
-import { DrawerParamList } from "../types";
+import { DrawerParamList, Address } from "../types";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { useAddressContext } from "../context/AddressContext";
 
 type MyAddressesScreenNavigationProp = DrawerNavigationProp<
   DrawerParamList,
@@ -22,7 +23,8 @@ type MyAddressesScreenNavigationProp = DrawerNavigationProp<
 
 const MyAddressesScreen = () => {
   const navigation = useNavigation<MyAddressesScreenNavigationProp>();
-  const [selectedCard, setSelectedCard] = useState<number | null>(1);
+  const { addresses, selectedAddressId, setSelectedAddressId } =
+    useAddressContext();
 
   const handleDrawerToggle = () => {
     try {
@@ -37,7 +39,23 @@ const MyAddressesScreen = () => {
   };
 
   const handleSelect = (cardId: number) => {
-    setSelectedCard(cardId);
+    setSelectedAddressId(cardId);
+  };
+
+  const handleEdit = (address: Address) => {
+    // Navigate to Add/Edit screen with address data
+    navigation.navigate("AddEditAddress", { address });
+  };
+
+  const handleAddNew = () => {
+    // Navigate to Add/Edit screen without address data
+    navigation.navigate("AddEditAddress");
+  };
+
+  const getDisplayType = (address: Address) => {
+    return address.type === "Other" && address.customType
+      ? address.customType
+      : address.type;
   };
 
   return (
@@ -60,192 +78,99 @@ const MyAddressesScreen = () => {
           style={{ flex: 1, paddingBottom: scale(120) }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Home Address Card */}
-          <View style={styles.cardContainer}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => handleSelect(1)}
-              style={[styles.card, selectedCard === 1 && styles.selectedCard]}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <View
-                  style={[
-                    styles.radioButton,
-                    selectedCard === 1 && styles.radioButtonSelected,
-                  ]}
-                >
-                  {selectedCard === 1 && (
-                    <View style={styles.radioButtonInner} />
-                  )}
-                </View>
-                <Text style={styles.cardText}>Home Address</Text>
-                <TouchableOpacity
-                  style={styles.editBtn}
-                  onPress={() => console.log("Edit Home")}
-                >
-                  <Text style={styles.editText}>Edit</Text>
-                </TouchableOpacity>
-              </View>
-              <Image
-                source={require("../../assets/image/map.png")}
-                style={{
-                  width: "100%",
-                  height: scale(60),
-                  borderRadius: scale(8),
-                  marginVertical: scale(16),
-                }}
-              />
-              <Text
-                style={{
-                  color: "#717171",
-                  fontFamily: "Rubik-Regular",
-                  fontWeight: "400",
-                  fontSize: scale(14),
-                }}
+          {addresses.map((address) => (
+            <View key={address.id} style={styles.cardContainer}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => handleSelect(address.id!)}
+                style={[
+                  address.showMap ? styles.card : styles.smallCard,
+                  selectedAddressId === address.id && styles.selectedCard,
+                ]}
               >
-                Al Barsha Marina Mall 2781 Build Riyadh, SA
-              </Text>
-              <Text
-                style={{
-                  color: "#717171",
-                  fontFamily: "Rubik-Medium",
-                  fontWeight: "500",
-                  fontSize: scale(12),
-                }}
-              >
-                Mohammed Sbiaa // +966 366 00 81
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Business Address Card */}
-          <View style={styles.cardContainer}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => handleSelect(2)}
-              style={[
-                styles.smallCard,
-                selectedCard === 2 && styles.selectedCard,
-              ]}
-            >
-              <View style={styles.row}>
                 <View
-                  style={[
-                    styles.radioButton,
-                    selectedCard === 2 && styles.radioButtonSelected,
-                  ]}
+                  style={
+                    address.showMap
+                      ? { flexDirection: "row", alignItems: "center" }
+                      : styles.row
+                  }
                 >
-                  {selectedCard === 2 && (
-                    <View style={styles.radioButtonInner} />
-                  )}
+                  <View
+                    style={[
+                      styles.radioButton,
+                      selectedAddressId === address.id &&
+                        styles.radioButtonSelected,
+                    ]}
+                  >
+                    {selectedAddressId === address.id && (
+                      <View style={styles.radioButtonInner} />
+                    )}
+                  </View>
+                  <Text style={styles.cardText}>{getDisplayType(address)}</Text>
+                  <TouchableOpacity
+                    style={styles.editBtn}
+                    onPress={() => handleEdit(address)}
+                  >
+                    <Text style={styles.editText}>Edit</Text>
+                  </TouchableOpacity>
                 </View>
-                <Text style={styles.cardText}>Business Address</Text>
-                <TouchableOpacity
-                  style={styles.editBtn}
-                  onPress={() => console.log("Edit Business")}
-                >
-                  <Text style={styles.editText}>Edit</Text>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  width: "100%",
-                  height: scale(1),
-                  backgroundColor: "#E6EAF1",
-                  marginVertical: scale(16),
-                }}
-              />
-              <View style={{ marginHorizontal: scale(16) }}>
-                <Text
-                  style={{
-                    color: "#717171",
-                    fontFamily: "Rubik-Regular",
-                    fontWeight: "400",
-                    fontSize: scale(14),
-                  }}
-                >
-                  Al Barsha Marina Mall 2781 Build Riyadh, SA
-                </Text>
-                <Text
-                  style={{
-                    color: "#717171",
-                    fontFamily: "Rubik-Medium",
-                    fontWeight: "500",
-                    fontSize: scale(12),
-                  }}
-                >
-                  Mohammed Sbiaa // +966 366 00 81
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
 
-          {/* Other Address Card */}
-          <View style={styles.cardContainer}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => handleSelect(3)}
-              style={[
-                styles.smallCard,
-                selectedCard === 3 && styles.selectedCard,
-              ]}
-            >
-              <View style={styles.row}>
+                {address.showMap && (
+                  <Image
+                    source={require("../../assets/image/map.png")}
+                    style={{
+                      width: "100%",
+                      height: scale(60),
+                      borderRadius: scale(8),
+                      marginVertical: scale(16),
+                    }}
+                  />
+                )}
+
+                {!address.showMap && (
+                  <View
+                    style={{
+                      width: "100%",
+                      height: scale(1),
+                      backgroundColor: "#E6EAF1",
+                      marginVertical: scale(16),
+                    }}
+                  />
+                )}
+
                 <View
-                  style={[
-                    styles.radioButton,
-                    selectedCard === 3 && styles.radioButtonSelected,
-                  ]}
+                  style={address.showMap ? {} : { marginHorizontal: scale(16) }}
                 >
-                  {selectedCard === 3 && (
-                    <View style={styles.radioButtonInner} />
-                  )}
+                  <Text
+                    style={{
+                      color: "#717171",
+                      fontFamily: "Rubik-Regular",
+                      fontWeight: "400",
+                      fontSize: scale(14),
+                    }}
+                  >
+                    {address.fullAddress}
+                  </Text>
+                  <Text
+                    style={{
+                      color: "#717171",
+                      fontFamily: "Rubik-Medium",
+                      fontWeight: "500",
+                      fontSize: scale(12),
+                      marginTop: scale(4),
+                    }}
+                  >
+                    {address.name} // {address.phone}
+                  </Text>
                 </View>
-                <Text style={styles.cardText}>Home</Text>
-                <TouchableOpacity
-                  style={styles.editBtn}
-                  onPress={() => console.log("Edit Home")}
-                >
-                  <Text style={styles.editText}>Edit</Text>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  width: "100%",
-                  height: scale(1),
-                  backgroundColor: "#E6EAF1",
-                  marginVertical: scale(16),
-                }}
-              />
-              <View style={{ marginHorizontal: scale(16) }}>
-                <Text
-                  style={{
-                    color: "#717171",
-                    fontFamily: "Rubik-Regular",
-                    fontWeight: "400",
-                    fontSize: scale(14),
-                  }}
-                >
-                  Al Barsha Marina Mall 2781 Build Riyadh, SA
-                </Text>
-                <Text
-                  style={{
-                    color: "#717171",
-                    fontFamily: "Rubik-Medium",
-                    fontWeight: "500",
-                    fontSize: scale(12),
-                  }}
-                >
-                  Mohammed Sbiaa // +966 366 00 81
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+              </TouchableOpacity>
+            </View>
+          ))}
         </ScrollView>
 
         {/* Bottom Fixed Section */}
         <View style={styles.bottomSection}>
-          <TouchableOpacity style={styles.continueBtn}>
+          <TouchableOpacity style={styles.continueBtn} onPress={handleAddNew}>
             <Text style={styles.continueText}>Add New Address</Text>
           </TouchableOpacity>
         </View>

@@ -5,15 +5,22 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
 import EarnMorePointsSection from "../components/EarnMorePointsSection";
 import DealsSection from "../components/DealsSection";
 import StatsCard from "../components/StatsCard";
 import QrCode from "../components/QrCode";
 import { scale } from "../utils/dimen";
 import NearbyDineInCard from "../components/NearbyDineInCard";
+import { useNavigation } from "@react-navigation/native";
 
+import GiftCard2 from "../../assets/svg/giftCards/GiftCard2";
+import GiftCard3 from "../../assets/svg/giftCards/GiftCard3";
+import GiftCard4 from "../../assets/svg/giftCards/GiftCard4";
+import GiftCard5 from "../../assets/svg/giftCards/GiftCard5";
+import GiftCardCarousel from "../components/GiftCardCarousel";
 const DineInContent = () => {
+  const navigation = useNavigation<any>();
+
   const dealsData = [
     {
       id: 1,
@@ -105,21 +112,26 @@ const DineInContent = () => {
       cuisines: "Piatto, Fire Grill, Uncle Moe's",
     },
   ];
+  const giftCards = [
+    { key: "1", comp: GiftCard2 },
+    { key: "2", comp: GiftCard3 },
+    { key: "3", comp: GiftCard4 },
+    { key: "4", comp: GiftCard5 },
+    { key: "5", comp: GiftCard2 },
+  ];
+
+  const handleCardPress = (index: number) => {
+    console.log("Card pressed at index:", index);
+    // Navigate or do anything
+    navigation.navigate("GiftCards");
+  };
 
   const handleDealPress = (deal, index) => {
     console.log("Deal pressed:", deal.title, "at index:", index);
   };
-
   const handleViewAllPress = () => {
     console.log("View All deals pressed");
-  };
-
-  const handleRewardsPress = () => {
-    console.log("Rewards card tapped!");
-  };
-
-  const handleLegendPress = () => {
-    console.log("Legend card tapped!");
+    navigation.navigate("Deals");
   };
 
   const handleLoyaltyPress = () => {
@@ -128,6 +140,17 @@ const DineInContent = () => {
 
   const handleViewMapPress = () => {
     console.log("View Map pressed");
+    navigation.navigate("ViewMap");
+  };
+
+  const handleRewardsPress = () => {
+    console.log("Rewards card tapped!");
+    navigation.navigate("Loyalty", { initialTab: "transaction" });
+  };
+
+  const handleTierPress = () => {
+    console.log("Tier card tapped!");
+    navigation.navigate("Loyalty", { initialTab: "tier" });
   };
 
   return (
@@ -142,7 +165,7 @@ const DineInContent = () => {
           onPress={handleRewardsPress}
           width={scale(140)}
         />
-        <StatsCard type="tier" onPress={handleLegendPress} width={scale(140)} />
+        <StatsCard type="tier" onPress={handleTierPress} width={scale(140)} />
 
         <TouchableOpacity
           style={styles.loyaltyBox}
@@ -192,6 +215,7 @@ const DineInContent = () => {
       </View>
 
       <EarnMorePointsSection containerStyle={undefined} />
+      <GiftCardCarousel cards={giftCards} onCardPress={handleCardPress} />
     </ScrollView>
   );
 };

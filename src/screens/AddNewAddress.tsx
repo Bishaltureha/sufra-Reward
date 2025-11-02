@@ -32,7 +32,7 @@ export default function AddNewAddress() {
     longitude: 46.6753,
   });
   const [address, setAddress] = useState(
-    "Al Barsha Marina Mall 2781 Build Riyadh, SA"
+    "Al Barsha Marina Mall 2781 Build Riyadh, SA",
   );
   const mapRef = useRef(null);
 
@@ -55,7 +55,7 @@ export default function AddNewAddress() {
     }
   };
 
-  const getAddressFromCoords = async (latitude, longitude) => {
+  const getAddressFromCoords = async (latitude: number, longitude: number) => {
     try {
       const result = await Location.reverseGeocodeAsync({
         latitude,
@@ -72,13 +72,13 @@ export default function AddNewAddress() {
     }
   };
 
-  const handleMapPress = (e) => {
+  const handleMapPress = (e: any) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     setMarkerCoord({ latitude, longitude });
     getAddressFromCoords(latitude, longitude);
   };
 
-  const handleRegionChangeComplete = (newRegion) => {
+  const handleRegionChangeComplete = (newRegion: any) => {
     setRegion(newRegion);
   };
 
