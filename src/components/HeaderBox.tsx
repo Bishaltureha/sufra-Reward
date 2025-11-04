@@ -14,6 +14,7 @@ import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { scale } from "../utils/dimen";
 import LocationModal from "./LocationModal";
 import { useLocation } from "../hooks/useLocation";
+import DeliveryDetailsModal from "./DeliveryDetailsModel";
 
 interface HeaderBoxProps {
   boxshadow?: ViewStyle;
@@ -25,6 +26,21 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
     useLocation();
 
   const [locationModalVisible, setLocationModalVisible] = useState(false);
+  const [deliveryDetailsModalVisible, setDeliveryDetailsModalVisible] =
+    useState(false);
+
+  const [deliveryData, setDeliveryData] = useState({
+    orderId: "ORD-12345",
+    customerName: "Ahmed Khan",
+    address: "Street 123, Dubai",
+    phone: "+971 50 123 4567",
+    items: [
+      { name: "Biryani", quantity: 2 },
+      { name: "Kabab", quantity: 3 },
+    ],
+    totalAmount: 145.5,
+    status: "In Progress",
+  });
 
   const handleDrawerToggle = () => {
     try {
@@ -40,12 +56,11 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
 
   const handleLocationPress = () => {
     if (!isEnabled) {
-      // Location disabled - show modal
+      // Location OFF - show LocationModal
       setLocationModalVisible(true);
     } else {
-      // Location enabled - open map screen
-      console.log("Opening map with location:", formattedAddress);
-      // navigation.navigate("MapScreen"); // Map screen ko open karenge
+      // Location ON - show DeliveryDetailsModal
+      setDeliveryDetailsModalVisible(true);
     }
   };
 
@@ -108,10 +123,17 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
         </View>
       </View>
 
-      {/* Location Modal */}
+      {/* Location Modal - Shows when location is OFF */}
       <LocationModal
         visible={locationModalVisible}
         onClose={() => setLocationModalVisible(false)}
+      />
+
+      {/* Delivery Details Modal - Shows when location is ON */}
+      <DeliveryDetailsModal
+        visible={deliveryDetailsModalVisible}
+        onClose={() => setDeliveryDetailsModalVisible(false)}
+        deliveryData={deliveryData}
       />
     </View>
   );

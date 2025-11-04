@@ -94,6 +94,8 @@ export type MainStackParamList = {
     address?: Address;
   };
   ViewMap: undefined;
+  TermsAndConditions: undefined;
+  PointsScreen: undefined;
 };
 
 export type DrawerParamList = {

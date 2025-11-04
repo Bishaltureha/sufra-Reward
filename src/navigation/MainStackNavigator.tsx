@@ -22,6 +22,8 @@ import YourOrder from "../screens/YourOrder";
 import SearchScreen from "../screens/SearchScreen";
 import AddEditAddressScreen from "../screens/AddEditAddressScreen";
 import ViewMap from "../screens/ViewMap";
+import TermsAndConditions from "../screens/TermsAndConditions";
+import PointsScreen from "../screens/PointsScreen";
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -59,6 +61,8 @@ export default function MainStackNavigator() {
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="AddEditAddress" component={AddEditAddressScreen} />
       <Stack.Screen name="ViewMap" component={ViewMap} />
+      <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+      <Stack.Screen name="PointsScreen" component={PointsScreen} />
     </Stack.Navigator>
   );
 }

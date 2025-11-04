@@ -28,7 +28,8 @@ import CollectYourOrderContainer from "../components/BrandDetailsScreen/CollectY
 import RedBoxLocationPermission from "../components/BrandDetailsScreen/RedBoxLocationpermission";
 import ProductCard from "../components/BrandDetailsScreen/ProductCard";
 import NewBadge from "../../assets/svg/NewBadge";
-import MultiBrandModalLogo from "../components/MultiBrandModal";
+import MultiBrandModalLogo from "../components/MultiBrandModalLogo";
+import MultiBrandModal from "../components/MultiBrandModal";
 
 type BrandDetailsRouteProp = RouteProp<MainStackParamList, "BrandDetails">;
 
@@ -171,13 +172,15 @@ const BrandDetailsScreen = () => {
   const categoryScrollRef = useRef<ScrollView>(null);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
   const [locationModalVisible, setLocationModalVisible] = useState(false);
+  const [multiBrandModalLogoVisible, setMultiBrandModalLogoVisible] =
+    useState(false);
   const [multiBrandModalVisible, setMultiBrandModalVisible] = useState(false);
 
   const [cartItems, setCartItems] = useState<{ [key: string]: number }>({});
 
   const sectionPositions = useRef<{ [key: string]: number }>({});
   useEffect(() => {
-    setMultiBrandModalVisible(true);
+    setMultiBrandModalLogoVisible(true);
   }, []);
   const {
     isEnabled: isLocationEnabled,
@@ -639,6 +642,10 @@ const BrandDetailsScreen = () => {
         </View>
       </ScrollView>
       <MultiBrandModalLogo
+        visible={multiBrandModalLogoVisible}
+        onClose={() => setMultiBrandModalLogoVisible(false)}
+      />
+      <MultiBrandModal
         visible={multiBrandModalVisible}
         onClose={() => setMultiBrandModalVisible(false)}
       />
@@ -651,9 +658,13 @@ const BrandDetailsScreen = () => {
           <NewBadge />
           <Text style={styles.bottomText}>Add Items from Other Brands</Text>
         </View>
-        <View style={styles.bottomArrowContainer}>
+        <TouchableOpacity
+          style={styles.bottomArrowContainer}
+          onPress={() => setMultiBrandModalVisible(true)}
+          activeOpacity={0.8}
+        >
           <AntDesign name="up" size={12} color="#6D6D6D" />
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

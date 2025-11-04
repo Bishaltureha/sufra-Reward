@@ -43,7 +43,7 @@ const HomeScreen = () => {
 
   const handleRewardsPress = () => {
     console.log("Rewards card tapped!");
-    navigation.navigate("Loyalty", { initialTab: "transaction" });
+    navigation.navigate("Loyalty");
   };
 
   const handleTierPress = () => {
@@ -165,7 +165,7 @@ const HomeScreen = () => {
               style={styles.dineInButton}
               onPress={() => navigation.navigate("FindStores")}
             >
-              <Text style={styles.dineInButtonText}>Find Dine-in Spots</Text>
+              <Text style={styles.dineInButtonText}>Find Restaurants</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.dineInButton}

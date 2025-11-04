@@ -1,4 +1,4 @@
-import { StyleSheet, View, Alert } from "react-native";
+import { StyleSheet, View, Alert, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import Header from "../components/Header";
 import Logo from "../../assets/svg/Logo";
@@ -89,6 +89,9 @@ const InformationScreen = ({ navigation }: Props) => {
     navigation.navigate("MainStack", { screen: "Home" });
   };
 
+  const handleTermsAndConditions = () => {
+    navigation.navigate("MainStack", { screen: "TermsAndConditions" });
+  };
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -139,8 +142,14 @@ const InformationScreen = ({ navigation }: Props) => {
             <CustomCheckbox checked={acceptTerms} onChange={setAcceptTerms} />
             <RTLText style={styles.checkboxText}>
               {t("info.acceptTerms")}
-              <RTLText style={{ textDecorationLine: "underline" }}>
-                {t("info.termsAndConditions")}
+              <RTLText onPress={handleTermsAndConditions}>
+                <RTLText
+                  style={{
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  {t("info.termsAndConditions")}
+                </RTLText>
               </RTLText>
             </RTLText>
           </View>
@@ -165,7 +174,8 @@ const InformationScreen = ({ navigation }: Props) => {
               !lastName.trim() ||
               !email.trim() ||
               !isValidEmail(email) ||
-              !acceptTerms
+              !acceptTerms ||
+              !receiveOffers
                 ? "#B0B0B0"
                 : "#ffab00"
             }
@@ -177,7 +187,8 @@ const InformationScreen = ({ navigation }: Props) => {
               !lastName.trim() ||
               !email.trim() ||
               !isValidEmail(email) ||
-              !acceptTerms
+              !acceptTerms ||
+              !receiveOffers
             }
           />
         </View>

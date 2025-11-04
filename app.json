@@ -12,40 +12,47 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "statusBar":{
-      "style":"dark",
-      "backgroundColor":"#ffffff"
+    "statusBar": {
+      "style": "dark",
+      "backgroundColor": "#ffffff"
     },
 
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.sufrarewards",
       "infoPlist": {
-        "ExpoLocalization_supportsRTL": true,
         "CFBundleLocalizations": ["en", "ar"],
-        "NSLocationWhenInUseUsageDescription": "We need your location to show nearby services and deliver to you faster.", 
+        "NSLocationWhenInUseUsageDescription": "We need your location to show nearby services and deliver to you faster.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "We need your location to provide better service, even when the app is in the background.",
-        "NSLocationAlwaysUsageDescription": "We need your location to provide better service, even when the app is in the background."
-  },
-      "bundleIdentifier": "com.sufrarewards"
+        "NSCameraUsageDescription": "We need camera access so you can take and upload photos.",
+        "NSMicrophoneUsageDescription": "We need microphone access so you can record audio when necessary.",
+        "NSPhotoLibraryUsageDescription": "We need access to your photo library to let you select and upload images.",
+        "NSUserTrackingUsageDescription": "We use tracking to send you personalized notifications and offers.",
+        "NSLocationAlwaysUsageDescription": "We need your location to provide better service, even when the app is in the background.",
+        "NSCalendarsUsageDescription": "We use calendar access for scheduling if needed.",
+        "NSPhotoLibraryAddUsageDescription": "We need permission to save photos you capture to your library."
+      }
     },
+
     "android": {
+      "package": "com.sufrarewards",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.sufrarewards",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "FOREGROUND_SERVICE",
+        "POST_NOTIFICATIONS"
       ]
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "supportsRTL": true
-    },
+
     "plugins": [
       [
         "expo-localization",
@@ -59,9 +66,23 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow app to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow app to use your location for better service."
         }
+      ],
+      [
+        "expo-camera"
+      ],
+      [
+        "expo-notifications"
       ]
-    ]
+    ],
+
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+
+    "extra": {
+      "supportsRTL": true
+    }
   }
 }

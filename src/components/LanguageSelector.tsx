@@ -51,7 +51,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <Image
           source={
             selectedLanguage === "en"
-              ? require("../../assets/image/usa.png")
+              ? require("../../assets/image/UkFlag1.png")
               : require("../../assets/image/Saudi.png")
           }
           style={styles.flag}
@@ -80,7 +80,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           >
             {selectedLanguage === "en" && <Thick style={styles.checkIcon} />}
             <Image
-              source={require("../../assets/image/usa.png")}
+              source={require("../../assets/image/UkFlag1.png")}
               style={styles.flag}
             />
             <Text style={styles.languageOptionText}>English</Text>
