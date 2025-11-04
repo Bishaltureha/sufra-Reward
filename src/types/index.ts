@@ -96,6 +96,8 @@ export type MainStackParamList = {
   ViewMap: undefined;
   TermsAndConditions: undefined;
   PointsScreen: undefined;
+  Tiers: undefined;
+  ReferAFriend: undefined;
 };
 
 export type DrawerParamList = {

@@ -174,7 +174,7 @@ const ProfileScreen = () => {
         // navigation.navigate("ProfileInformation");
         break;
       case "Refer a Friend":
-        // navigation.navigate("ReferFriend");
+        navigation.navigate("ReferAFriend");
         break;
       case "Favorites":
         navigation.navigate("MyFavorites");
@@ -229,7 +229,7 @@ const ProfileScreen = () => {
 
   const handleCheckBenefits = () => {
     console.log("Check benefits");
-    // navigation.navigate("Benefits");
+    navigation.navigate("Tiers");
   };
   const handleDrawerToggle = () => {
     try {
@@ -360,10 +360,13 @@ const ProfileScreen = () => {
                 <GreenStar />
                 <WhiteStar />
                 <WhiteStar />
-                <View style={styles.benefitsButton}>
+                <TouchableOpacity
+                  style={styles.benefitsButton}
+                  onPress={handleCheckBenefits}
+                >
                   <Text style={styles.benefitsButtonText}>Check Benefits</Text>
                   <AntDesign name="right" size={8} color="#EADDAA" />
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.divider} />

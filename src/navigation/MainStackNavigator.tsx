@@ -24,6 +24,8 @@ import AddEditAddressScreen from "../screens/AddEditAddressScreen";
 import ViewMap from "../screens/ViewMap";
 import TermsAndConditions from "../screens/TermsAndConditions";
 import PointsScreen from "../screens/PointsScreen";
+import Tiers from "../screens/Tiers";
+import ReferAFriend from "../screens/ReferAFriend";
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -63,6 +65,8 @@ export default function MainStackNavigator() {
       <Stack.Screen name="ViewMap" component={ViewMap} />
       <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
       <Stack.Screen name="PointsScreen" component={PointsScreen} />
+      <Stack.Screen name="Tiers" component={Tiers} />
+      <Stack.Screen name="ReferAFriend" component={ReferAFriend} />
     </Stack.Navigator>
   );
 }

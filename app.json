@@ -30,7 +30,14 @@
         "NSUserTrackingUsageDescription": "We use tracking to send you personalized notifications and offers.",
         "NSLocationAlwaysUsageDescription": "We need your location to provide better service, even when the app is in the background.",
         "NSCalendarsUsageDescription": "We use calendar access for scheduling if needed.",
-        "NSPhotoLibraryAddUsageDescription": "We need permission to save photos you capture to your library."
+        "NSPhotoLibraryAddUsageDescription": "We need permission to save photos you capture to your library.",
+        "LSApplicationQueriesSchemes": [
+          "whatsapp",
+          "fb",
+          "instagram",
+          "twitter",
+          "sms"
+        ]
       }
     },
 
