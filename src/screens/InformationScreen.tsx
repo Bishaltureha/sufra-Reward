@@ -12,7 +12,8 @@ import { useLocalization } from "../context/LocalizationContext";
 import RTLText from "../components/RTLText";
 import { scale } from "../utils/dimen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { setJSON } from "../utils/storage";
+import { useAppDispatch } from "../store/hooks";
+import { updateUserProfile, setUser } from "../store/slice/user"; // ✅ import Redux actions
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<AuthStackParamList, "InformationScreen">,
@@ -21,6 +22,7 @@ type Props = CompositeScreenProps<
 
 const InformationScreen = ({ navigation }: Props) => {
   const { t } = useLocalization();
+  const dispatch = useAppDispatch(); // ✅ Initialize Redux dispatch
 
   // Form states
   const [firstName, setFirstName] = useState("");
@@ -35,24 +37,6 @@ const InformationScreen = ({ navigation }: Props) => {
     return emailRegex.test(email);
   };
 
-  // const handleRegister = () => {
-  //   if (!firstName.trim() || !lastName.trim() || !email.trim()) {
-  //     Alert.alert("Error", "Please fill all fields.");
-  //     return;
-  //   }
-
-  //   if (!acceptTerms) {
-  //     Alert.alert("Error", "Please accept Terms & Conditions.");
-  //     return;
-  //   }
-
-  //   // Form data ready
-  //   const formData = { firstName, lastName, email, acceptTerms, receiveOffers };
-  //   console.log("Form Data:", formData);
-
-  //   // Navigate to Home
-  //   navigation.navigate("Home");
-  // };
   const handleRegister = () => {
     if (!firstName.trim() || !lastName.trim() || !email.trim()) {
       Alert.alert("Error", "Please fill all fields.");
@@ -64,34 +48,31 @@ const InformationScreen = ({ navigation }: Props) => {
       return;
     }
 
-    // Save to MMKV
-    const formData = {
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
+    // ✅ Merge name + email with existing user (don’t overwrite)
+    dispatch(
+      updateUserProfile({
+        name: `${firstName.trim()} ${lastName.trim()}`,
+        email: email.trim(),
+        isProfileComplete: true,
+        receiveOffers,
+      })
+    );
+
+    console.log("Form Data saved via Redux Persist:", {
+      name: `${firstName.trim()} ${lastName.trim()}`,
       email: email.trim(),
       acceptTerms,
       receiveOffers,
-    };
+    });
 
-    // Option 1: Save as JSON object
-    setJSON("user.profile", formData);
-
-    // Option 2 (Alternative): Save individually
-    // setString("user.firstName", firstName.trim());
-    // setString("user.lastName", lastName.trim());
-    // setString("user.email", email.trim());
-    // setBoolean("user.acceptTerms", acceptTerms);
-    // setBoolean("user.receiveOffers", receiveOffers);
-
-    console.log("Form Data saved to MMKV:", formData);
-
-    // Navigate to Home
+    // ✅ Navigate to Home
     navigation.navigate("MainStack", { screen: "Home" });
   };
 
   const handleTermsAndConditions = () => {
     navigation.navigate("MainStack", { screen: "TermsAndConditions" });
   };
+
   return (
     <View style={styles.container}>
       {/* Header */}

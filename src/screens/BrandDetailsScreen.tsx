@@ -19,7 +19,7 @@ import {
 } from "@react-navigation/native";
 import { scale } from "../utils/dimen";
 import { MainStackParamList } from "../types";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Error from "../../assets/svg/Error";
 import LocationModal from "../components/LocationModal";
 import YourPastOrders from "../components/BrandDetailsScreen/YourPastOrders";
@@ -663,7 +663,7 @@ const BrandDetailsScreen = () => {
           onPress={() => setMultiBrandModalVisible(true)}
           activeOpacity={0.8}
         >
-          <AntDesign name="up" size={12} color="#6D6D6D" />
+          <Entypo name="chevron-up" size={24} color="#6D6D6D" />
         </TouchableOpacity>
       </View>
     </View>

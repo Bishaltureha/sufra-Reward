@@ -8,9 +8,9 @@ import {
 } from "react-native";
 import * as Linking from "expo-linking";
 import * as Clipboard from "expo-clipboard";
-import * as Sharing from "expo-sharing";
-import Share from "react-native-share";
 
+import Share from "react-native-share";
+import * as Asset from "expo-asset";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackArrow from "../../assets/svg/BackArrow";
@@ -109,29 +109,29 @@ const ReferAFriend = () => {
     }
   };
 
-  const handleInstagram = async () => {
-    try {
-      // Instagram doesn't support direct text sharing via URL scheme
-      // Copy to clipboard and open Instagram
-      await Clipboard.setString(shareMessage);
-      const url = "instagram://library?AssetPath=";
-      const canOpen = await Linking.canOpenURL(url);
-      if (canOpen) {
-        await Linking.openURL(url);
-        Alert.alert(
-          "Link Copied",
-          "Referral link copied! You can paste it in your Instagram story or post."
-        );
-      } else {
-        Alert.alert(
-          "Instagram Not Installed",
-          "Please install Instagram to share via this platform"
-        );
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to open Instagram");
-    }
-  };
+ const handleInstagram = async () => {
+  try {
+    const asset = Asset.Asset.fromModule(require("../../assets/image/logo.png"));
+    await asset.downloadAsync();
+
+    const shareOptions = {
+      backgroundBottomColor: "#017851",
+      backgroundTopColor: "#F1EDE5",
+      stickerImage: asset.localUri,
+      attributionURL: fullReferralUrl,
+      social: Share.Social.INSTAGRAM_STORIES,
+      appId: "com.sufrarewards",
+    } as any;
+
+    await Share.shareSingle(shareOptions);
+  } catch (error) {
+    console.log("Instagram share error:", error);
+    Alert.alert("Error", "Failed to share to Instagram story.");
+  }
+};
+
+
+
 
   const handleTwitter = async () => {
     try {

@@ -15,7 +15,11 @@ import {
   DrawerActions,
   useNavigation,
 } from "@react-navigation/native";
-import { DrawerParamList, MainStackParamList } from "../types";
+import {
+  DrawerParamList,
+  MainStackParamList,
+  RootStackParamList,
+} from "../types";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import GreenStar from "../../assets/svg/GreenStar";
@@ -38,7 +42,10 @@ import Drawerlogos from "../../assets/svg/Drawerlogos";
 
 type ProfileScreenNavigationProp = CompositeNavigationProp<
   DrawerNavigationProp<DrawerParamList, "Profile">,
-  NativeStackNavigationProp<MainStackParamList>
+  CompositeNavigationProp<
+    NativeStackNavigationProp<MainStackParamList>,
+    NativeStackNavigationProp<RootStackParamList>
+  >
 >;
 
 // Menu Item Component
@@ -164,51 +171,46 @@ const PunchCard = ({ title, current, total, isCompleted }: any) => {
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const handleMenuItemPress = (itemText: string) => {
-    console.log(`Pressed: ${itemText}`);
-    // Navigate based on the item
     switch (itemText) {
       case "Transaction History":
-        // navigation.navigate("TransactionHistory");
+        navigation.navigate("TransactionHistory");
         break;
       case "Profile Information":
-        // navigation.navigate("ProfileInformation");
+        navigation.navigate("ProfileInformation");
         break;
       case "Refer a Friend":
         navigation.navigate("ReferAFriend");
         break;
       case "Favorites":
-        navigation.navigate("MyFavorites");
+        navigation.navigate("DrawerRoot", { screen: "MyFavorites" });
         break;
       case "Payment Methods":
-        navigation.navigate("MyPaymentMethods");
+        navigation.navigate("DrawerRoot", { screen: "MyPaymentMethods" });
         break;
       case "My Addresses":
-        navigation.navigate("MyAddresses");
+        navigation.navigate("DrawerRoot", { screen: "MyAddresses" });
         break;
       case "Previous Orders":
-        navigation.navigate("MyOrders");
+        navigation.navigate("DrawerRoot", { screen: "MyOrders" });
         break;
       case "Customer Service":
-        navigation.navigate("GetHelp");
+        navigation.navigate("DrawerRoot", { screen: "GetHelp" });
         break;
       case "FAQ":
         navigation.navigate("FAQ");
         break;
       case "User Agreements":
-        // navigation.navigate("UserAgreements");
+        navigation.navigate("UserAgreements");
         break;
       case "Logout":
         navigation.reset({
           index: 0,
           routes: [{ name: "OnboardingStack" as any }],
         });
-
-        // Handle logout
-        break;
-      default:
         break;
     }
   };
+
   const handlePunchCardPress = (card: any) => {
     console.log("Punch card pressed:", card);
     if (card.isCompleted) {
@@ -232,14 +234,11 @@ const ProfileScreen = () => {
     navigation.navigate("Tiers");
   };
   const handleDrawerToggle = () => {
-    try {
-      navigation.dispatch(DrawerActions.openDrawer());
-    } catch {
-      try {
-        navigation.openDrawer();
-      } catch (fallbackError) {
-        console.error("Drawer not working:", fallbackError);
-      }
+    const drawerNav = navigation.getParent("DrawerRoot" as never);
+    if (drawerNav) {
+      drawerNav.dispatch(DrawerActions.openDrawer());
+    } else {
+      console.warn("Drawer navigation not found.");
     }
   };
 

@@ -22,9 +22,9 @@ export const requestAllPermissions = async () => {
     console.log("Location permission:", locationStatus);
 
     // Media Library
-    const { status: mediaStatus } =
-      await MediaLibrary.requestPermissionsAsync();
-    console.log("Media Library permission:", mediaStatus);
+    // const { status: mediaStatus } =
+    //   await MediaLibrary.requestPermissionsAsync();
+    // console.log("Media Library permission:", mediaStatus);
 
     // Notifications
     const { status: notifStatus } =

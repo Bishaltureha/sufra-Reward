@@ -1,5 +1,4 @@
-// export default CustomDrawerContent;
-import React, { useEffect } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -15,7 +14,6 @@ import BellIcon from "../../assets/svg/BellIcon";
 import DrawerStar from "../../assets/svg/DrawerStar";
 import FrontArrow from "../../assets/svg/FrontArrow";
 
-// Import your custom SVG logos
 import BookCateringLogo from "../../assets/svg/drawer/BookCateringLogo";
 import DealsLogo from "../../assets/svg/drawer/DealsLogo";
 import DeliveryLogo from "../../assets/svg/drawer/DeliveryLogo";
@@ -28,275 +26,161 @@ import MyFavoritesLogo from "../../assets/svg/drawer/MyFavoritesLogo";
 import MyOrdersLogo from "../../assets/svg/drawer/MyOrdersLogo";
 import MyPaymentMethodsLogo from "../../assets/svg/drawer/MyPaymentMethodsLogo";
 import GiftCardsLogo from "../../assets/svg/drawer/GiftCardsLogo";
-import { getJSON } from "../utils/storage";
 import OrderTrackingLogo from "../../assets/svg/drawer/OrderTrackingLogo";
+
 import { useLocalization } from "../context/LocalizationContext";
 import LanguageSelector from "./LanguageSelector";
 
-interface DrawerItem {
-  name: string;
-  translationKey: string;
-  icon: string;
-  requiresAuth?: boolean;
-  showOnlyWhenLoggedOut?: boolean;
-}
+// ✅ Redux imports
+import { useAppSelector } from "../store/hooks";
 
-const drawerItems: DrawerItem[] = [
-  { name: "Home", translationKey: "drawer.home", icon: "HomeLogo" },
-  {
-    name: "GiftCards",
-    translationKey: "drawer.giftCards",
-    icon: "GiftCardsLogo",
-  },
-  {
-    name: "Delivery",
-    translationKey: "drawer.delivery",
-    icon: "DeliveryLogo",
-  },
-  {
-    name: "DineIn",
-    translationKey: "drawer.dineIn",
-    icon: "DineInLogo",
-  },
-  {
-    name: "Deals",
-    translationKey: "drawer.deals",
-    icon: "DealsLogo",
-  },
-  {
-    name: "BookCatering",
-    translationKey: "drawer.bookCatering",
-    icon: "BookCateringLogo",
-  },
-  {
-    name: "OrderTracking",
-    translationKey: "drawer.orderTracking",
-    icon: "OrderTrackingLogo",
-    showOnlyWhenLoggedOut: true,
-  },
-  {
-    name: "MyFavorites",
-    translationKey: "drawer.myFavorites",
-    icon: "MyFavoritesLogo",
-    requiresAuth: true,
-  },
-  {
-    name: "MyOrders",
-    translationKey: "drawer.myOrders",
-    icon: "MyOrdersLogo",
-    requiresAuth: true,
-  },
-  {
-    name: "MyAddresses",
-    translationKey: "drawer.myAddresses",
-    icon: "MyAddressesLogo",
-    requiresAuth: true,
-  },
-  {
-    name: "MyPaymentMethods",
-    translationKey: "drawer.myPaymentMethods",
-    icon: "MyPaymentMethodsLogo",
-    requiresAuth: true,
-  },
-  {
-    name: "GetHelp",
-    translationKey: "drawer.getHelp",
-    icon: "GetHelpLogo",
-  },
-  {
-    name: "FAQ",
-    translationKey: "drawer.faq",
-    icon: "FAQLogo",
-  },
-];
-
-// WhatsApp Configuration
-const WHATSAPP_NUMBER = "+91 83087 46937"; // Replace with your WhatsApp number
-
+const WHATSAPP_NUMBER = "+91 93098 59668";
 const openWhatsApp = () => {
-  const message = "Hi, I'm interested in catering services."; // You can customize this message
+  const message = "Hi, I'm interested in catering services.";
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER.replace(
     /\D/g,
     ""
   )}?text=${encodeURIComponent(message)}`;
-
   Linking.openURL(whatsappUrl).catch(() => {
     console.log("WhatsApp is not installed on this device.");
   });
 };
 
 const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
-  const [userName, setUserName] = React.useState<string>("");
-  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
   const { navigation, state } = props;
   const { t } = useLocalization();
 
-  useEffect(() => {
-    // Load user data from MMKV
-    const userData = getJSON<{
-      firstName?: string;
-      lastName?: string;
-    }>("user.profile");
+  // ✅ Redux user data (persisted via MMKV)
+  const user = useAppSelector((state) => state.user.data);
+  const isLoggedIn = useAppSelector((state) => state.user.isAuthenticated);
 
-    if (userData?.firstName && userData?.lastName) {
-      setUserName(`${userData.firstName} ${userData.lastName}`);
-      setIsLoggedIn(true);
-    } else {
-      setUserName(t("drawer.loginOrRegister"));
-      setIsLoggedIn(false);
-    }
-  }, []);
+  const userName =
+    user?.name && user.name.trim().length > 0
+      ? user.name
+      : t("drawer.loginOrRegister");
 
-  const renderIcon = (item: DrawerItem, isActive: boolean) => {
-    const iconColor = isActive ? "#F6B01F" : "#6D6D6D";
-    const iconSize = 20;
+  const drawerItems = [
+    { name: "Home", translationKey: "drawer.home", icon: HomeLogo },
+    {
+      name: "GiftCards",
+      translationKey: "drawer.giftCards",
+      icon: GiftCardsLogo,
+    },
+    { name: "Delivery", translationKey: "drawer.delivery", icon: DeliveryLogo },
+    { name: "DineIn", translationKey: "drawer.dineIn", icon: DineInLogo },
+    { name: "Deals", translationKey: "drawer.deals", icon: DealsLogo },
+    {
+      name: "BookCatering",
+      translationKey: "drawer.bookCatering",
+      icon: BookCateringLogo,
+    },
+    {
+      name: "OrderTracking",
+      translationKey: "drawer.orderTracking",
+      icon: OrderTrackingLogo,
+      showOnlyWhenLoggedOut: true,
+    },
+    {
+      name: "MyFavorites",
+      translationKey: "drawer.myFavorites",
+      icon: MyFavoritesLogo,
+      requiresAuth: true,
+    },
+    {
+      name: "MyOrders",
+      translationKey: "drawer.myOrders",
+      icon: MyOrdersLogo,
+      requiresAuth: true,
+    },
+    {
+      name: "MyAddresses",
+      translationKey: "drawer.myAddresses",
+      icon: MyAddressesLogo,
+      requiresAuth: true,
+    },
+    {
+      name: "MyPaymentMethods",
+      translationKey: "drawer.myPaymentMethods",
+      icon: MyPaymentMethodsLogo,
+      requiresAuth: true,
+    },
+    { name: "GetHelp", translationKey: "drawer.getHelp", icon: GetHelpLogo },
+    { name: "FAQ", translationKey: "drawer.faq", icon: FAQLogo },
+  ];
 
-    // Map icon names to components
-    const iconComponents = {
-      HomeLogo: HomeLogo,
-      GiftCardsLogo: GiftCardsLogo,
-      DeliveryLogo: DeliveryLogo,
-      DineInLogo: DineInLogo,
-      DealsLogo: DealsLogo,
-      BookCateringLogo: BookCateringLogo,
-      OrderTrackingLogo: OrderTrackingLogo,
-      MyFavoritesLogo: MyFavoritesLogo,
-      MyOrdersLogo: MyOrdersLogo,
-      MyAddressesLogo: MyAddressesLogo,
-      MyPaymentMethodsLogo: MyPaymentMethodsLogo,
-      GetHelpLogo: GetHelpLogo,
-      FAQLogo: FAQLogo,
-    };
+  const renderDrawerItem = (item, index) => {
+    if (item.requiresAuth && !isLoggedIn) return null;
+    if (item.showOnlyWhenLoggedOut && isLoggedIn) return null;
 
-    const IconComponent = iconComponents[item.icon];
-
-    if (IconComponent) {
-      return (
-        <IconComponent
-          width={iconSize}
-          height={iconSize}
-          color={iconColor}
-          fill={iconColor}
-        />
-      );
-    }
-
-    return null;
-  };
-
-  const renderDrawerItem = (item: DrawerItem, index: number) => {
-    // Skip rendering if item requires authentication and user is not logged in
-    if (item.requiresAuth && !isLoggedIn) {
-      return null;
-    }
-
-    // Skip rendering if item should only show when logged out and user is logged in
-    if (item.showOnlyWhenLoggedOut && isLoggedIn) {
-      return null;
-    }
-
-    // Get the current route name and params
     const currentRoute = state.routes[state.index];
     const currentRouteName = currentRoute.name;
     const currentParams = currentRoute.params as
       | { screen?: string }
       | undefined;
 
-    // Determine if this item is active
     let isActive = false;
-
     if (item.name === "Delivery" || item.name === "DineIn") {
-      // For Delivery and DineIn, check if we're on TopTabScreen with matching params
       isActive =
         currentRouteName === "TopTabScreen" &&
         currentParams?.screen === item.name;
-    } else if (item.name === "GiftCards") {
-      // For GiftCards, check if current route is GiftCards
-      isActive = currentRouteName === "GiftCards";
     } else {
-      // For other items, check if the route name matches
       isActive = currentRouteName === item.name;
     }
 
     const handlePress = () => {
-      if (item.name === "Delivery") {
-        navigation.navigate("TopTabScreen", { screen: "Delivery" });
-      } else if (item.name === "DineIn") {
-        navigation.navigate("TopTabScreen", { screen: "DineIn" });
-      } else if (item.name === "GiftCards") {
-        navigation.navigate("GiftCards", { screen: "GiftCardsMain" });
-      } else if (item.name === "BookCatering") {
-        // Open WhatsApp for BookCatering
+      if (item.name === "BookCatering") {
         openWhatsApp();
+      } else if (item.name === "Delivery" || item.name === "DineIn") {
+        navigation.navigate("TopTabScreen", { screen: item.name });
       } else {
         navigation.navigate(item.name as never);
       }
     };
 
+    const IconComponent = item.icon;
+    const color = isActive ? "#017851" : "#6D6D6D";
+
     return (
       <TouchableOpacity
-        key={item.name}
+        key={index}
         style={[styles.drawerItem, isActive && styles.activeDrawerItem]}
         onPress={handlePress}
       >
-        <View style={styles.iconContainer}>{renderIcon(item, isActive)}</View>
-        <View style={styles.textContainer}>
-          <View style={styles.textWithBadgeContainer}>
-            <Text
-              style={[
-                styles.drawerItemText,
-                isActive && styles.activeDrawerItemText,
-              ]}
-            >
-              {t(item.translationKey)}
-            </Text>
-            {(item.name === "BookCatering" || item.name === "GiftCards") && (
-              <View style={styles.newBadge}>
-                <Text style={styles.newBadgeText}>{t("drawer.new")}</Text>
-              </View>
-            )}
-          </View>
-        </View>
+        <IconComponent width={22} height={22} color={color} fill={color} />
+        <Text
+          style={[
+            styles.drawerItemText,
+            isActive && styles.activeDrawerItemText,
+          ]}
+        >
+          {t(item.translationKey)}
+        </Text>
       </TouchableOpacity>
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <Image source={require("../../assets/image/logo.png")} />
-        <View style={styles.buttonWithBadge}>
-          <TouchableOpacity
-            style={styles.circularButton}
-            onPress={() => {
-              console.log("Button pressed");
-              navigation.navigate("Notification");
-            }}
-          >
-            <BellIcon />
-          </TouchableOpacity>
-          {/* Notification dot */}
+        <TouchableOpacity
+          style={styles.circularButton}
+          onPress={() => navigation.navigate("Notification")}
+        >
+          <BellIcon />
           <View style={styles.notificationDot} />
-        </View>
+        </TouchableOpacity>
       </View>
-      {/* userInfo */}
+
+      {/* User Info */}
       <TouchableOpacity
         style={styles.userInfo}
-        onPress={() => {
-          // Check if user is logged in
-          const userData = getJSON<{
-            firstName?: string;
-            lastName?: string;
-          }>("user.profile");
-
-          if (userData?.firstName && userData?.lastName) {
-            // User is logged in - go to Profile
-            navigation.navigate("Profile");
-          } else {
-            // User is not logged in - go to AuthStack Register
-            navigation.navigate("AuthStack", { screen: "Register" });
-          }
-        }}
+        onPress={() =>
+          isLoggedIn
+            ? navigation.navigate("Profile")
+            : navigation.navigate("AuthStack", { screen: "Login" })
+        }
       >
         <DrawerStar />
         <View style={styles.Logintext}>
@@ -309,12 +193,14 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
           <FrontArrow color="#017851" width={6} height={10} />
         </View>
       </TouchableOpacity>
+
       <View style={styles.divider} />
-      {/* Navigation Items */}
       <View style={styles.drawerItems}>
-        {drawerItems.map((item, index) => renderDrawerItem(item, index))}
+        {drawerItems.map(renderDrawerItem)}
       </View>
       <View style={styles.divider} />
+
+      {/* Language Selector */}
       <View style={styles.bottomContainer}>
         <LanguageSelector
           containerStyle={styles.languageSelectorContainer}
@@ -326,13 +212,9 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
+  container: { flex: 1, backgroundColor: "#f5f5f5" },
   header: {
-    paddingStart: 16,
-    paddingEnd: 16,
+    paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -346,9 +228,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonWithBadge: {
-    position: "relative",
-  },
   notificationDot: {
     backgroundColor: "#F6B01F",
     width: scale(10),
@@ -360,114 +239,53 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     marginTop: 20,
-    marginStart: 19,
-    marginEnd: 19,
-    justifyContent: "flex-start",
-    alignItems: "center",
+    marginHorizontal: 19,
     flexDirection: "row",
+    alignItems: "center",
   },
-  Logintext: {
-    flexDirection: "column",
-    marginStart: 16,
-    justifyContent: "center",
-    alignItems: "flex-start",
-    flex: 1,
-  },
+  Logintext: { flex: 1, marginStart: 16 },
   userName: {
-    fontFamily: "Rubik-Bold",
     fontWeight: "700",
     fontSize: scale(18),
     color: "#017851",
-    textAlign: "left",
   },
   userDetails: {
     color: "#717171",
-    fontFamily: "Rubik-Regular",
-    fontWeight: "400",
     fontSize: 13,
-    textAlign: "left",
   },
   arrowBox: {
-    width: 6,
-    height: 10,
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
     position: "absolute",
     right: 0,
   },
   divider: {
-    height: scale(1),
+    height: 1,
     width: "90%",
     backgroundColor: "#E6EAF1",
-    marginTop: scale(10),
-    marginStart: scale(16),
+    alignSelf: "center",
+    marginVertical: scale(10),
   },
   drawerItems: {
-    marginTop: scale(15),
+    marginTop: scale(5),
     paddingHorizontal: scale(16),
   },
   drawerItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: scale(6),
+    paddingVertical: scale(8),
     paddingHorizontal: scale(16),
     borderRadius: scale(8),
-    marginVertical: scale(2),
   },
-  activeDrawerItem: {
-    backgroundColor: "#E8F5E8",
-  },
-  iconContainer: {
-    width: scale(24),
-    height: scale(24),
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: scale(16),
-  },
-  textContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  textWithBadgeContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-  },
+  activeDrawerItem: { backgroundColor: "#E8F5E8" },
   drawerItemText: {
-    fontSize: scale(17),
-    fontFamily: "Rubik-Regular",
+    marginLeft: scale(16),
+    fontSize: scale(16),
     color: "#4A4A4A",
-    flexShrink: 1,
   },
-  activeDrawerItemText: {
-    color: "#017851",
-    fontFamily: "Rubik-Medium",
-  },
-  newBadgeText: {
-    fontFamily: "Rubik-SemiBold",
-    fontWeight: "600",
-    fontSize: scale(12),
-    color: "#017851",
-    textAlign: "center",
-    lineHeight: scale(11),
-  },
-  newBadge: {
-    backgroundColor: "transparent",
-    paddingHorizontal: scale(2),
-    paddingVertical: scale(1),
-    marginLeft: scale(0),
-    marginTop: scale(-2),
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: scale(12),
-  },
+  activeDrawerItemText: { color: "#017851", fontWeight: "600" },
   bottomContainer: {
     position: "absolute",
     left: scale(35),
-    bottom: scale(110),
+    bottom: scale(130),
   },
   languageSelectorContainer: {
     width: scale(77),

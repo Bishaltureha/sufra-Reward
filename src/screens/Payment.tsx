@@ -1,19 +1,17 @@
+import React, { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  Image,
   ImageBackground,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import React, { useState } from "react";
-import {
-  AntDesign,
-  FontAwesome,
-  Ionicons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { scale } from "../utils/dimen";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -23,6 +21,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { MainStackParamList } from "../types";
+
 import RuningTime from "../../assets/svg/RuningTime";
 import LocationofCart from "../../assets/svg/LocationofCart";
 import GreenFire from "../../assets/svg/GreenFire";
@@ -35,49 +34,38 @@ import Trash from "../../assets/svg/Trash";
 import WhiteTicket from "../../assets/svg/WhiteTicket";
 import GreenCreditCard from "../../assets/svg/GreenCreditCard";
 import WhiteCreditCard from "../../assets/svg/WhiteCreditCard";
+
 import { LinearGradient } from "expo-linear-gradient";
 import CardPaymentForm from "../components/CardPaymentForm";
 import CustomCheckbox from "../components/CustomCheckbox";
 
 type PaymentRouteProp = RouteProp<MainStackParamList, "Payment">;
-const Payment = () => {
+
+const Payment: React.FC = () => {
   const route = useRoute<PaymentRouteProp>();
   const deliveryAddress = route.params?.deliveryAddress;
   const navigation = useNavigation<NavigationProp<MainStackParamList>>();
+
+  // state
   const [showPriceBreakdown, setShowPriceBreakdown] = useState(false);
-  const [appliedPromos, setAppliedPromos] = useState<number[]>([0]);
-  const [selectedPayment, setSelectedPayment] = useState<string>("applePay");
+  const [appliedPromos, setAppliedPromos] = useState<number[]>([]); // start empty
+  const [selectedPayment, setSelectedPayment] = useState<
+    "applePay" | "creditCard"
+  >("applePay");
   const [showLocationMismatch, setShowLocationMismatch] = useState(false);
+
+  // sufra points redeemed (toggle)
   const [isRedeemed, setIsRedeemed] = useState(false);
+
+  // promo / gift code states
   const [code, setCode] = useState("");
   const [redeemed, setRedeemed] = useState(false);
+
+  // add card form states
   const [showAddCardForm, setShowAddCardForm] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-  const [cardData, setCardData] = useState(null);
+  const [cardData, setCardData] = useState<Record<string, any> | null>(null);
   const [saveCard, setSaveCard] = useState(false);
-
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
-  const togglePromo = (index: number) => {
-    if (appliedPromos.includes(index)) {
-      setAppliedPromos(appliedPromos.filter((i) => i !== index));
-    } else {
-      setAppliedPromos([...appliedPromos, index]);
-    }
-  };
-  const handleApply = () => {
-    if (code.trim().toUpperCase() === "SFRR-WRDS-105F7") {
-      setRedeemed(true);
-    } else {
-      alert("Invalid promo code");
-    }
-  };
-  const handleTrash = () => {
-    setRedeemed(false);
-    setCode("");
-  };
 
   const promos = [
     { title: "Birthday Coupon", expiry: "Expires on 05/21/2024" },
@@ -86,65 +74,93 @@ const Payment = () => {
     { title: "Weekly Lunch Specials", expiry: "Expires on 05/21/2024" },
   ];
 
+  const handleBack = () => navigation.goBack();
+
+  const togglePromo = (index: number) => {
+    setAppliedPromos((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+
+  const handleApply = () => {
+    // Keep the existing promo-code rule, but normalize comparison
+    if (code.trim().toUpperCase() === "SFRR-WRDS-105F7") {
+      setRedeemed(true);
+    } else {
+      alert("Invalid promo code");
+    }
+  };
+
+  const handleTrash = () => {
+    setRedeemed(false);
+    setCode("");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}
+      <KeyboardAvoidingView
+        behavior={Platform.select({ ios: "padding", android: undefined })}
+        style={{ flex: 1 }}
       >
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.headerButton} onPress={handleBack}>
-            <AntDesign name="left" size={scale(20)} color="#017851" />
-          </TouchableOpacity>
-          <View style={styles.subHeader}>
-            <Text style={styles.cartTitle}>Checkout</Text>
-            <Text style={styles.restaurantName}>Fire Grill Restaurant</Text>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollViewContent}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.headerButton} onPress={handleBack}>
+              <AntDesign name="left" size={scale(20)} color="#017851" />
+            </TouchableOpacity>
+            <View style={styles.subHeader}>
+              <Text style={styles.cartTitle}>Checkout</Text>
+              <Text style={styles.restaurantName}>Fire Grill Restaurant</Text>
+            </View>
           </View>
-        </View>
-        <View style={styles.contentBox}>
-          <View style={styles.progressContainer}>
-            {[
-              { label: "Menu", active: true },
-              { label: "Cart", active: true },
-              { label: "Checkout", active: true },
-            ].map((step, index) => (
-              <View key={index} style={styles.progressStep}>
-                <View
-                  style={[
-                    styles.progressBar,
-                    { backgroundColor: step.active ? "#FBAA19" : "#979797" },
-                  ]}
-                />
-                <Text
-                  style={[
-                    styles.progressLabel,
-                    { color: step.active ? "#FBAA19" : "#979797" },
-                  ]}
-                >
-                  {step.label}
+
+          {/* Content box */}
+          <View style={styles.contentBox}>
+            <View style={styles.progressContainer}>
+              {[
+                { label: "Menu", active: true },
+                { label: "Cart", active: true },
+                { label: "Checkout", active: true },
+              ].map((step, index) => (
+                <View key={index} style={styles.progressStep}>
+                  <View
+                    style={[
+                      styles.progressBar,
+                      { backgroundColor: step.active ? "#FBAA19" : "#979797" },
+                    ]}
+                  />
+                  <Text
+                    style={[
+                      styles.progressLabel,
+                      { color: step.active ? "#FBAA19" : "#979797" },
+                    ]}
+                  >
+                    {step.label}
+                  </Text>
+                </View>
+              ))}
+            </View>
+
+            <Text style={styles.sectionTitle}>Delivery Details</Text>
+
+            <View style={styles.pickupCard}>
+              <View style={styles.deliveryTimeContainer}>
+                <RuningTime />
+                <Text style={styles.deliveryTimeLabel}>
+                  Expected Delivery Time
                 </Text>
               </View>
-            ))}
-          </View>
-          <Text style={styles.sectionTitle}>
-            {/* Pick-up Details */}
-            Delivery Details
-          </Text>
-          <View style={styles.pickupCard}>
-            <View style={styles.deliveryTimeContainer}>
-              <RuningTime />
-              <Text style={styles.deliveryTimeLabel}>
-                Expected Delivery Time
-              </Text>
+              <Text style={styles.deliveryTimeValue}>35-40 min</Text>
             </View>
-            <Text style={styles.deliveryTimeValue}>35-40 min</Text>
-          </View>
-          {!showLocationMismatch ? (
-            <>
+
+            {!showLocationMismatch ? (
               <TouchableOpacity
                 style={styles.pickupDetailsCard}
                 onPress={() => setShowLocationMismatch(true)}
-                activeOpacity={0.7}
+                activeOpacity={0.8}
               >
                 <View style={styles.pickupDetailsRow}>
                   <ImageBackground
@@ -155,7 +171,6 @@ const Payment = () => {
                   </ImageBackground>
 
                   {deliveryAddress ? (
-                    // Show saved address
                     <View style={styles.addressContainer}>
                       <Text style={styles.branchName}>
                         {deliveryAddress.addressName}
@@ -189,471 +204,536 @@ const Payment = () => {
                     </TouchableOpacity>
                   )}
                 </View>
+
                 {deliveryAddress && (
                   <AntDesign name="right" size={scale(15)} color="#017851" />
                 )}
               </TouchableOpacity>
-            </>
-          ) : (
-            <TouchableOpacity
-              style={styles.locationMismatchContainer}
-              onPress={() => setShowLocationMismatch(false)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.locationMismatchHeader}>
-                <LocationLogo color={"#ffffff"} />
-                <Text style={styles.locationMismatchText}>
-                  Your address doesn't match your Current location
-                </Text>
-              </View>
-              <View style={styles.locationMismatchCard}>
-                <View style={styles.pickupDetailsRow}>
-                  <ImageBackground
-                    source={require("../../assets/image/LoctionBackground.png")}
-                    style={styles.locationImageBackground}
-                  >
-                    <LocationofCart />
-                  </ImageBackground>
-
-                  <View style={styles.addressContainer}>
-                    <Text style={styles.branchName}>Home Address</Text>
-                    <Text
-                      style={styles.addressText}
-                      numberOfLines={2}
-                      ellipsizeMode="tail"
-                    >
-                      Al Barsha Marina Mall 2781 Build {"\n"}Riyadh, SA
-                    </Text>
-                    <Text
-                      style={{
-                        color: "#717171",
-                        fontFamily: "Rubik-Medium",
-                        fontWeight: "500",
-
-                        fontSize: scale(12),
-                      }}
-                    >
-                      Mohammed Sbiaa // +966 366 00 81
-                    </Text>
-                  </View>
+            ) : (
+              <TouchableOpacity
+                style={styles.locationMismatchContainer}
+                onPress={() => setShowLocationMismatch(false)}
+                activeOpacity={0.8}
+              >
+                <View style={styles.locationMismatchHeader}>
+                  <LocationLogo color={"#ffffff"} />
+                  <Text style={styles.locationMismatchText}>
+                    Your address doesn't match your current location
+                  </Text>
                 </View>
-                <AntDesign name="right" size={scale(15)} color="#017851" />
-              </View>
-            </TouchableOpacity>
-          )}
-          <View style={styles.noteContainer}>
-            <TextInput
-              placeholder="Note to Rider - e.g. do not ring doorbell"
-              placeholderTextColor="#717171"
-              style={styles.noteInput}
-            />
-          </View>
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.promosSection}>
-          <Text style={styles.sectionTitle}>
-            {/* Applicable Promos */}
-            Applicable Campaigns
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.promoScrollContent}
-          >
-            {promos.map((promo, index) => (
-              <View key={index} style={styles.promoCard}>
-                <GreenFire height={scale(25)} width={scale(25)} />
-                <View style={styles.promoContent}>
-                  <View style={styles.promoInfo}>
-                    <Text style={styles.promoTitle}>{promo.title}</Text>
-                    <Text style={styles.promoExpiry}>{promo.expiry}</Text>
+
+                <View style={styles.locationMismatchCard}>
+                  <View style={styles.pickupDetailsRow}>
+                    <ImageBackground
+                      source={require("../../assets/image/LoctionBackground.png")}
+                      style={styles.locationImageBackground}
+                    >
+                      <LocationofCart />
+                    </ImageBackground>
+
+                    <View style={styles.addressContainer}>
+                      <Text style={styles.branchName}>Home Address</Text>
+                      <Text
+                        style={styles.addressText}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                      >
+                        Al Barsha Marina Mall 2781 Build {"\n"}Riyadh, SA
+                      </Text>
+                      <Text style={styles.contactText}>
+                        Mohammed Sbiaa // +966 366 00 81
+                      </Text>
+                    </View>
                   </View>
-                  <TouchableOpacity
-                    style={
-                      appliedPromos.includes(index)
-                        ? styles.promoButtonApplied
-                        : styles.promoButtonActive
-                    }
-                    onPress={() => togglePromo(index)}
-                  >
-                    <Text
+
+                  <AntDesign name="right" size={scale(15)} color="#017851" />
+                </View>
+              </TouchableOpacity>
+            )}
+
+            <View style={styles.noteContainer}>
+              <TextInput
+                placeholder="Note to Rider - e.g. do not ring doorbell"
+                placeholderTextColor="#717171"
+                style={styles.noteInput}
+              />
+            </View>
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Promos */}
+          <View style={styles.promosSection}>
+            <Text style={styles.sectionTitle}>Applicable Campaigns</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.promoScrollContent}
+            >
+              {promos.map((promo, index) => (
+                <View key={index} style={styles.promoCard}>
+                  <GreenFire height={scale(25)} width={scale(25)} />
+                  <View style={styles.promoContent}>
+                    <View style={styles.promoInfo}>
+                      <Text style={styles.promoTitle}>{promo.title}</Text>
+                      <Text style={styles.promoExpiry}>{promo.expiry}</Text>
+                    </View>
+
+                    <TouchableOpacity
                       style={
                         appliedPromos.includes(index)
-                          ? styles.promoButtonTextApplied
-                          : styles.promoButtonTextActive
+                          ? styles.promoButtonApplied
+                          : styles.promoButtonActive
                       }
+                      onPress={() => togglePromo(index)}
                     >
-                      {appliedPromos.includes(index) ? "Applied!" : "Apply"}
-                    </Text>
-                  </TouchableOpacity>
+                      <Text
+                        style={
+                          appliedPromos.includes(index)
+                            ? styles.promoButtonTextApplied
+                            : styles.promoButtonTextActive
+                        }
+                      >
+                        {appliedPromos.includes(index) ? "Applied!" : "Apply"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            Sufra Points, Gift Cards, and Promo Codes
-          </Text>
+              ))}
+            </ScrollView>
+          </View>
 
-          {!isRedeemed ? (
-            <View style={styles.giftCardSmall}>
-              <View style={styles.sufraPointContainer}>
-                <SufraPoint />
-                <View style={styles.sufraPointInfo}>
-                  <Text style={styles.sufraPointTitle}>
-                    Available Sufra Points
-                  </Text>
-                  <Text style={styles.sufraPointValue}>
-                    32,010 pt
-                    <Text style={styles.sufraPointSubValue}>(1600 SR)</Text>
-                  </Text>
+          <View style={styles.separator} />
+
+          {/* Sufra Points, Gift Cards, Promo Codes */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Sufra Points, Gift Cards, and Promo Codes
+            </Text>
+
+            {!isRedeemed ? (
+              <View style={styles.giftCardSmall}>
+                <View style={styles.sufraPointContainer}>
+                  <SufraPoint />
+                  <View style={styles.sufraPointInfo}>
+                    <Text style={styles.sufraPointTitle}>
+                      Available Sufra Points
+                    </Text>
+                    <Text style={styles.sufraPointValue}>
+                      32,010 pt
+                      <Text style={styles.sufraPointSubValue}>(1600 SR)</Text>
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <TouchableOpacity
-                style={styles.redeemButton}
-                onPress={() => setIsRedeemed(true)}
-              >
-                <Text style={styles.redeemButtonText}>Redeem</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.redeemedCard}>
-              <View style={styles.sufraPointContainer}>
-                <SufraPoint />
-                <View style={styles.sufraPointInfo}>
-                  <Text style={styles.redeemedTextMain}>
-                    1600 Pt (160 SR) Redeemed
-                  </Text>
-                  <Text style={styles.redeemedTextSub}>
-                    Remaining balance is{" "}
-                    <Text style={styles.redeemedTextHighlight}>150 SR</Text>
-                  </Text>
-                </View>
-              </View>
-              <TouchableOpacity onPress={() => setIsRedeemed(false)}>
-                <Trash color="#ffffff" />
-              </TouchableOpacity>
-            </View>
-          )}
-          <View style={{ width: "100%" }}>
-            {!redeemed ? (
-              // 🔹 Gift / Promo Code Input Card
-              <View style={styles.giftCardLarge}>
-                <View style={styles.giftCardHeader}>
-                  <Ticket />
-                  <Text style={styles.giftCardTitle}>
-                    Use Gift Card or Promo Code
-                  </Text>
-                </View>
-                <View style={styles.promoInputContainer}>
-                  <TextInput
-                    placeholder="Enter gift or promo code"
-                    placeholderTextColor="#717171"
-                    style={styles.promoInput}
-                    value={code}
-                    onChangeText={setCode}
-                  />
-                  <TouchableOpacity
-                    style={styles.applyButton}
-                    onPress={handleApply}
-                  >
-                    <Text style={styles.applyButtonText}>Apply</Text>
-                  </TouchableOpacity>
-                </View>
+
+                <TouchableOpacity
+                  style={styles.redeemButton}
+                  onPress={() => setIsRedeemed(true)}
+                >
+                  <Text style={styles.redeemButtonText}>Redeem</Text>
+                </TouchableOpacity>
               </View>
             ) : (
-              // 🔹 Redeemed Card View
               <View style={styles.redeemedCard}>
-                <View style={styles.redeemedLeft}>
-                  <WhiteTicket />
+                <View style={styles.sufraPointContainer}>
+                  <SufraPoint />
                   <View style={styles.sufraPointInfo}>
-                    <Text style={styles.redeemedTextMain}>SFRR-WRDS-105F7</Text>
+                    <Text style={styles.redeemedTextMain}>
+                      1600 Pt (160 SR) Redeemed
+                    </Text>
                     <Text style={styles.redeemedTextSub}>
                       Remaining balance is{" "}
                       <Text style={styles.redeemedTextHighlight}>150 SR</Text>
                     </Text>
                   </View>
                 </View>
-                <View style={styles.redeemedRight}>
-                  <Text style={styles.redeemedAmount}>-100 SR</Text>
-                  <TouchableOpacity onPress={handleTrash}>
-                    <Trash color="#ffffff" />
-                  </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => setIsRedeemed(false)}>
+                  <Trash color="#ffffff" />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <View style={{ width: "100%" }}>
+              {!redeemed ? (
+                <View style={styles.giftCardLarge}>
+                  <View style={styles.giftCardHeader}>
+                    <Ticket />
+                    <Text style={styles.giftCardTitle}>
+                      Use Gift Card or Promo Code
+                    </Text>
+                  </View>
+
+                  <View style={styles.promoInputContainer}>
+                    <TextInput
+                      placeholder="Enter gift or promo code"
+                      placeholderTextColor="#717171"
+                      style={styles.promoInput}
+                      value={code}
+                      onChangeText={setCode}
+                    />
+                    <TouchableOpacity
+                      style={styles.applyButton}
+                      onPress={handleApply}
+                    >
+                      <Text style={styles.applyButtonText}>Apply</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
+              ) : (
+                <View style={styles.redeemedCard}>
+                  <View style={styles.redeemedLeft}>
+                    <WhiteTicket />
+                    <View style={styles.sufraPointInfo}>
+                      <Text style={styles.redeemedTextMain}>
+                        SFRR-WRDS-105F7
+                      </Text>
+                      <Text style={styles.redeemedTextSub}>
+                        Remaining balance is{" "}
+                        <Text style={styles.redeemedTextHighlight}>150 SR</Text>
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.redeemedRight}>
+                    <Text style={styles.redeemedAmount}>-100 SR</Text>
+                    <TouchableOpacity onPress={handleTrash}>
+                      <Trash color="#ffffff" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.separator} />
+
+          {/* Payment Methods */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Payment Methods</Text>
+            <View style={styles.divider} />
+
+            <TouchableOpacity
+              style={styles.paymentMethodRow}
+              onPress={() => setSelectedPayment("applePay")}
+            >
+              <ApplePay />
+              <Text style={styles.paymentMethodText}>Apple Pay</Text>
+              <View
+                style={[
+                  styles.radioButton,
+                  selectedPayment === "applePay" && styles.radioButtonSelected,
+                ]}
+              >
+                {selectedPayment === "applePay" && (
+                  <View style={styles.radioButtonInner} />
+                )}
+              </View>
+            </TouchableOpacity>
+
+            <View style={styles.divider} />
+
+            <TouchableOpacity
+              style={styles.paymentMethodRow}
+              onPress={() => setSelectedPayment("creditCard")}
+            >
+              <PaymentCreditCardLogo />
+              <Text style={styles.paymentMethodText}>Credit Card</Text>
+              <View
+                style={[
+                  styles.radioButton,
+                  selectedPayment === "creditCard" &&
+                    styles.radioButtonSelected,
+                ]}
+              >
+                {selectedPayment === "creditCard" && (
+                  <View style={styles.radioButtonInner} />
+                )}
+              </View>
+            </TouchableOpacity>
+
+            {selectedPayment === "creditCard" && (
+              <View
+                style={{
+                  marginTop: scale(16),
+                  marginBottom: scale(16),
+                  gap: scale(12),
+                  flexDirection: "column",
+                  width: "100%",
+                }}
+              >
+                {!showAddCardForm ? (
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: scale(12),
+                    }}
+                  >
+                    <GreenCreditCard />
+                    <WhiteCreditCard />
+                    <TouchableOpacity onPress={() => setShowAddCardForm(true)}>
+                      <LinearGradient
+                        colors={["#FFFFFF", "#F4F4F4", "#F5F5F5"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={{
+                          width: scale(107),
+                          height: scale(107),
+                          borderWidth: scale(1),
+                          borderColor: "#E3E3E3",
+                          borderRadius: scale(8),
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: scale(6),
+                        }}
+                      >
+                        <FontAwesome
+                          name="plus-square-o"
+                          size={scale(24)}
+                          color="#99A1B7"
+                        />
+                        <Text
+                          style={{
+                            color: "#4A4A4A",
+                            fontFamily: "Rubik-Medium",
+                            fontWeight: "500",
+                            fontSize: scale(12),
+                          }}
+                        >
+                          Add New Card
+                        </Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </ScrollView>
+                ) : (
+                  <View>
+                    <CardPaymentForm
+                      onCardDataChange={(data) => setCardData(data)}
+                      onValidityChange={(isValid) => setIsFormValid(isValid)}
+                    />
+
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: scale(10),
+                        marginTop: scale(6),
+                      }}
+                    >
+                      <CustomCheckbox
+                        checked={saveCard}
+                        onChange={(checked) => setSaveCard(checked)}
+                      />
+                      <Text
+                        style={{
+                          fontFamily: "Rubik-Regular",
+                          fontSize: scale(14),
+                          fontWeight: "400",
+                          color: "#000000",
+                        }}
+                      >
+                        Save Card
+                      </Text>
+                    </View>
+                  </View>
+                )}
               </View>
             )}
           </View>
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Payment Methods</Text>
-          <View style={styles.divider} />
-          <TouchableOpacity
-            style={styles.paymentMethodRow}
-            onPress={() => setSelectedPayment("applePay")}
-          >
-            <ApplePay />
-            <Text style={styles.paymentMethodText}>Apple Pay</Text>
-            <View
-              style={[
-                styles.radioButton,
-                selectedPayment === "applePay" && styles.radioButtonSelected,
-              ]}
-            >
-              {selectedPayment === "applePay" && (
-                <View style={styles.radioButtonInner} />
-              )}
-            </View>
-          </TouchableOpacity>
-          <View style={styles.divider} />
-          <TouchableOpacity
-            style={styles.paymentMethodRow}
-            onPress={() => setSelectedPayment("creditCard")}
-          >
-            <PaymentCreditCardLogo />
-            <Text style={styles.paymentMethodText}>Credit Card</Text>
-            <View
-              style={[
-                styles.radioButton,
-                selectedPayment === "creditCard" && styles.radioButtonSelected,
-              ]}
-            >
-              {selectedPayment === "creditCard" && (
-                <View style={styles.radioButtonInner} />
-              )}
-            </View>
-          </TouchableOpacity>
-          {selectedPayment === "creditCard" && (
-            <View
-              style={{
-                marginTop: scale(16),
-                marginBottom: scale(16),
-                gap: scale(12),
-                flexDirection: "column",
-                width: "100%",
-              }}
-            >
-              {!showAddCardForm ? (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{
+
+          <View style={styles.separator} />
+
+          {/* Order summary */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Order Summary</Text>
+            <View style={styles.divider} />
+
+            <View style={styles.orderItemsContainer}>
+              <View style={styles.orderItemRow}>
+                <View
+                  style={{
                     flexDirection: "row",
                     alignItems: "center",
                     gap: scale(12),
                   }}
                 >
-                  <GreenCreditCard />
-                  <WhiteCreditCard />
-                  <TouchableOpacity onPress={() => setShowAddCardForm(true)}>
-                    <LinearGradient
-                      colors={["#FFFFFF", "#F4F4F4", "#F5F5F5"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                      style={{
-                        width: scale(107),
-                        height: scale(107),
-                        borderWidth: scale(1),
-                        borderColor: "#E3E3E3",
-                        borderRadius: scale(8),
-                        opacity: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: scale(6),
-                      }}
-                    >
-                      <FontAwesome
-                        name="plus-square-o"
-                        size={scale(24)}
-                        color="#99A1B7"
-                      />
-                      <Text
-                        style={{
-                          color: "#4A4A4A",
-                          fontFamily: "Rubik-Medium",
-                          fontWeight: "500",
-                          fontSize: scale(12),
-                        }}
-                      >
-                        Add New Card
-                      </Text>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                </ScrollView>
-              ) : (
-                <View style={{}}>
-                  {/* Card Payment Form */}
-                  <CardPaymentForm
-                    onCardDataChange={(data) => setCardData(data)}
-                    onValidityChange={(isValid) => setIsFormValid(isValid)}
+                  <Image
+                    source={require("../../assets/image/box1.png")}
+                    style={{ width: scale(26), height: scale(26) }}
                   />
-
-                  {/* Save Card Checkbox */}
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: scale(10),
-                      marginTop: scale(6),
-                    }}
-                  >
-                    <CustomCheckbox
-                      checked={saveCard}
-                      onChange={(checked) => setSaveCard(checked)}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: "Rubik-Regular",
-                        fontSize: scale(14),
-                        fontWeight: "400",
-                        color: "#000000",
-                      }}
-                    >
-                      Save Card
-                    </Text>
-                  </View>
+                  <Text style={styles.orderItemText}>1 x Alien Burger</Text>
                 </View>
-              )}
+                <Text style={styles.orderItemPrice}>80 SR</Text>
+              </View>
+
+              <View style={styles.orderItemRow}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: scale(12),
+                  }}
+                >
+                  <Image
+                    source={require("../../assets/image/box1.png")}
+                    style={{ width: scale(26), height: scale(26) }}
+                  />
+                  <Text style={styles.orderItemText}>1 x Sweet Potato Pie</Text>
+                </View>
+                <Text style={styles.orderItemPrice}>50 SR</Text>
+              </View>
+
+              <View style={styles.orderItemRow}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: scale(12),
+                  }}
+                >
+                  <Image
+                    source={require("../../assets/image/box2.png")}
+                    style={{ width: scale(26), height: scale(26) }}
+                  />
+                  <Text style={styles.orderItemText}>1 x Chicken Frise</Text>
+                </View>
+                <Text style={styles.orderItemPrice}>50 SR</Text>
+              </View>
             </View>
-          )}
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Order Summary</Text>
-          <View style={styles.divider} />
-          <View style={styles.orderItemsContainer}>
-            <View style={styles.orderItemRow}>
-              <Text style={styles.orderItemText}>1 x Alien Burger</Text>
-              <Text style={styles.orderItemPrice}>80 SR</Text>
-            </View>
-            <View style={styles.orderItemRow}>
-              <Text style={styles.orderItemText}>1 x Sweet Potato Pie</Text>
-              <Text style={styles.orderItemPrice}>50 SR</Text>
+
+            <View style={styles.divider} />
+
+            <View style={styles.priceBreakdownContainer}>
+              <View style={styles.priceBreakdownRow}>
+                <Text style={styles.priceBreakdownLabel}>Subtotal</Text>
+                <Text style={styles.priceBreakdownValue}>130 SR</Text>
+              </View>
+              <View style={styles.priceBreakdownRow}>
+                <Text style={styles.priceBreakdownLabel}>Delivery Fee</Text>
+                <Text style={styles.priceBreakdownValue}>20 SR</Text>
+              </View>
+              <View style={styles.priceBreakdownRow}>
+                <Text style={styles.priceBreakdownLabel}>Discount</Text>
+                <Text style={styles.discountValue}>-10 SR</Text>
+              </View>
             </View>
           </View>
-          <View style={styles.divider} />
-          <View style={styles.priceBreakdownContainer}>
-            <View style={styles.priceBreakdownRow}>
-              <Text style={styles.priceBreakdownLabel}>Subtotal</Text>
-              <Text style={styles.priceBreakdownValue}>130 SR</Text>
+
+          <View style={styles.termsSection}>
+            <Text style={styles.termsText}>
+              By completing this order, I agree to all{" "}
+            </Text>
+            <Text style={styles.termsLink}>Terms & Conditions</Text>
+          </View>
+
+          <View style={styles.fillSpace} />
+        </ScrollView>
+
+        {/* Price breakdown expanded area */}
+        {showPriceBreakdown && (
+          <View>
+            <View style={styles.summaryRowFirst}>
+              <Text style={styles.summaryLabel}>Subtotal</Text>
+              <Text style={styles.summaryValue}>230 SR</Text>
             </View>
-            <View style={styles.priceBreakdownRow}>
-              <Text style={styles.priceBreakdownLabel}>Delivery Fee</Text>
-              <Text style={styles.priceBreakdownValue}>20 SR</Text>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Delivery Fee</Text>
+              <Text style={styles.deliveryFreeValue}>FREE</Text>
             </View>
-            <View style={styles.priceBreakdownRow}>
-              <Text style={styles.priceBreakdownLabel}>Discount</Text>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>
+                {"{Promo Name}"}
+                <Text style={styles.removeText}>{"  "}- Remove</Text>
+              </Text>
               <Text style={styles.discountValue}>-10 SR</Text>
             </View>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>
+                Sufra Points
+                <Text style={styles.removeText}>{"  "}- Remove</Text>
+              </Text>
+              <Text style={styles.discountValue}>-70 SR</Text>
+            </View>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>
+                Gift Card
+                <Text style={styles.removeText}>{"  "}- Remove</Text>
+              </Text>
+              <Text style={styles.discountValue}>-100 SR</Text>
+            </View>
+            <View style={styles.dividerNoPadding} />
           </View>
-        </View>
-        <View style={styles.termsSection}>
-          <Text style={styles.termsText}>
-            By completing this order, I aggree to all{" "}
-          </Text>
-          <Text style={styles.termsLink}>Terms & Conditions</Text>
-        </View>
-        <View style={styles.fillSpace} />
-      </ScrollView>
-      {showPriceBreakdown && (
-        <View>
-          <View style={styles.summaryRowFirst}>
-            <Text style={styles.summaryLabel}>Subtotal</Text>
-            <Text style={styles.summaryValue}>230 SR</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Delivery Fee</Text>
-            <Text style={styles.deliveryFreeValue}>FREE</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>
-              {"{Promo Name}"}
-              <Text style={styles.removeText}>{"  "}- Remove</Text>
-            </Text>
-            <Text style={styles.discountValue}>-10 SR</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>
-              Sufra Points
-              <Text style={styles.removeText}>{"  "}- Remove</Text>
-            </Text>
-            <Text style={styles.discountValue}>-70 SR</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>
-              Gift Card
-              <Text style={styles.removeText}>{"  "}- Remove</Text>
-            </Text>
-            <Text style={styles.discountValue}>-100 SR</Text>
-          </View>
-          <View style={styles.dividerNoPadding} />
-        </View>
-      )}
-      <View style={styles.totalSection}>
-        <TouchableOpacity
-          style={styles.totalRow}
-          onPress={() => setShowPriceBreakdown(!showPriceBreakdown)}
-          activeOpacity={0.7}
-        >
-          <View>
-            <Text style={styles.totalLabel}>
-              Total{" "}
-              <Text style={styles.totalSubtext}>(incl. fees and tax)</Text>
-            </Text>
-          </View>
-          <View style={styles.priceGroup}>
-            <Text style={styles.strikePrice}>230 SR</Text>
-            <Text style={styles.finalPrice}>50 SR</Text>
+        )}
 
-            <MaterialIcons
-              name={
-                showPriceBreakdown ? "keyboard-arrow-up" : "keyboard-arrow-down"
-              }
-              size={24}
-              color="#017851"
-            />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.confirmButton,
-            !deliveryAddress && styles.confirmButtonDisabled,
-          ]}
-          disabled={!deliveryAddress}
-          onPress={() => {
-            if (deliveryAddress) {
-              // Handle order placement
-              console.log("Order placed with address:", deliveryAddress);
-              navigation.navigate("YourOrder");
-            }
-          }}
-        >
-          <Text
-            style={[
-              styles.confirmButtonText,
-              !deliveryAddress && styles.confirmButtonTextDisabled,
-            ]}
+        {/* Total + CTA */}
+        <View style={styles.totalSection}>
+          <TouchableOpacity
+            style={styles.totalRow}
+            onPress={() => setShowPriceBreakdown((s) => !s)}
+            activeOpacity={0.8}
           >
-            Order Now
-          </Text>
-        </TouchableOpacity>
-      </View>
+            <View>
+              <Text style={styles.totalLabel}>
+                Total{" "}
+                <Text style={styles.totalSubtext}>(incl. fees and tax)</Text>
+              </Text>
+            </View>
+            <View style={styles.priceGroup}>
+              <Text style={styles.strikePrice}>179 SR</Text>
+              <Text style={styles.finalPrice}>150 SR</Text>
+
+              <MaterialIcons
+                name={
+                  showPriceBreakdown
+                    ? "keyboard-arrow-up"
+                    : "keyboard-arrow-down"
+                }
+                size={24}
+                color="#017851"
+              />
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.confirmButton,
+              !deliveryAddress && styles.confirmButtonDisabled,
+            ]}
+            disabled={!deliveryAddress}
+            onPress={() => {
+              if (deliveryAddress) {
+                console.log("Order placed with address:", deliveryAddress);
+                navigation.navigate("YourOrder");
+              }
+            }}
+          >
+            <Text
+              style={[
+                styles.confirmButtonText,
+                !deliveryAddress && styles.confirmButtonTextDisabled,
+              ]}
+            >
+              Order Now
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
 export default Payment;
 
+// --- styles (unchanged except a couple typos fixed in text) ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
   },
-  scrollViewContent: {
-    paddingBottom: scale(200),
-  },
+  scrollViewContent: {},
   header: {
     marginStart: scale(24),
     flexDirection: "row",
@@ -871,7 +951,6 @@ const styles = StyleSheet.create({
     borderColor: "#E6EAF1",
     borderRadius: scale(5),
     borderWidth: scale(1),
-    marginBottom: scale(0),
     justifyContent: "center",
     alignItems: "center",
   },
@@ -887,7 +966,6 @@ const styles = StyleSheet.create({
     borderColor: "#E6EAF1",
     borderRadius: scale(5),
     borderWidth: scale(1),
-    marginBottom: scale(0),
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#017851",
@@ -1070,6 +1148,7 @@ const styles = StyleSheet.create({
   },
   termsSection: {
     padding: scale(16),
+    height: "100%",
     backgroundColor: "#f5f5f5",
   },
   termsText: {
@@ -1087,7 +1166,7 @@ const styles = StyleSheet.create({
     textDecorationStyle: "solid",
   },
   fillSpace: {
-    height: "100%",
+    height: 24,
     width: "100%",
     backgroundColor: "#f5f5f5",
   },

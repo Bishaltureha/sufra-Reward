@@ -133,7 +133,6 @@ const HeaderBox: React.FC<HeaderBoxProps> = ({ boxshadow }) => {
       <DeliveryDetailsModal
         visible={deliveryDetailsModalVisible}
         onClose={() => setDeliveryDetailsModalVisible(false)}
-        deliveryData={deliveryData}
       />
     </View>
   );

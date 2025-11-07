@@ -4,6 +4,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 import { useAppSelector } from "../store/hooks";
 import { requestAllPermissions } from "../utils/requestPermissions";
+import MultiSequenceLoader from "../../assets/svg/MultiSequenceLoader";
+import { svgList } from "../../assets/svg/svgList";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Splash">;
 
@@ -14,19 +16,20 @@ export default function SplashScreen({ navigation }: Props) {
 
   useEffect(() => {
     (async () => {
-      // Request all permissions first
       await requestAllPermissions();
 
-      // Then proceed with your app navigation
       setTimeout(() => {
         if (isAuthenticated) {
+          // ✅ User already logged in → go to Main
           navigation.replace("MainStack", { screen: "Home" });
         } else if (hasCompletedOnboarding) {
+          // ✅ Seen onboarding → go to Login
           navigation.replace("AuthStack", { screen: "Login" });
         } else {
+          // ✅ First-time user → go to Welcome
           navigation.replace("OnboardingStack", { screen: "Welcome" });
         }
-      }, 2000);
+      }, 1500);
     })();
   }, []);
 
@@ -36,6 +39,7 @@ export default function SplashScreen({ navigation }: Props) {
         source={require("../../assets/image/logo.png")}
         style={styles.image}
       />
+      {/* <MultiSequenceLoader icons={svgList} size={30} duration={1000} /> */}
     </View>
   );
 }
@@ -49,5 +53,7 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: "contain",
+    width: 200,
+    height: 200,
   },
 });

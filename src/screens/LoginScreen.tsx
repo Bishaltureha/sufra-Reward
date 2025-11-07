@@ -19,6 +19,10 @@ import RTLText from "../components/RTLText";
 import RTLTextInput from "../components/RTLTextInput";
 import { scale } from "../utils/dimen";
 
+// ✅ Redux imports
+import { useAppDispatch } from "../store/hooks";
+import { setPhoneNumber } from "../store/slice/user";
+
 type Props = CompositeScreenProps<
   NativeStackScreenProps<AuthStackParamList, "Login">,
   NativeStackScreenProps<RootStackParamList>
@@ -36,14 +40,15 @@ interface Country {
 
 const LoginScreen = ({ navigation }: Props) => {
   const { t } = useLocalization();
+  const dispatch = useAppDispatch(); // ✅ Redux dispatch
   const [secureText, setSecureText] = useState(true);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumberLocal] = useState("");
   const [password, setPassword] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [isValidPhone, setIsValidPhone] = useState(false);
 
   const handlePhoneChange = (phone: string, country: Country) => {
-    setPhoneNumber(phone);
+    setPhoneNumberLocal(phone);
     setSelectedCountry(country);
 
     const cleanNumber = phone.replace(/\D/g, "");
@@ -59,8 +64,6 @@ const LoginScreen = ({ navigation }: Props) => {
       const isValid = cleanNumber.length >= (country.phoneLength || 7);
       setIsValidPhone(isValid);
     }
-
-    // console.log("Selected Country:", country);
   };
 
   const handleLogin = () => {
@@ -72,11 +75,14 @@ const LoginScreen = ({ navigation }: Props) => {
     ) {
       const cleanNumber = phoneNumber.replace(/\D/g, "");
       const fullNumber = `${selectedCountry.dial_code}${cleanNumber}`;
-      // console.log("Login with:", fullNumber);
+
+      // ✅ Save phone number to Redux + MMKV persist
+      dispatch(setPhoneNumber(fullNumber));
+
+      // ✅ Continue normal navigation flow
       navigation.navigate("MainStack", { screen: "Home" });
     } else {
-      // console.log("Please enter valid phone number and password");
-      // You could show an alert or error message here
+      console.log("⚠️ Please enter valid phone number and password");
     }
   };
 

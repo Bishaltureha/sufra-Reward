@@ -190,7 +190,7 @@ const YourOrder = (props: Props) => {
             <Text style={styles.deliveryTime}>35-40 min</Text>
           </View>
         </View>
-        <View style={styles.divider} />
+        <View style={[styles.divider, { marginHorizontal: scale(16) }]} />
 
         {/* Order Progress */}
         <View style={styles.orderProgressSection}>
@@ -229,7 +229,7 @@ const YourOrder = (props: Props) => {
           })}
         </View>
 
-        <View style={styles.divider} />
+        <View style={[styles.divider, { marginHorizontal: scale(16) }]} />
 
         {/* Order Summary Header */}
         <View style={styles.orderSummaryHeader}>
@@ -240,8 +240,34 @@ const YourOrder = (props: Props) => {
             <Text style={styles.copyButton}>Copy</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.divider} />
-
+        <View
+          style={{
+            width: "100%",
+            paddingVertical: scale(8),
+            paddingHorizontal: scale(16),
+            gap: scale(12),
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            backgroundColor: "#F4F4F4",
+            marginBottom: scale(16),
+          }}
+        >
+          <Image
+            source={require("../../assets/image/box1.png")}
+            style={{ height: scale(26), width: scale(26) }}
+          />
+          <Text
+            style={{
+              fontFamily: "Rubik-SemiBold",
+              fontWeight: "600",
+              fontSize: scale(14),
+              color: "#4A4A4A",
+            }}
+          >
+            Fire Grill
+          </Text>
+        </View>
         {/* Order Items - Alien Burger */}
         <View style={styles.orderItem}>
           <Image
@@ -284,7 +310,7 @@ const YourOrder = (props: Props) => {
           </View>
         </View>
 
-        <View style={styles.divider} />
+        <View style={[styles.divider, { marginHorizontal: scale(16) }]} />
 
         {/* Sweet Potato Pie Item */}
         <View style={styles.orderItem}>
@@ -304,7 +330,53 @@ const YourOrder = (props: Props) => {
             </View>
           </View>
         </View>
-        <View style={styles.divider} />
+        <View
+          style={{
+            width: "100%",
+            paddingVertical: scale(8),
+            paddingHorizontal: scale(16),
+            gap: scale(12),
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            backgroundColor: "#F4F4F4",
+            marginVertical: scale(16),
+          }}
+        >
+          <Image
+            source={require("../../assets/image/box2.png")}
+            style={{ height: scale(26), width: scale(26) }}
+          />
+          <Text
+            style={{
+              fontFamily: "Rubik-SemiBold",
+              fontWeight: "600",
+              fontSize: scale(14),
+              color: "#4A4A4A",
+            }}
+          >
+            Piatto Restaurant
+          </Text>
+        </View>
+
+        <View style={styles.orderItem}>
+          <Image
+            source={require("../../assets/image/ChickenFryster.png")}
+            style={styles.orderImage}
+          />
+          <View style={styles.orderDetails}>
+            <View style={styles.orderRow}>
+              <Text style={styles.itemName}>Sweet Potato Pie</Text>
+              <Text style={styles.itemPrice}>50 SR</Text>
+            </View>
+            <View style={styles.quantityContainer}>
+              <View style={styles.quantityBadge}>
+                <Text style={styles.quantityBadgeText}>1</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View style={[styles.divider, { marginHorizontal: scale(16) }]} />
 
         {/* Price Breakdown */}
         <View style={styles.priceBreakdownSection}>
@@ -328,7 +400,7 @@ const YourOrder = (props: Props) => {
             </Text>
             <Text style={styles.totalValue}>
               <Text style={styles.strikethroughPrice}>160 SR</Text>
-              {"  "}140 SR
+              {"  "}150 SR
             </Text>
           </View>
         </View>
@@ -380,7 +452,7 @@ const styles = StyleSheet.create({
   divider: {
     height: scale(1),
     backgroundColor: "#E6EAF1",
-    marginHorizontal: scale(16),
+    // marginHorizontal: scale(16),
     marginVertical: scale(12),
   },
   confirmationSection: {

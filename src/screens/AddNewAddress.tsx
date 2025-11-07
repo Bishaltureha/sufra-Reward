@@ -32,7 +32,7 @@ export default function AddNewAddress() {
     longitude: 46.6753,
   });
   const [address, setAddress] = useState(
-    "Al Barsha Marina Mall 2781 Build Riyadh, SA",
+    "Al Barsha Marina Mall 2781 Build Riyadh, SA"
   );
   const mapRef = useRef(null);
 

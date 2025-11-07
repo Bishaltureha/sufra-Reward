@@ -1,9 +1,11 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { I18nManager } from "react-native";
-import HomeScreen from "../screens/HomeScreen";
+import { scale } from "../utils/dimen";
 import { DrawerParamList } from "../types";
-import CustomDrawerContent from "../components/CustomDrawerContent";
+
+// Screens
+import HomeScreen from "../screens/HomeScreen";
 import TopTabScreen from "./TopTabScreen";
 import DealsScreen from "../screens/DealsScreen";
 import BookCateringScreen from "../screens/BookCateringScreen";
@@ -15,9 +17,16 @@ import FAQScreen from "../screens/FAQScreen";
 import GiftCardStack from "./GiftCardStack";
 import NotificationScreen from "../screens/NotificationScreen";
 import MyOrdersScreen from "../screens/MyOrdersScreen";
-import { scale } from "../utils/dimen";
 import ProfileScreen from "../screens/ProfileScreen";
 import OrderTracking from "../screens/OrderTracking";
+// Optional (currently commented to prevent redundant navigation loops)
+// import TransactionHistory from "../screens/TransactionHistory";
+// import UserAgreements from "../screens/UserAgreements";
+// import ProfileInformation from "../screens/ProfileInformation";
+// import ExtraInformation from "../screens/ExtraInformation";
+
+// Components
+import CustomDrawerContent from "../components/CustomDrawerContent";
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -26,17 +35,15 @@ export default function DrawerNavigator() {
 
   return (
     <Drawer.Navigator
-      id={undefined}
+      id={"DrawerRoot" as any}
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         drawerType: "front",
-        // drawerType: "front", // RTL mein "front", LTR mein "back"
-        // drawerPosition: isRTL ? "right" : "left",
-        // overlayColor: isRTL ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0.5)", // RTL mein darker overlay
         swipeEnabled: false,
         swipeEdgeWidth: 0,
         drawerHideStatusBarOnOpen: true,
+        drawerPosition: isRTL ? "right" : "left",
         drawerStyle: {
           direction: isRTL ? "rtl" : "ltr",
           width: scale(320),
@@ -45,14 +52,15 @@ export default function DrawerNavigator() {
       }}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
+      {/* Core navigation screens */}
       <Drawer.Screen name="Home" component={HomeScreen} />
-      <Drawer.Screen name="GiftCards" component={GiftCardStack} />
       <Drawer.Screen
         name="TopTabScreen"
         component={TopTabScreen}
         initialParams={{ screen: "Delivery" }}
         options={{ title: "Order" }}
       />
+      <Drawer.Screen name="GiftCards" component={GiftCardStack} />
       <Drawer.Screen name="Deals" component={DealsScreen} />
       <Drawer.Screen name="BookCatering" component={BookCateringScreen} />
       <Drawer.Screen name="MyFavorites" component={MyFavoritesScreen} />
@@ -67,6 +75,12 @@ export default function DrawerNavigator() {
       <Drawer.Screen name="Notification" component={NotificationScreen} />
       <Drawer.Screen name="Profile" component={ProfileScreen} />
       <Drawer.Screen name="OrderTracking" component={OrderTracking} />
+
+      {/* Optional screens (enable when needed) */}
+      {/* <Drawer.Screen name="TransactionHistory" component={TransactionHistory} /> */}
+      {/* <Drawer.Screen name="UserAgreements" component={UserAgreements} /> */}
+      {/* <Drawer.Screen name="ProfileInformation" component={ProfileInformation} /> */}
+      {/* <Drawer.Screen name="ExtraInformation" component={ExtraInformation} /> */}
     </Drawer.Navigator>
   );
 }

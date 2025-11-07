@@ -26,6 +26,10 @@ import TermsAndConditions from "../screens/TermsAndConditions";
 import PointsScreen from "../screens/PointsScreen";
 import Tiers from "../screens/Tiers";
 import ReferAFriend from "../screens/ReferAFriend";
+import ProfileInformation from "../screens/ProfileInformation";
+import TransactionHistory from "../screens/TransactionHistory";
+import UserAgreements from "../screens/UserAgreements";
+import ExtraInformation from "../screens/ExtraInformation";
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -67,6 +71,11 @@ export default function MainStackNavigator() {
       <Stack.Screen name="PointsScreen" component={PointsScreen} />
       <Stack.Screen name="Tiers" component={Tiers} />
       <Stack.Screen name="ReferAFriend" component={ReferAFriend} />
+      <Stack.Screen name="ProfileInformation" component={ProfileInformation} />
+      <Stack.Screen name="TransactionHistory" component={TransactionHistory} />
+      <Stack.Screen name="UserAgreements" component={UserAgreements} />
+      <Stack.Screen name="ExtraInformation" component={ExtraInformation} />
+      <Stack.Screen name="DrawerRoot" component={DrawerNavigator} />
     </Stack.Navigator>
   );
 }

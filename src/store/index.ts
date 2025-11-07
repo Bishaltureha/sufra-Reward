@@ -1,4 +1,3 @@
-// src/store/index.ts
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import {
   persistStore,
@@ -10,13 +9,12 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import { storage } from "../utils/storage"; // Your existing MMKV storage
+import { storage } from "../utils/storage"; // MMKV adapter
 import userReducer from "./slice/user";
 import locationReducer from "./slice/location";
 import favoritesReducer from "./slice/favorites";
 import cartReducer from "./slice/cart";
 
-// MMKV Storage Adapter for Redux Persist
 const mmkvStorage = {
   setItem: (key: string, value: string) => {
     storage.set(key, value);
@@ -32,27 +30,22 @@ const mmkvStorage = {
   },
 };
 
-// Persist configuration
 const persistConfig = {
   key: "sufra-root",
   version: 1,
   storage: mmkvStorage,
-  whitelist: ["user", "location", "favorites", "cart"], // Persist all four
+  whitelist: ["user", "location", "favorites", "cart"],
 };
 
-// Combine all reducers
 const rootReducer = combineReducers({
   user: userReducer,
   location: locationReducer,
   favorites: favoritesReducer,
   cart: cartReducer,
-  // Add more reducers here as needed
 });
 
-// Create persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Configure store
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -63,9 +56,7 @@ export const store = configureStore({
     }),
 });
 
-// Create persistor
 export const persistor = persistStore(store);
 
-// Export types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

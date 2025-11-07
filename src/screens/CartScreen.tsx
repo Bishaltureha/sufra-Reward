@@ -22,6 +22,14 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Trash from "../../assets/svg/Trash";
 import YellowStar from "../../assets/svg/YellowStar";
 import ToggleSwitch from "../components/ToggleSwitch";
+import NewBadge from "../../assets/svg/NewBadge";
+import { LinearGradient } from "expo-linear-gradient";
+import Svg, { Path } from "react-native-svg";
+import { Dimensions } from "react-native";
+import ViewContainer from "../../assets/svg/ViewContainer";
+import MultiBrandModalLogo from "../components/MultiBrandModalLogo";
+import MultiBrandModal from "../components/MultiBrandModal";
+const { width } = Dimensions.get("window");
 
 type Props = {};
 
@@ -32,6 +40,7 @@ const CartScreen = (props: Props) => {
   const [pieQuantity, setPieQuantity] = useState(1);
   const [showPriceBreakdown, setShowPriceBreakdown] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [MultiBrandModalVisible, setMultiBrandModalVisible] = useState(false);
 
   const handleBack = () => {
     navigation.goBack();
@@ -157,7 +166,111 @@ const CartScreen = (props: Props) => {
             ))}
           </View>
           <Text style={styles.sectionTitle}>Order Summary</Text>
-          <View style={styles.divider} />
+          {/* <View style={styles.divider} /> */}
+          <View
+            style={{
+              marginVertical: scale(16),
+              width: "100%",
+              borderRadius: scale(10),
+              backgroundColor: "#017851",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.12,
+              shadowRadius: 6,
+              elevation: 4,
+              position: "relative",
+            }}
+          >
+            {/* ✅ SVG BACKGROUND SHAPE */}
+
+            <ViewContainer />
+            {/* ✅ TOP RIGHT NEW BADGE */}
+            <View
+              style={{
+                position: "absolute",
+                right: scale(12),
+                top: scale(-14),
+              }}
+            >
+              <NewBadge />
+            </View>
+            {/* ✅ CONTENT */}
+            <View
+              style={{
+                paddingVertical: scale(20),
+                paddingHorizontal: scale(16),
+                gap: scale(5),
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Rowdies-Bold",
+                  fontWeight: "700",
+                  fontSize: scale(15),
+                  color: "#FFFFFF",
+                }}
+              >
+                ADD ITEMS FROM OTHER BRANDS
+              </Text>
+
+              <Text
+                style={{
+                  fontFamily: "Rubik-Regular",
+                  fontWeight: "400",
+                  fontSize: scale(12),
+                  color: "#E6EAF1",
+                  lineHeight: scale(16),
+                }}
+              >
+                Order now from multiple brands at the same time.{"\n"}Add all
+                your products to a single cart!
+              </Text>
+              <View style={{ height: scale(10) }} />
+
+              <Text
+                style={{
+                  position: "absolute",
+                  bottom: scale(12),
+                  left: scale(16),
+                  fontFamily: "Rubik-SemiBold",
+                  fontWeight: "600",
+                  fontSize: scale(12),
+                  color: "#FFFFFF",
+                  textDecorationLine: "underline",
+                  marginTop: scale(5),
+                }}
+              >
+                Add Item Now
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              width: width,
+              paddingVertical: scale(8),
+              gap: scale(12),
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              backgroundColor: "#F4F4F4",
+              marginBottom: scale(16),
+            }}
+          >
+            <Image
+              source={require("../../assets/image/box1.png")}
+              style={{ height: scale(26), width: scale(26) }}
+            />
+            <Text
+              style={{
+                fontFamily: "Rubik-SemiBold",
+                fontWeight: "600",
+                fontSize: scale(14),
+                color: "#4A4A4A",
+              }}
+            >
+              Fire Grill
+            </Text>
+          </View>
 
           {/* Alien Burger Item */}
           <View style={styles.orderItem}>
@@ -263,11 +376,98 @@ const CartScreen = (props: Props) => {
           </View>
 
           <View style={styles.divider} />
-          <TouchableOpacity>
+          <TouchableOpacity
+            style={{ paddingBottom: scale(16) }}
+            onPress={() => setMultiBrandModalVisible(true)}
+          >
             <Text style={styles.addMoreText}>+ Add More Items</Text>
           </TouchableOpacity>
         </View>
+        <View
+          style={{
+            width: width,
+            paddingVertical: scale(8),
+            paddingHorizontal: scale(16),
+            gap: scale(12),
+            flexDirection: "row",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            backgroundColor: "#F4F4F4",
+            marginBottom: scale(16),
+          }}
+        >
+          <Image
+            source={require("../../assets/image/box2.png")}
+            style={{ height: scale(26), width: scale(26) }}
+          />
+          <Text
+            style={{
+              fontFamily: "Rubik-SemiBold",
+              fontWeight: "600",
+              fontSize: scale(14),
+              color: "#4A4A4A",
+            }}
+          >
+            Piatto Restaurant
+          </Text>
+        </View>
+        <View style={[styles.orderItem, { paddingHorizontal: scale(16) }]}>
+          <Image
+            source={require("../../assets/image/ChickenFryster.png")}
+            style={styles.orderImage}
+          />
+          <View style={styles.orderDetails}>
+            <View style={styles.orderRow}>
+              <View>
+                <Text style={styles.itemName}>Chicken Frise</Text>
+                <Text
+                  style={{
+                    fontFamily: "Rubik-Regular",
+                    fontWeight: "400",
+                    fontSize: scale(12),
+                    color: "#717171",
+                  }}
+                >
+                  + Organic Black Beans
+                </Text>
+              </View>
 
+              <Text style={styles.itemPrice}>80 SR</Text>
+            </View>
+            <View style={styles.quantityContainer}>
+              <View style={styles.quantitySelector}>
+                <TouchableOpacity
+                  onPress={handlePieDecrement}
+                  activeOpacity={0.7}
+                >
+                  {pieQuantity >= 2 ? (
+                    <AntDesign name="minus" size={scale(15)} color="#017851" />
+                  ) : (
+                    <Trash />
+                  )}
+                </TouchableOpacity>
+                <Text style={styles.quantityText}>{pieQuantity}</Text>
+                <TouchableOpacity
+                  onPress={handlePieIncrement}
+                  activeOpacity={0.7}
+                >
+                  <AntDesign name="plus" size={scale(15)} color="#017851" />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.divider} />
+            <TouchableOpacity
+              style={{
+                width: "100%",
+              }}
+              onPress={() => setMultiBrandModalVisible(true)}
+            >
+              <Text style={[styles.addMoreText, { marginStart: scale(-75) }]}>
+                + Add More Items
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         <View style={styles.separator} />
 
         {/* Popular with Your Order Section */}
@@ -390,7 +590,10 @@ const CartScreen = (props: Props) => {
           </TouchableOpacity>
         </View>
       </View>
-
+      <MultiBrandModal
+        visible={MultiBrandModalVisible}
+        onClose={() => setMultiBrandModalVisible(false)}
+      />
       <Modal
         visible={showConfirmModal}
         transparent={true}

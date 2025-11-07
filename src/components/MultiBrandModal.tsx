@@ -11,8 +11,7 @@ import {
 import React from "react";
 import { scale } from "../utils/dimen";
 import NewBadge from "../../assets/svg/NewBadge";
-import { AntDesign } from "@expo/vector-icons";
-
+import Entypo from "@expo/vector-icons/Entypo";
 interface MultiBrandModalProps {
   visible: boolean;
   onClose: () => void;
@@ -109,7 +108,7 @@ const MultiBrandModal: React.FC<MultiBrandModalProps> = ({
               <Text style={styles.topText}>Add Items from Other Brands</Text>
             </View>
             <View style={styles.topArrowContainer}>
-              <AntDesign name="down" size={12} color="#6D6D6D" />
+              <Entypo name="chevron-down" size={24} color="#6D6D6D" />
             </View>
           </TouchableOpacity>
 

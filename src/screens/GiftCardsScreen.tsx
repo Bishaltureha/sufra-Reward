@@ -125,12 +125,6 @@ const GiftCardsScreen = () => {
   const handleCustomAmountChange = (text: string) => {
     const numericText = text.replace(/[^0-9]/g, "");
     setCustomAmount(numericText);
-    if (numericText) {
-      setIsCustomAmountSelected(true);
-      setSelectedAmount(null);
-    } else {
-      setIsCustomAmountSelected(false);
-    }
   };
 
   const onScroll = Animated.event(
@@ -261,7 +255,7 @@ const GiftCardsScreen = () => {
           }}
         />
 
-        {/* Thumbnails - Now Scrollable */}
+        {/* Thumbnails */}
         <ScrollView
           ref={thumbnailScrollRef}
           horizontal
@@ -313,35 +307,47 @@ const GiftCardsScreen = () => {
             })}
           </View>
 
-          {/* Custom Amount Input */}
+          {/* ✅ Custom Amount Toggle */}
           <View style={styles.customAmountContainer}>
-            <Text style={styles.customAmountLabel}>
-              Or enter custom amount:
-            </Text>
-            <View
-              style={[
-                styles.customAmountInputWrapper,
-                isCustomAmountSelected && styles.customAmountInputWrapperActive,
-              ]}
-            >
-              <TextInput
-                style={styles.customAmountInput}
-                value={customAmount}
-                onChangeText={handleCustomAmountChange}
-                placeholder="Enter amount (50 - 10,000)"
-                placeholderTextColor="#999999"
-                keyboardType="numeric"
-                maxLength={5}
+            <View style={styles.customAmountToggleRow}>
+              <CustomCheckbox
+                checked={isCustomAmountSelected}
+                onChange={(checked) => {
+                  setIsCustomAmountSelected(checked);
+                  if (!checked) setCustomAmount("");
+                }}
               />
-              <Text style={styles.currencyLabel}>SR</Text>
+              <Text style={styles.customAmountLabel}>Enter Custom Amount</Text>
             </View>
-            {isCustomAmountSelected && customAmount && (
-              <Text style={styles.customAmountHint}>
-                {parseFloat(customAmount) < 50 ||
-                parseFloat(customAmount) > 10000
-                  ? "Amount must be between 50 and 10,000 SR"
-                  : `Custom amount: ${customAmount} SR`}
-              </Text>
+
+            {isCustomAmountSelected && (
+              <View style={{ marginTop: scale(10) }}>
+                <View
+                  style={[
+                    styles.customAmountInputWrapper,
+                    styles.customAmountInputWrapperActive,
+                  ]}
+                >
+                  <TextInput
+                    style={styles.customAmountInput}
+                    value={customAmount}
+                    onChangeText={handleCustomAmountChange}
+                    placeholder="Enter amount (50 - 10,000)"
+                    placeholderTextColor="#999999"
+                    keyboardType="numeric"
+                    maxLength={5}
+                  />
+                  <Text style={styles.currencyLabel}>SR</Text>
+                </View>
+                {customAmount ? (
+                  <Text style={styles.customAmountHint}>
+                    {parseFloat(customAmount) < 50 ||
+                    parseFloat(customAmount) > 10000
+                      ? "Amount must be between 50 and 10,000 SR"
+                      : `Custom amount: ${customAmount} SR`}
+                  </Text>
+                ) : null}
+              </View>
             )}
           </View>
 
@@ -540,12 +546,16 @@ const styles = StyleSheet.create({
   customAmountContainer: {
     marginTop: scale(15),
   },
+  customAmountToggleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: scale(10),
+  },
   customAmountLabel: {
     fontFamily: "Rubik-Regular",
     fontWeight: "400",
     fontSize: scale(14),
     color: "#4A4A4A",
-    marginBottom: scale(8),
   },
   customAmountInputWrapper: {
     flexDirection: "row",

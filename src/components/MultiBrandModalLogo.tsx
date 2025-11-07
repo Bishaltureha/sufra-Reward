@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     justifyContent: "flex-end",
+    marginBottom: scale(90),
   },
   modalContent: {
     borderTopLeftRadius: scale(20),
