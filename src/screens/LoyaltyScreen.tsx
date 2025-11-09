@@ -38,7 +38,7 @@ type LoyaltyScreenRouteProp = RouteProp<MainStackParamList, "Loyalty">;
 
 const LoyaltyScreen = ({
   userName = "Sezen Sayoğlu",
-  points = 7381,
+  points = 6404,
   onBackPress,
 }: Props) => {
   const route = useRoute<LoyaltyScreenRouteProp>();
@@ -47,7 +47,7 @@ const LoyaltyScreen = ({
   const [activeTab, setActiveTab] = useState<TabType>(
     route.params?.initialTab || "transaction"
   );
-  const [currentTier, setCurrentTier] = useState<TierType>("DIAMOND");
+  const [currentTier, setCurrentTier] = useState<TierType>("GOLD");
   useEffect(() => {
     if (route.params?.initialTab) {
       setActiveTab(route.params.initialTab);
@@ -56,12 +56,12 @@ const LoyaltyScreen = ({
       setTimeout(() => {
         if (route.params.initialTab === "tier") {
           scrollViewRef.current?.scrollTo({
-            y: 720, // Tier tab ke liye
+            // y: 720, // Tier tab ke liye
             animated: true,
           });
         } else if (route.params.initialTab === "transaction") {
           scrollViewRef.current?.scrollTo({
-            y: 720, // Transaction tab ke liye (tabs tak)
+            // y: 720, // Transaction tab ke liye (tabs tak)
             animated: true,
           });
         }
@@ -75,18 +75,19 @@ const LoyaltyScreen = ({
   } => {
     switch (currentTier) {
       case "GOLD":
-        return { gradient: ["#F6B01F", "#E19100"], title: "Legend" };
+        // return { gradient: ["#F6B01F", "#E19100"], title: "Legend" };
+        return { gradient: ["#009463", "#007851"], title: "Star" };
       case "SILVER":
         return { gradient: ["#CAD3D3", "#A7B5B6"], title: "Icon" };
       case "DIAMOND":
         return { gradient: ["#009463", "#007851"], title: "Star" };
       default:
-        return { gradient: ["#F6B01F", "#E19100"], title: "Legend" };
+        return { gradient: ["#009463", "#007851"], title: "Legend" };
     }
   }, [currentTier]);
 
   const getTierProgress = () => {
-    const progress = 75;
+    const progress = 0;
     const indicatorPos = (scale(116 - 12) * progress) / 100;
 
     if (currentTier === "GOLD") {
@@ -197,10 +198,10 @@ const LoyaltyScreen = ({
             <View style={styles.divider} />
 
             <View style={styles.tierRow}>
-              <Text style={styles.tierLabel}>Tier Points</Text>
+              <Text style={styles.tierLabel}>Loyalty Points</Text>
               <View style={styles.tierValueContainer}>
-                <Text style={styles.tierValue}>32,670</Text>
-                <Text style={styles.tierSubValue}>1,650 SAR</Text>
+                <Text style={styles.tierValue}>100</Text>
+                <Text style={styles.tierSubValue}>5 SAR</Text>
               </View>
             </View>
           </View>
@@ -212,7 +213,7 @@ const LoyaltyScreen = ({
           </View>
           {getTierProgress()}
           <Text style={styles.tierInfo}>
-            You need 10,166 more tier points to reach LEGEND tier
+            You need 5000 more tier points to reach ICON tier
           </Text>
         </View>
       </LinearGradient>
@@ -245,7 +246,7 @@ const LoyaltyScreen = ({
               activeTab === "tier" && styles.tabTextActive,
             ]}
           >
-            Legend Tier
+            Star Tier
           </Text>
         </TouchableOpacity>
       </View>
@@ -422,47 +423,34 @@ const LoyaltyScreen = ({
         </View>
       ) : (
         <View style={styles.contentLegendBox}>
-          {/* LEGEND TIER */}
+          {/* STAR TIER */}
           <View style={styles.tierCardHeader}>
             <View style={styles.tierCardLeft}>
               <View style={styles.starsContainer}>
                 <GreenStar />
-                <GreenStar />
-                <GreenStar />
               </View>
-              <Text style={styles.tierCardTitle}>LEGEND TIER</Text>
+              <Text style={styles.tierCardTitle}>STAR TIER</Text>
             </View>
-            <Text style={styles.tierCardPoints}>30.000+ Points</Text>
+            <Text style={styles.tierCardPoints}>0 - 15.000 Points</Text>
           </View>
           <View style={styles.benefitsContainer}>
             <View style={styles.benefitRow}>
               <View style={styles.bulletPoint} />
               <Text style={styles.benefitText}>
-                5 entry tickets for the iPhone raffle
+                1 entry tickets for the iPhone raffle
               </Text>
             </View>
             <View style={styles.benefitRow}>
               <View style={styles.bulletPoint} />
-              <Text style={styles.benefitText}>10% cashback on orders!</Text>
+              <Text style={styles.benefitText}>2% cashback on orders!</Text>
             </View>
             <View style={styles.benefitRow}>
               <View style={styles.bulletPoint} />
               <Text style={styles.benefitText}>
-                3 Months Netflix subscription as a gift!
+                1 Months Netflix subscription as a gift!
               </Text>
-            </View>
-            <View style={styles.benefitRow}>
-              <View style={styles.bulletPoint} />
-              <Text style={styles.benefitText}>
-                Get 1 free drink with your order!
-              </Text>
-            </View>
-            <View style={styles.benefitRow}>
-              <View style={styles.bulletPoint} />
-              <Text style={styles.benefitText}>10% Off Cart</Text>
             </View>
           </View>
-
           {/* ICON TIER */}
           <View style={styles.tierCardHeader}>
             <View style={styles.tierCardLeft}>
@@ -502,33 +490,44 @@ const LoyaltyScreen = ({
               <Text style={styles.benefitText}>5% Off Cart</Text>
             </View>
           </View>
-
-          {/* STAR TIER */}
+          {/* LEGEND TIER */}
           <View style={styles.tierCardHeader}>
             <View style={styles.tierCardLeft}>
               <View style={styles.starsContainer}>
                 <GreenStar />
+                <GreenStar />
+                <GreenStar />
               </View>
-              <Text style={styles.tierCardTitle}>STAR TIER</Text>
+              <Text style={styles.tierCardTitle}>LEGEND TIER</Text>
             </View>
-            <Text style={styles.tierCardPoints}>0 - 15.000 Points</Text>
+            <Text style={styles.tierCardPoints}>30.000+ Points</Text>
           </View>
           <View style={styles.benefitsContainer}>
             <View style={styles.benefitRow}>
               <View style={styles.bulletPoint} />
               <Text style={styles.benefitText}>
-                1 entry tickets for the iPhone raffle
+                5 entry tickets for the iPhone raffle
               </Text>
             </View>
             <View style={styles.benefitRow}>
               <View style={styles.bulletPoint} />
-              <Text style={styles.benefitText}>2% cashback on orders!</Text>
+              <Text style={styles.benefitText}>10% cashback on orders!</Text>
             </View>
             <View style={styles.benefitRow}>
               <View style={styles.bulletPoint} />
               <Text style={styles.benefitText}>
-                1 Months Netflix subscription as a gift!
+                3 Months Netflix subscription as a gift!
               </Text>
+            </View>
+            <View style={styles.benefitRow}>
+              <View style={styles.bulletPoint} />
+              <Text style={styles.benefitText}>
+                Get 1 free drink with your order!
+              </Text>
+            </View>
+            <View style={styles.benefitRow}>
+              <View style={styles.bulletPoint} />
+              <Text style={styles.benefitText}>10% Off Cart</Text>
             </View>
           </View>
         </View>
@@ -692,8 +691,9 @@ const styles = StyleSheet.create({
     opacity: 1,
     transform: [{ rotate: "0deg" }],
   },
+
   tierInfo: {
-    color: "#E6EAF1",
+    color: "#ffffff",
     fontFamily: "Rubik-Medium",
     fontWeight: "500",
     fontSize: scale(12),
@@ -720,13 +720,14 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontFamily: "Rubik-Medium",
-    fontWeight: "500",
+    fontWeight: "300",
     fontSize: scale(14),
-    color: "#9E9E9E",
+    color: "#000000",
   },
   tabTextActive: {
-    color: "#F6B01F",
+    color: "#232222ff",
     fontWeight: "600",
+    fontSize: scale(14),
   },
 
   /* Content Styles */

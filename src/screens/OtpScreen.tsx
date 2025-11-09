@@ -171,6 +171,97 @@ const OtpScreen = ({ navigation }: Props) => {
       }
     }
   }, [otp, navigation, phoneNumber, dispatch]);
+  // const handleResend = useCallback(async () => {
+  //   if (timeLeft === 0) {
+  //     try {
+  //       const response = await fetch(
+  //         "http://192.168.0.108:3000/api/auth/request-otp",
+  //         {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({ mobile: phoneNumber }),
+  //         }
+  //       );
+
+  //       const data = await response.json();
+  //       console.log("Resend OTP Response:", data);
+
+  //       if (response.ok) {
+  //         setTimeLeft(RESEND_TIMEOUT);
+  //         setOtp(Array(OTP_LENGTH).fill(""));
+  //         const firstInputIndex = I18nManager.isRTL ? OTP_LENGTH - 1 : 0;
+  //         inputRefs.current[firstInputIndex]?.focus();
+  //         Alert.alert("Success", "OTP resent successfully!");
+  //       } else {
+  //         Alert.alert("Error", data.message || "Failed to resend OTP");
+  //       }
+  //     } catch (error) {
+  //       console.error("Resend OTP failed:", error);
+  //       Alert.alert("Error", "Something went wrong while resending OTP");
+  //     }
+  //   }
+  // }, [timeLeft, phoneNumber]);
+
+  // const handleConfirm = useCallback(async () => {
+  //   const code = otp.join("");
+  //   if (code.length === OTP_LENGTH) {
+  //     setIsVerifying(true);
+
+  //     try {
+  //       const response = await fetch(
+  //         "http://192.168.0.108:3000/api/auth/verify-otp",
+  //         {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({
+  //             mobile: phoneNumber,
+  //             otp: code,
+  //           }),
+  //         }
+  //       );
+
+  //       const data = await response.json();
+  //       console.log("OTP Verify Response:", data);
+
+  //       if (response.ok) {
+  //         if (data.status === "new_user") {
+  //           dispatch(
+  //             setUser({
+  //               id: data.user.id,
+  //               phone: data.user.mobile,
+  //               isProfileComplete: false,
+  //             })
+  //           );
+  //           navigation.replace("InformationScreen");
+  //         } else {
+  //           dispatch(
+  //             setUser({
+  //               id: data.user.id,
+  //               phone: data.user.mobile,
+  //               email: data.user.email,
+  //               tier: data.user.tier,
+  //               points: data.user.points,
+  //               isProfileComplete: true,
+  //             })
+  //           );
+  //           navigation.replace("MainStack");
+  //         }
+  //       } else {
+  //         Alert.alert(
+  //           "Error",
+  //           data.message || "Invalid OTP. Please try again."
+  //         );
+  //         setOtp(Array(OTP_LENGTH).fill(""));
+  //         inputRefs.current[0]?.focus();
+  //       }
+  //     } catch (error) {
+  //       console.error("OTP verify failed:", error);
+  //       Alert.alert("Error", "Failed to verify OTP. Please try again.");
+  //     } finally {
+  //       setIsVerifying(false);
+  //     }
+  //   }
+  // }, [otp, navigation, phoneNumber, dispatch]);
 
   const code = otp.join("");
   const isOtpComplete = code.length === OTP_LENGTH;

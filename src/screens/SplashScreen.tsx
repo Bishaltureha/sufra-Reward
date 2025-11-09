@@ -6,6 +6,7 @@ import { useAppSelector } from "../store/hooks";
 import { requestAllPermissions } from "../utils/requestPermissions";
 import MultiSequenceLoader from "../../assets/svg/MultiSequenceLoader";
 import { svgList } from "../../assets/svg/svgList";
+import CloudVTLottieImage from "../components/CloudVTLottieImage";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Splash">;
 
@@ -40,6 +41,8 @@ export default function SplashScreen({ navigation }: Props) {
         style={styles.image}
       />
       {/* <MultiSequenceLoader icons={svgList} size={30} duration={1000} /> */}
+
+      {/* <CloudVTLottieImage imageSource={''}/> */}
     </View>
   );
 }

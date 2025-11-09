@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   drawerItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: scale(8),
+    paddingVertical: scale(12),
     paddingHorizontal: scale(16),
     borderRadius: scale(8),
   },
@@ -285,14 +285,14 @@ const styles = StyleSheet.create({
   bottomContainer: {
     position: "absolute",
     left: scale(35),
-    bottom: scale(130),
+    bottom: scale(35),
   },
   languageSelectorContainer: {
     width: scale(77),
     height: scale(38),
   },
   languageSelectorDropdown: {
-    bottom: scale(45),
+    bottom: scale(42),
     left: scale(25),
     width: scale(160),
     height: scale(85),

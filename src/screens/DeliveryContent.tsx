@@ -298,8 +298,9 @@ const DeliveryContent = () => {
         onCardPress={handleDeliveringCardPress}
         onManualAddressPress={undefined}
       />
-      <EarnMorePointsSection containerStyle={undefined} />
       <GiftCardCarousel cards={giftCards} onCardPress={handleGiftCardPress} />
+
+      <EarnMorePointsSection containerStyle={undefined} />
     </ScrollView>
   );
 };

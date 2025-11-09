@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import {
-  Animated,
   Dimensions,
   FlatList,
   View,
@@ -13,6 +12,8 @@ import { scale } from "../utils/dimen";
 const { width } = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.7;
 const SPACER_ITEM_SIZE = (width - ITEM_WIDTH) / 2;
+const CARD_WIDTH = ITEM_WIDTH - scale(20); // Account for horizontal margins
+const CARD_HEIGHT = CARD_WIDTH * 0.56; // Maintain aspect ratio (approximately 16:9)
 
 interface GiftCard {
   key: string;
@@ -28,19 +29,26 @@ const GiftCardCarousel: React.FC<GiftCardCarouselProps> = ({
   cards,
   onCardPress,
 }) => {
-  const scrollX = useRef(new Animated.Value(0)).current;
-
+  const flatListRef = useRef<FlatList>(null);
   const giftCards = [{ key: "left-spacer" }, ...cards, { key: "right-spacer" }];
 
-  const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    { useNativeDriver: false }
-  );
+  useEffect(() => {
+    // Scroll to index 2 (which is the second actual card, after the left spacer)
+    if (flatListRef.current && cards.length > 1) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToOffset({
+          offset: ITEM_WIDTH,
+          animated: false,
+        });
+      }, 100);
+    }
+  }, []);
 
   return (
     <View style={{ marginVertical: scale(20) }}>
       <Text style={styles.headerText}>Gift Cards for Family & Friends!</Text>
-      <Animated.FlatList
+      <FlatList
+        ref={flatListRef}
         data={giftCards}
         keyExtractor={(item) => item.key}
         horizontal
@@ -50,30 +58,10 @@ const GiftCardCarousel: React.FC<GiftCardCarouselProps> = ({
         bounces={false}
         style={styles.flatList}
         contentContainerStyle={styles.contentContainer}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
         renderItem={({ item, index }) => {
           if (!item.comp) return <View style={{ width: SPACER_ITEM_SIZE }} />;
 
           const realIndex = index - 1;
-          const inputRange = [
-            (index - 2) * ITEM_WIDTH,
-            (index - 1) * ITEM_WIDTH,
-            index * ITEM_WIDTH,
-          ];
-
-          const scaleAnim = scrollX.interpolate({
-            inputRange,
-            outputRange: [0.8, 1, 0.8],
-            extrapolate: "clamp",
-          });
-
-          const opacityAnim = scrollX.interpolate({
-            inputRange,
-            outputRange: [0.6, 1, 0.6],
-            extrapolate: "clamp",
-          });
-
           const CardComponent = item.comp;
 
           return (
@@ -83,14 +71,9 @@ const GiftCardCarousel: React.FC<GiftCardCarouselProps> = ({
                 onPress={() => onCardPress?.(realIndex)}
                 disabled={!onCardPress}
               >
-                <Animated.View
-                  style={[
-                    styles.cardContainer,
-                    { transform: [{ scale: scaleAnim }], opacity: opacityAnim },
-                  ]}
-                >
-                  <CardComponent width={scale(300)} height={scale(169)} />
-                </Animated.View>
+                <View style={styles.cardContainer}>
+                  <CardComponent width={CARD_WIDTH} height={CARD_HEIGHT} />
+                </View>
               </TouchableOpacity>
             </View>
           );
@@ -112,6 +95,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     marginHorizontal: scale(10),
     borderRadius: scale(12),
+    overflow: "hidden",
     alignItems: "center",
     shadowColor: "#000",
     shadowOpacity: 0.1,

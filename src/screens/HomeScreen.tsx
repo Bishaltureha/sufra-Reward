@@ -100,7 +100,7 @@ const HomeScreen = () => {
         >
           <View style={styles.statsContainer}>
             <StatsCard type="rewards" onPress={handleRewardsPress} />
-            <StatsCard type="tier" onPress={handleTierPress} />
+            <StatsCard onPress={handleTierPress} type="tierSmall" />
           </View>
 
           <View style={styles.buttonRow}>

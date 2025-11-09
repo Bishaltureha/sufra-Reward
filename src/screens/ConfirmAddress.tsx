@@ -3,13 +3,12 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
+  ImageBackground,
   ScrollView,
   Alert,
-  ImageBackground,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { MainStackParamList } from "../types";
+import { MainStackParamList, Address } from "../types";
 import {
   NavigationProp,
   useNavigation,
@@ -21,27 +20,37 @@ import { AntDesign } from "@expo/vector-icons";
 import { scale } from "../utils/dimen";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 import LoctionPointer from "../../assets/svg/LoctionPointer";
+import { useAddressContext } from "../context/AddressContext";
 
 type ConfirmAddressRouteProp = RouteProp<MainStackParamList, "ConfirmAddress">;
 
 const ConfirmAddress = () => {
   const navigation = useNavigation<NavigationProp<MainStackParamList>>();
   const route = useRoute<ConfirmAddressRouteProp>();
+  const { addAddress, updateAddress } = useAddressContext();
 
-  // Get the location data from route params
-  const { latitude, longitude, address } = route.params;
+  // Destructure all route params
+  const { latitude, longitude, address, mode, existingAddress } = route.params;
 
   // Form state
-  const [addressName, setAddressName] = useState("");
-  const [city, setCity] = useState("");
+  const [addressName, setAddressName] = useState(existingAddress?.name || "");
+  const [city, setCity] = useState(
+    existingAddress?.fullAddress?.split(",")[2] || ""
+  );
   const [area, setArea] = useState("");
-  const [street, setStreet] = useState("");
-  const [buildingName, setBuildingName] = useState("");
-  const [floor, setFloor] = useState("");
-  const [doorNo, setDoorNo] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [street, setStreet] = useState(
+    existingAddress?.fullAddress?.split(",")[0] || ""
+  );
+  const [buildingName, setBuildingName] = useState(
+    existingAddress?.buildingNo || ""
+  );
+  const [floor, setFloor] = useState(existingAddress?.floor || "");
+  const [doorNo, setDoorNo] = useState(existingAddress?.apartment || "");
+  const [instructions, setInstructions] = useState(
+    existingAddress?.additionalInfo || ""
+  );
 
-  // Error states
+  // Validation errors
   const [errors, setErrors] = useState({
     addressName: "",
     city: "",
@@ -51,37 +60,21 @@ const ConfirmAddress = () => {
     doorNo: "",
   });
 
-  // Parse address and pre-fill fields when component mounts
   useEffect(() => {
-    parseAndFillAddress(address);
+    if (address && !existingAddress) parseAndFillAddress(address);
   }, [address]);
 
   const parseAndFillAddress = (fullAddress: string) => {
-    // Parse the address string to extract components
-    // Example: "Al Barsha Marina Mall, 2781 Build, Riyadh, SA"
-    const parts = fullAddress.split(",").map((part) => part.trim());
-
-    if (parts.length >= 1) {
-      setStreet(parts[0] || ""); // First part usually street/building
-    }
-    if (parts.length >= 2) {
-      setBuildingName(parts[1] || ""); // Second part could be building
-    }
-    if (parts.length >= 3) {
-      setCity(parts[2] || ""); // Third part is usually city
-    }
-    if (parts.length >= 4) {
-      setArea(parts[3] || ""); // Fourth part could be area/region
-    }
+    const parts = fullAddress.split(",").map((p) => p.trim());
+    if (parts.length >= 1) setStreet(parts[0]);
+    if (parts.length >= 2) setBuildingName(parts[1]);
+    if (parts.length >= 3) setCity(parts[2]);
+    if (parts.length >= 4) setArea(parts[3]);
   };
 
-  const handleBack = () => {
-    navigation.goBack();
-  };
+  const handleBack = () => navigation.goBack();
 
-  const handleEdit = () => {
-    navigation.goBack();
-  };
+  const handleEdit = () => navigation.goBack();
 
   const validateForm = () => {
     let isValid = true;
@@ -98,27 +91,22 @@ const ConfirmAddress = () => {
       newErrors.addressName = "Address name is required";
       isValid = false;
     }
-
     if (!city.trim()) {
       newErrors.city = "City is required";
       isValid = false;
     }
-
     if (!street.trim()) {
       newErrors.street = "Street is required";
       isValid = false;
     }
-
     if (!buildingName.trim()) {
       newErrors.buildingName = "Building/Villa name is required";
       isValid = false;
     }
-
     if (!floor.trim()) {
       newErrors.floor = "Floor is required";
       isValid = false;
     }
-
     if (!doorNo.trim()) {
       newErrors.doorNo = "Door number is required";
       isValid = false;
@@ -129,43 +117,72 @@ const ConfirmAddress = () => {
   };
 
   const handleConfirm = () => {
-    if (validateForm()) {
-      const completeAddress = {
-        latitude,
-        longitude,
-        fullAddress: address,
-        addressName,
-        city,
-        area,
-        street,
-        buildingName,
-        floor,
-        doorNo,
-        instructions,
-      };
+    if (!validateForm()) {
+      Alert.alert("Error", "Please fill all required fields");
+      return;
+    }
 
-      console.log("Complete address data:", completeAddress);
+    const completeAddress: Address = {
+      id: existingAddress?.id,
+      type: existingAddress?.type || "Home",
+      customType: existingAddress?.customType,
+      fullAddress: address,
+      buildingNo: buildingName,
+      floor,
+      apartment: doorNo,
+      name: addressName,
+      phone: existingAddress?.phone || "",
+      additionalInfo: instructions,
+      showMap: true,
+    };
 
+    // Save or update address
+    if (mode === "edit" && existingAddress?.id) {
+      updateAddress(completeAddress);
+    } else {
+      addAddress(completeAddress);
+    }
+
+    // ✅ smart navigation logic
+    if (route.params?.from === "payment") {
       navigation.navigate("Payment", {
-        deliveryAddress: completeAddress,
+        deliveryAddress: {
+          latitude,
+          longitude,
+          fullAddress: address,
+          addressName,
+          city,
+          area,
+          street,
+          buildingName,
+          floor,
+          doorNo,
+          instructions,
+        },
       });
     } else {
-      Alert.alert("Error", "Please fill all required fields");
+      navigation.navigate("Home", {
+        screen: "MyAddresses",
+      });
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerButton} onPress={handleBack}>
           <AntDesign name="left" size={scale(20)} color="#017851" />
         </TouchableOpacity>
         <View style={styles.subHeader}>
-          <Text style={styles.newAddress}>Add New Address</Text>
+          <Text style={styles.newAddress}>
+            {mode === "edit" ? "Edit Address" : "Add New Address"}
+          </Text>
         </View>
         <View style={{ width: scale(30) }} />
       </View>
 
+      {/* Scrollable content */}
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
@@ -199,6 +216,7 @@ const ConfirmAddress = () => {
 
           <View style={styles.divider} />
 
+          {/* Inputs */}
           <FloatingLabelInput
             label="Address Name*"
             value={addressName}
@@ -262,9 +280,12 @@ const ConfirmAddress = () => {
         </View>
       </ScrollView>
 
+      {/* Footer */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
-          <Text style={styles.confirmButtonText}>Confirm Address</Text>
+          <Text style={styles.confirmButtonText}>
+            {mode === "edit" ? "Update Address" : "Confirm Address"}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -274,10 +295,7 @@ const ConfirmAddress = () => {
 export default ConfirmAddress;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -302,18 +320,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: scale(17),
   },
-  content: {
-    flex: 1,
-  },
+  content: { flex: 1 },
   mapImage: {
     width: "100%",
     height: scale(130),
     justifyContent: "center",
     alignItems: "center",
   },
-  detailsContainer: {
-    padding: scale(16),
-  },
+  detailsContainer: { padding: scale(16) },
   sectionTitle: {
     fontFamily: "Rubik-SemiBold",
     fontWeight: "600",
@@ -337,9 +351,7 @@ const styles = StyleSheet.create({
     color: "#717171",
     lineHeight: scale(20),
   },
-  editBtn: {
-    paddingVertical: scale(4),
-  },
+  editBtn: { paddingVertical: scale(4) },
   editText: {
     color: "#017851",
     fontFamily: "Rubik-Medium",

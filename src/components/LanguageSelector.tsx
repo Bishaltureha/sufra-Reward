@@ -36,6 +36,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const handleLanguageChange = (lang: "en" | "ar") => {
     const isRTL = lang === "ar";
     setLanguage(lang, isRTL);
+    setLanguageDropdownOpen(false);
   };
 
   const toggleLanguageDropdown = () => {
@@ -43,7 +44,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   };
 
   return (
-    <View>
+    <View style={{ position: "relative" }}>
       <TouchableOpacity
         style={[styles.container, containerStyle]}
         onPress={toggleLanguageDropdown}
@@ -62,7 +63,11 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               {selectedLanguage.toUpperCase()}
             </Text>
             <MaterialIcons
-              name="keyboard-arrow-down"
+              name={
+                languageDropdownOpen
+                  ? "keyboard-arrow-up"
+                  : "keyboard-arrow-down"
+              }
               size={scale(24)}
               color="#000"
             />
@@ -140,8 +145,8 @@ const styles = StyleSheet.create({
   },
   languageDropdown: {
     position: "absolute",
-    top: scale(50),
-    left: 0,
+    top: scale(-90),
+    left: scale(0),
     backgroundColor: "#E6EAF1",
     borderRadius: scale(12),
     shadowColor: "#000000",

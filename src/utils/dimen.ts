@@ -34,3 +34,24 @@ export {
   height as screenHeight,
   width as screenWidth,
 };
+
+// import { Dimensions, I18nManager, PixelRatio, Platform } from "react-native";
+
+// const { width, height } = Dimensions.get("window");
+
+// export const isAndroid = Platform.OS === "android";
+// export const isWeb = Platform.OS === "web";
+// export const isRTL = I18nManager.isRTL;
+// export const screenWidth = width;
+// export const screenHeight = height;
+
+// const guidelineBaseWidth = 375;
+// const guidelineBaseHeight = 812;
+
+// export const scale = (size: number) => (width / guidelineBaseWidth) * size;
+// export const verticalScale = (size: number) =>
+//   (height / guidelineBaseHeight) * size;
+// export const moderateScale = (size: number, factor = 0.5) =>
+//   size + (scale(size) - size) * factor;
+
+// export const isSmallDevice = width <= 375 && height <= 667;

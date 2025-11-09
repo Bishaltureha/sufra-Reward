@@ -231,7 +231,7 @@ const ProfileScreen = () => {
 
   const handleCheckBenefits = () => {
     console.log("Check benefits");
-    navigation.navigate("Tiers");
+    navigation.navigate("Loyalty", { initialTab: "tier" });
   };
   const handleDrawerToggle = () => {
     const drawerNav = navigation.getParent("DrawerRoot" as never);
@@ -332,7 +332,7 @@ const ProfileScreen = () => {
               <TouchableOpacity
                 style={styles.historyButton}
                 onPress={() => {
-                  navigation.navigate("PointsScreen");
+                  navigation.navigate("Loyalty");
                 }}
               >
                 <Text style={styles.historyButtonText}>

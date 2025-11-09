@@ -14,7 +14,7 @@ const EarnMorePointsSection = ({
       id: 1,
       icon: FirstOnlineOrder,
       title: "First Online Order",
-      points: "Earned",
+      points: "100 points",
       showDivider: true,
     },
     {
@@ -28,7 +28,7 @@ const EarnMorePointsSection = ({
       id: 3,
       icon: Star,
       title: "Add Extra Profile Info",
-      points: "100 Points",
+      points: "Earned",
       showDivider: false, // Last item no divider
     },
   ];
@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
     color: "#4A4A4A",
   },
   whiteCard: {
-    width: scale(358),
-    height: scale(239),
+    width: "100%",
+    padding: scale(16),
     marginTop: scale(16),
     borderRadius: scale(6),
     backgroundColor: "#FFFFFF",
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E6EAF1",
     width: "100%",
     height: scale(1),
-    marginTop: scale(8),
+    marginVertical: scale(16),
   },
 });
 

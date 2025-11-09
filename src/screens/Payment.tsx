@@ -187,7 +187,10 @@ const Payment: React.FC = () => {
                     <TouchableOpacity
                       style={{ justifyContent: "center", alignItems: "center" }}
                       onPress={() => {
-                        navigation.navigate("SelectDeliveryAddress");
+                        navigation.navigate("AddNewAddress", {
+                          mode: "add",
+                          from: "payment",
+                        });
                       }}
                     >
                       <Text

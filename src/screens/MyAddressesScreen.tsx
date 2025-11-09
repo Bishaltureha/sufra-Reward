@@ -1,5 +1,187 @@
+// import {
+//   Platform,
+//   StyleSheet,
+//   Text,
+//   TouchableOpacity,
+//   View,
+//   Image,
+//   ScrollView,
+// } from "react-native";
+// import React from "react";
+// import Drawerlogo from "../../assets/svg/Drawerlogo";
+// import { SafeAreaView } from "react-native-safe-area-context";
+// import { scale } from "../utils/dimen";
+// import { DrawerActions, useNavigation } from "@react-navigation/native";
+// import { DrawerParamList, Address } from "../types";
+// import { DrawerNavigationProp } from "@react-navigation/drawer";
+// import { useAddressContext } from "../context/AddressContext";
+
+// type MyAddressesScreenNavigationProp = DrawerNavigationProp<
+//   DrawerParamList,
+//   "MyAddresses"
+// >;
+
+// const MyAddressesScreen = () => {
+//   const navigation = useNavigation<MyAddressesScreenNavigationProp>();
+//   const { addresses, selectedAddressId, setSelectedAddressId } =
+//     useAddressContext();
+
+//   const handleDrawerToggle = () => {
+//     try {
+//       navigation.dispatch(DrawerActions.openDrawer());
+//     } catch {
+//       try {
+//         navigation.openDrawer();
+//       } catch (fallbackError) {
+//         console.error("Drawer not working:", fallbackError);
+//       }
+//     }
+//   };
+
+//   const handleSelect = (cardId: number) => {
+//     setSelectedAddressId(cardId);
+//   };
+
+//   const handleEdit = (address: Address) => {
+//     // Navigate to Add/Edit screen with address data
+//     navigation.navigate("AddEditAddress", { address });
+//   };
+
+//   const handleAddNew = () => {
+//     // Navigate to Add/Edit screen without address data
+//     navigation.navigate("AddEditAddress");
+//   };
+
+//   const getDisplayType = (address: Address) => {
+//     return address.type === "Other" && address.customType
+//       ? address.customType
+//       : address.type;
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <View style={{ backgroundColor: "#fff", flex: 1 }}>
+//         <View style={styles.header}>
+//           <TouchableOpacity
+//             style={styles.drawerButton}
+//             onPress={handleDrawerToggle}
+//           >
+//             <Drawerlogo />
+//           </TouchableOpacity>
+//           <View style={styles.titleContainer}>
+//             <Text style={styles.headerTitle}>Addresses</Text>
+//           </View>
+//           <View style={styles.spacer} />
+//         </View>
+
+//         <ScrollView
+//           style={{ flex: 1, paddingBottom: scale(120) }}
+//           showsVerticalScrollIndicator={false}
+//         >
+//           {addresses.map((address) => (
+//             <View key={address.id} style={styles.cardContainer}>
+//               <TouchableOpacity
+//                 activeOpacity={0.8}
+//                 onPress={() => handleSelect(address.id!)}
+//                 style={[
+//                   address.showMap ? styles.card : styles.smallCard,
+//                   selectedAddressId === address.id && styles.selectedCard,
+//                 ]}
+//               >
+//                 <View
+//                   style={
+//                     address.showMap
+//                       ? { flexDirection: "row", alignItems: "center" }
+//                       : styles.row
+//                   }
+//                 >
+//                   <View
+//                     style={[
+//                       styles.radioButton,
+//                       selectedAddressId === address.id &&
+//                         styles.radioButtonSelected,
+//                     ]}
+//                   >
+//                     {selectedAddressId === address.id && (
+//                       <View style={styles.radioButtonInner} />
+//                     )}
+//                   </View>
+//                   <Text style={styles.cardText}>{getDisplayType(address)}</Text>
+//                   <TouchableOpacity
+//                     style={styles.editBtn}
+//                     onPress={() => handleEdit(address)}
+//                   >
+//                     <Text style={styles.editText}>Edit</Text>
+//                   </TouchableOpacity>
+//                 </View>
+
+//                 {address.showMap && (
+//                   <Image
+//                     source={require("../../assets/image/map.png")}
+//                     style={{
+//                       width: "100%",
+//                       height: scale(60),
+//                       borderRadius: scale(8),
+//                       marginVertical: scale(16),
+//                     }}
+//                   />
+//                 )}
+
+//                 {!address.showMap && (
+//                   <View
+//                     style={{
+//                       width: "100%",
+//                       height: scale(1),
+//                       backgroundColor: "#E6EAF1",
+//                       marginVertical: scale(16),
+//                     }}
+//                   />
+//                 )}
+
+//                 <View
+//                   style={address.showMap ? {} : { marginHorizontal: scale(16) }}
+//                 >
+//                   <Text
+//                     style={{
+//                       color: "#717171",
+//                       fontFamily: "Rubik-Regular",
+//                       fontWeight: "400",
+//                       fontSize: scale(14),
+//                     }}
+//                   >
+//                     {address.fullAddress}
+//                   </Text>
+//                   <Text
+//                     style={{
+//                       color: "#717171",
+//                       fontFamily: "Rubik-Medium",
+//                       fontWeight: "500",
+//                       fontSize: scale(12),
+//                       marginTop: scale(4),
+//                     }}
+//                   >
+//                     {address.name} // {address.phone}
+//                   </Text>
+//                 </View>
+//               </TouchableOpacity>
+//             </View>
+//           ))}
+//         </ScrollView>
+
+//         {/* Bottom Fixed Section */}
+//         <View style={styles.bottomSection}>
+//           <TouchableOpacity style={styles.continueBtn} onPress={handleAddNew}>
+//             <Text style={styles.continueText}>Add New Address</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default MyAddressesScreen;
+
 import {
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,13 +194,23 @@ import Drawerlogo from "../../assets/svg/Drawerlogo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { scale } from "../utils/dimen";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
-import { DrawerParamList, Address } from "../types";
+import { DrawerParamList, Address, MainStackParamList } from "../types";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
+import {
+  CompositeNavigationProp,
+  NavigationProp,
+} from "@react-navigation/native";
 import { useAddressContext } from "../context/AddressContext";
 
-type MyAddressesScreenNavigationProp = DrawerNavigationProp<
-  DrawerParamList,
-  "MyAddresses"
+/**
+ * This screen now supports opening the map picker (AddNewAddress)
+ * for both adding and editing addresses.
+ */
+
+// Combine Drawer + MainStack navigation for smooth flow
+type MyAddressesScreenNavigationProp = CompositeNavigationProp<
+  DrawerNavigationProp<DrawerParamList, "MyAddresses">,
+  NavigationProp<MainStackParamList>
 >;
 
 const MyAddressesScreen = () => {
@@ -26,32 +218,39 @@ const MyAddressesScreen = () => {
   const { addresses, selectedAddressId, setSelectedAddressId } =
     useAddressContext();
 
+  // Open Drawer safely
   const handleDrawerToggle = () => {
     try {
       navigation.dispatch(DrawerActions.openDrawer());
     } catch {
       try {
-        navigation.openDrawer();
+        navigation.openDrawer?.();
       } catch (fallbackError) {
         console.error("Drawer not working:", fallbackError);
       }
     }
   };
 
+  // Select address for order
   const handleSelect = (cardId: number) => {
     setSelectedAddressId(cardId);
   };
 
+  // 🟢 Edit → opens map picker in "edit" mode
   const handleEdit = (address: Address) => {
-    // Navigate to Add/Edit screen with address data
-    navigation.navigate("AddEditAddress", { address });
+    navigation.navigate("AddNewAddress", { mode: "edit", address });
   };
+
+  // 🟢 Add New → opens map picker in "add" mode
 
   const handleAddNew = () => {
-    // Navigate to Add/Edit screen without address data
-    navigation.navigate("AddEditAddress");
+    navigation.navigate("AddNewAddress", {
+      mode: "add",
+      from: "myaddress",
+    });
   };
 
+  // Helper: display "Other" type custom name
   const getDisplayType = (address: Address) => {
     return address.type === "Other" && address.customType
       ? address.customType
@@ -61,6 +260,7 @@ const MyAddressesScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ backgroundColor: "#fff", flex: 1 }}>
+        {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.drawerButton}
@@ -74,98 +274,123 @@ const MyAddressesScreen = () => {
           <View style={styles.spacer} />
         </View>
 
+        {/* List of Saved Addresses */}
         <ScrollView
           style={{ flex: 1, paddingBottom: scale(120) }}
           showsVerticalScrollIndicator={false}
         >
-          {addresses.map((address) => (
-            <View key={address.id} style={styles.cardContainer}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => handleSelect(address.id!)}
-                style={[
-                  address.showMap ? styles.card : styles.smallCard,
-                  selectedAddressId === address.id && styles.selectedCard,
-                ]}
-              >
-                <View
-                  style={
-                    address.showMap
-                      ? { flexDirection: "row", alignItems: "center" }
-                      : styles.row
-                  }
+          {addresses.length > 0 ? (
+            addresses.map((address) => (
+              <View key={address.id} style={styles.cardContainer}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => handleSelect(address.id!)}
+                  style={[
+                    address.showMap ? styles.card : styles.smallCard,
+                    selectedAddressId === address.id && styles.selectedCard,
+                  ]}
                 >
                   <View
-                    style={[
-                      styles.radioButton,
-                      selectedAddressId === address.id &&
-                        styles.radioButtonSelected,
-                    ]}
+                    style={
+                      address.showMap
+                        ? { flexDirection: "row", alignItems: "center" }
+                        : styles.row
+                    }
                   >
-                    {selectedAddressId === address.id && (
-                      <View style={styles.radioButtonInner} />
-                    )}
+                    <View
+                      style={[
+                        styles.radioButton,
+                        selectedAddressId === address.id &&
+                          styles.radioButtonSelected,
+                      ]}
+                    >
+                      {selectedAddressId === address.id && (
+                        <View style={styles.radioButtonInner} />
+                      )}
+                    </View>
+                    <Text style={styles.cardText}>
+                      {getDisplayType(address)}
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.editBtn}
+                      onPress={() => handleEdit(address)}
+                    >
+                      <Text style={styles.editText}>Edit</Text>
+                    </TouchableOpacity>
                   </View>
-                  <Text style={styles.cardText}>{getDisplayType(address)}</Text>
-                  <TouchableOpacity
-                    style={styles.editBtn}
-                    onPress={() => handleEdit(address)}
-                  >
-                    <Text style={styles.editText}>Edit</Text>
-                  </TouchableOpacity>
-                </View>
 
-                {address.showMap && (
-                  <Image
-                    source={require("../../assets/image/map.png")}
-                    style={{
-                      width: "100%",
-                      height: scale(60),
-                      borderRadius: scale(8),
-                      marginVertical: scale(16),
-                    }}
-                  />
-                )}
+                  {address.showMap && (
+                    <Image
+                      source={require("../../assets/image/map.png")}
+                      style={{
+                        width: "100%",
+                        height: scale(60),
+                        borderRadius: scale(8),
+                        marginVertical: scale(16),
+                      }}
+                    />
+                  )}
 
-                {!address.showMap && (
+                  {!address.showMap && (
+                    <View
+                      style={{
+                        width: "100%",
+                        height: scale(1),
+                        backgroundColor: "#E6EAF1",
+                        marginVertical: scale(16),
+                      }}
+                    />
+                  )}
+
                   <View
-                    style={{
-                      width: "100%",
-                      height: scale(1),
-                      backgroundColor: "#E6EAF1",
-                      marginVertical: scale(16),
-                    }}
-                  />
-                )}
-
-                <View
-                  style={address.showMap ? {} : { marginHorizontal: scale(16) }}
-                >
-                  <Text
-                    style={{
-                      color: "#717171",
-                      fontFamily: "Rubik-Regular",
-                      fontWeight: "400",
-                      fontSize: scale(14),
-                    }}
+                    style={
+                      address.showMap ? {} : { marginHorizontal: scale(16) }
+                    }
                   >
-                    {address.fullAddress}
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#717171",
-                      fontFamily: "Rubik-Medium",
-                      fontWeight: "500",
-                      fontSize: scale(12),
-                      marginTop: scale(4),
-                    }}
-                  >
-                    {address.name} // {address.phone}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                    <Text
+                      style={{
+                        color: "#717171",
+                        fontFamily: "Rubik-Regular",
+                        fontWeight: "400",
+                        fontSize: scale(14),
+                      }}
+                    >
+                      {address.fullAddress}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#717171",
+                        fontFamily: "Rubik-Medium",
+                        fontWeight: "500",
+                        fontSize: scale(12),
+                        marginTop: scale(4),
+                      }}
+                    >
+                      {address.name} // {address.phone}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            ))
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                marginTop: scale(60),
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: scale(14),
+                  color: "#717171",
+                  fontFamily: "Rubik-Regular",
+                }}
+              >
+                No addresses yet. Add one below 👇
+              </Text>
             </View>
-          ))}
+          )}
         </ScrollView>
 
         {/* Bottom Fixed Section */}

@@ -81,6 +81,43 @@ const Register = ({ navigation }: Props) => {
     }
   };
 
+  // const handleContinue = async () => {
+  //   if (!selectedCountry || !isValidPhone) {
+  //     console.log("Please enter valid phone number");
+  //     return;
+  //   }
+
+  //   const cleanNumber = phone.replace(/\D/g, "");
+  //   const fullNumber = `${selectedCountry.dial_code}${cleanNumber}`;
+
+  //   try {
+  //     const response = await fetch(
+  //       "http://192.168.0.108:3000/api/auth/request-otp",
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ mobile: fullNumber }),
+  //       }
+  //     );
+
+  //     const data = await response.json();
+  //     console.log("📲 OTP Request Response:", data);
+
+  //     if (response.ok) {
+  //       // Save number globally
+  //       dispatch(setPhoneNumber(fullNumber));
+
+  //       // Navigate to OTP screen
+  //       navigation.navigate("Otp");
+  //     } else {
+  //       alert(data.message || "Something went wrong");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error sending OTP:", error);
+  //     alert("Network error. Please try again.");
+  //   }
+  // };
+
   return (
     <View style={styles.container}>
       <Header

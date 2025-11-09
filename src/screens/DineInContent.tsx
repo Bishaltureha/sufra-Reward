@@ -136,6 +136,7 @@ const DineInContent = () => {
 
   const handleLoyaltyPress = () => {
     console.log("Loyalty ID tapped!");
+    navigation.navigate("Loyalty");
   };
 
   const handleViewMapPress = () => {
@@ -163,9 +164,13 @@ const DineInContent = () => {
         <StatsCard
           type="rewards"
           onPress={handleRewardsPress}
-          width={scale(140)}
+          // width={scale(140)}
         />
-        <StatsCard type="tier" onPress={handleTierPress} width={scale(140)} />
+        <StatsCard
+          type="tierSmall"
+          onPress={handleTierPress}
+          // width={scale(140)}
+        />
 
         <TouchableOpacity
           style={styles.loyaltyBox}
@@ -174,6 +179,7 @@ const DineInContent = () => {
           <QrCode />
           <Text style={styles.loyaltyText}>Loyalty ID</Text>
         </TouchableOpacity>
+        {/* <StatsCard type="loyalty" onPress={handleLoyaltyPress} /> */}
       </View>
 
       <DealsSection
@@ -214,8 +220,8 @@ const DineInContent = () => {
         </ScrollView>
       </View>
 
-      <EarnMorePointsSection containerStyle={undefined} />
       <GiftCardCarousel cards={giftCards} onCardPress={handleCardPress} />
+      <EarnMorePointsSection containerStyle={undefined} />
     </ScrollView>
   );
 };
@@ -229,11 +235,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: scale(16),
     justifyContent: "space-between",
+    alignItems: "stretch",
     marginTop: scale(16),
     width: "100%",
     marginBottom: scale(16),
   },
   loyaltyBox: {
+    marginStart: scale(5),
     backgroundColor: "#F6B01F",
     width: scale(62),
     height: scale(55),

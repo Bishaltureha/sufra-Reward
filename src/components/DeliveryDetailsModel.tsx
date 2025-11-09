@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderColor: "#000",
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderRadius: scale(12),
     paddingVertical: scale(14),
   },

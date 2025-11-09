@@ -6,56 +6,69 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
-  Alert,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
-import { MainStackParamList } from "../types";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { MainStackParamList, Address } from "../types";
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { scale } from "../utils/dimen";
 import SearchIcon from "../../assets/svg/SearchIcon";
 import LoctionPointer from "../../assets/svg/LoctionPointer";
 
+type AddNewAddressRouteProp = RouteProp<MainStackParamList, "AddNewAddress">;
+
 export default function AddNewAddress() {
   const navigation = useNavigation<NavigationProp<MainStackParamList>>();
+  const route = useRoute<AddNewAddressRouteProp>();
+  const { mode, address: existingAddress } = route.params || {};
 
   const [region, setRegion] = useState({
-    latitude: 24.7136,
-    longitude: 46.6753,
+    latitude: existingAddress?.showMap
+      ? Number(existingAddress.fullAddress?.split(",")[0]) || 24.7136
+      : 24.7136,
+    longitude: existingAddress?.showMap
+      ? Number(existingAddress.fullAddress?.split(",")[1]) || 46.6753
+      : 46.6753,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
-  const [markerCoord, setMarkerCoord] = useState({
-    latitude: 24.7136,
-    longitude: 46.6753,
-  });
-  const [address, setAddress] = useState(
-    "Al Barsha Marina Mall 2781 Build Riyadh, SA"
-  );
-  const mapRef = useRef(null);
 
+  const [markerCoord, setMarkerCoord] = useState({
+    latitude: region.latitude,
+    longitude: region.longitude,
+  });
+
+  const [address, setAddress] = useState(
+    existingAddress?.fullAddress || "Searching current location..."
+  );
+
+  const mapRef = useRef<MapView>(null);
+
+  // Get current user location
   useEffect(() => {
-    requestLocationPermission();
+    (async () => {
+      if (mode === "edit" && existingAddress?.fullAddress) return; // skip geolocation if editing
+
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status === "granted") {
+        const loc = await Location.getCurrentPositionAsync({});
+        const { latitude, longitude } = loc.coords;
+        setRegion((prev) => ({ ...prev, latitude, longitude }));
+        setMarkerCoord({ latitude, longitude });
+        getAddress(latitude, longitude);
+      }
+    })();
   }, []);
 
-  const requestLocationPermission = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status === "granted") {
-      const location = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = location.coords;
-      setRegion({
-        ...region,
-        latitude,
-        longitude,
-      });
-      setMarkerCoord({ latitude, longitude });
-      getAddressFromCoords(latitude, longitude);
-    }
-  };
-
-  const getAddressFromCoords = async (latitude: number, longitude: number) => {
+  // Reverse geocode
+  const getAddress = async (latitude: number, longitude: number) => {
     try {
       const result = await Location.reverseGeocodeAsync({
         latitude,
@@ -67,50 +80,38 @@ export default function AddNewAddress() {
         }, ${result[0].region || ""}`;
         setAddress(addr);
       }
-    } catch (error) {
-      console.log("Error getting address:", error);
+    } catch (e) {
+      console.warn("Error getting address:", e);
     }
   };
 
-  const handleMapPress = (e: any) => {
-    const { latitude, longitude } = e.nativeEvent.coordinate;
-    setMarkerCoord({ latitude, longitude });
-    getAddressFromCoords(latitude, longitude);
-  };
+  const handleBack = () => navigation.goBack();
 
-  const handleRegionChangeComplete = (newRegion: any) => {
-    setRegion(newRegion);
-  };
-
-  const refineLocation = () => {
-    const { latitude, longitude } = region;
-    setMarkerCoord({ latitude, longitude });
-    getAddressFromCoords(latitude, longitude);
-  };
-
+  // Go to ConfirmAddress with data
   const handleUseAddress = () => {
     navigation.navigate("ConfirmAddress", {
       latitude: markerCoord.latitude,
       longitude: markerCoord.longitude,
-      address: address,
+      address,
+      from: route.params?.from,
+      mode: route.params?.mode ?? "add",
     });
-  };
-  const handleBack = () => {
-    navigation.goBack();
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.headerButton} onPress={handleBack}>
+        <TouchableOpacity style={styles.headerIconWrapper} onPress={handleBack}>
           <AntDesign name="left" size={scale(20)} color="#017851" />
         </TouchableOpacity>
-        <View style={styles.subHeader}>
-          <Text style={styles.newAddress}>Add New Address</Text>
-        </View>
-        <View style={{ width: scale(30) }} />
+        <Text style={styles.headerTitle}>
+          {mode === "edit" ? "Edit Address" : "Add New Address"}
+        </Text>
+        <View style={styles.headerIconWrapper} />
       </View>
 
+      {/* Search */}
       <View style={styles.searchContainer}>
         <SearchIcon />
         <TextInput
@@ -121,67 +122,73 @@ export default function AddNewAddress() {
         />
       </View>
 
+      {/* Map */}
       <View style={styles.mapContainer}>
         <MapView
           ref={mapRef}
           style={styles.map}
           region={region}
-          onRegionChangeComplete={handleRegionChangeComplete}
-          onPress={handleMapPress}
+          onPress={(e) => {
+            const { latitude, longitude } = e.nativeEvent.coordinate;
+            setMarkerCoord({ latitude, longitude });
+            getAddress(latitude, longitude);
+          }}
         >
           <Marker coordinate={markerCoord}>
-            <View>
-              <LoctionPointer />
-            </View>
+            <LoctionPointer />
           </Marker>
         </MapView>
 
-        <TouchableOpacity style={styles.refineButton} onPress={refineLocation}>
+        <TouchableOpacity style={styles.refineButton}>
           <Text style={styles.refineButtonText}>
             Move the map to refine pin location
           </Text>
         </TouchableOpacity>
 
         <View style={styles.addressBadge}>
-          <Text style={styles.addressBadgeText}>{address}</Text>
+          <Text style={styles.addressBadgeText} numberOfLines={2}>
+            {address}
+          </Text>
         </View>
       </View>
 
+      {/* Continue */}
       <TouchableOpacity
         style={styles.useAddressButton}
         onPress={handleUseAddress}
       >
-        <Text style={styles.useAddressButtonText}>Use this Address</Text>
+        <Text style={styles.useAddressButtonText}>
+          {mode === "edit" ? "Update Address" : "Use this Address"}
+        </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
   header: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: scale(16),
     paddingVertical: scale(12),
     borderBottomWidth: scale(1),
-    borderBottomColor: "#f0f0f0",
-    justifyContent: "space-between",
+    borderColor: "#E6EAF1",
   },
-  backButton: {
-    marginRight: scale(12),
-  },
-  backArrow: {
-    fontSize: scale(24),
-    color: "#00a86b",
+  headerIconWrapper: {
+    width: scale(30),
+    height: scale(30),
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerTitle: {
-    fontSize: scale(18),
+    flex: 1,
+    textAlign: "center",
+    fontSize: scale(17),
     fontWeight: "600",
-    color: "#000",
+    color: "#4A4A4A",
+    fontFamily: "Rubik-SemiBold",
   },
   searchContainer: {
     flexDirection: "row",
@@ -193,62 +200,29 @@ const styles = StyleSheet.create({
     borderRadius: scale(8),
     borderWidth: scale(1),
     borderColor: "#e0e0e0",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
     gap: scale(10),
   },
-  searchIcon: {
-    fontSize: scale(18),
-    marginRight: scale(8),
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: scale(14),
-    color: "#666",
-  },
-  mapContainer: {
-    flex: 1,
-    position: "relative",
-  },
-  map: {
-    flex: 1,
-  },
+  searchInput: { flex: 1, fontSize: scale(14), color: "#666" },
+  mapContainer: { flex: 1, position: "relative" },
+  map: { flex: 1 },
   refineButton: {
     position: "absolute",
     top: scale(20),
     alignSelf: "center",
     backgroundColor: "#FF617E",
     paddingHorizontal: scale(20),
-    paddingVertical: scale(12),
+    paddingVertical: scale(10),
     borderRadius: scale(25),
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
   },
-  refineButtonText: {
-    color: "#fff",
-    fontSize: scale(13),
-    fontWeight: "500",
-  },
+  refineButtonText: { color: "#fff", fontSize: scale(13), fontWeight: "500" },
   addressBadge: {
     position: "absolute",
-    bottom: 100,
-    left: 20,
-    right: 20,
+    bottom: scale(100),
+    left: scale(20),
+    right: scale(20),
     backgroundColor: "#017851",
-    paddingHorizontal: scale(16),
-    paddingVertical: scale(12),
+    padding: scale(12),
     borderRadius: scale(20),
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
   },
   addressBadgeText: {
     color: "#fff",
@@ -264,24 +238,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   useAddressButtonText: {
-    color: "#000000",
-    fontSize: scale(18),
-    fontWeight: "600",
-    fontFamily: "Rubik-SemiBold",
-  },
-  headerButton: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  subHeader: {
-    marginStart: scale(8),
-    flexDirection: "column",
-    alignItems: "flex-start",
-  },
-  newAddress: {
-    color: "#4A4A4A",
-    fontFamily: "Rubik-SemiBold",
-    fontWeight: "600",
+    color: "#000",
     fontSize: scale(17),
+    fontWeight: "600",
+    fontFamily: "Rubik-SemiBold",
   },
 });
