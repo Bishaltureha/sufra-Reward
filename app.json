@@ -16,12 +16,14 @@
       "style": "dark",
       "backgroundColor": "#ffffff"
     },
-
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.sufrarewards",
       "infoPlist": {
-        "CFBundleLocalizations": ["en", "ar"],
+        "CFBundleLocalizations": [
+          "en",
+          "ar"
+        ],
         "NSLocationWhenInUseUsageDescription": "We need your location to show nearby services and deliver to you faster.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "We need your location to provide better service, even when the app is in the background.",
         "NSCameraUsageDescription": "We need camera access so you can take and upload photos.",
@@ -40,7 +42,6 @@
         ]
       }
     },
-
     "android": {
       "package": "com.sufrarewards",
       "adaptiveIcon": {
@@ -59,14 +60,24 @@
         "POST_NOTIFICATIONS"
       ]
     },
-
+    "config": {
+      "googleMaps": {
+        "apiKey": "AIzaSyCSGt6ZhCYfInhhG93QNkwE-MWJ13M0EBA"
+      }
+    },
     "plugins": [
       [
         "expo-localization",
         {
           "supportedLocales": {
-            "ios": ["en", "ar"],
-            "android": ["en", "ar"]
+            "ios": [
+              "en",
+              "ar"
+            ],
+            "android": [
+              "en",
+              "ar"
+            ]
           }
         }
       ],
@@ -81,13 +92,12 @@
       ],
       [
         "expo-notifications"
-      ]
+      ],
+      "expo-maps"
     ],
-
     "web": {
       "favicon": "./assets/favicon.png"
     },
-
     "extra": {
       "supportsRTL": true
     }

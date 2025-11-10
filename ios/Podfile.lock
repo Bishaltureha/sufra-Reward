@@ -57,6 +57,8 @@ PODS:
     - ExpoModulesCore
   - ExpoLocation (19.0.7):
     - ExpoModulesCore
+  - ExpoMaps (0.12.8):
+    - ExpoModulesCore
   - ExpoMediaLibrary (18.2.0):
     - ExpoModulesCore
     - React-Core
@@ -2188,6 +2190,7 @@ DEPENDENCIES:
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
   - ExpoLocalization (from `../node_modules/expo-localization/ios`)
   - ExpoLocation (from `../node_modules/expo-location/ios`)
+  - ExpoMaps (from `../node_modules/expo-maps/ios`)
   - ExpoMediaLibrary (from `../node_modules/expo-media-library/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoSharing (from `../node_modules/expo-sharing/ios`)
@@ -2312,6 +2315,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-localization/ios"
   ExpoLocation:
     :path: "../node_modules/expo-location/ios"
+  ExpoMaps:
+    :path: "../node_modules/expo-maps/ios"
   ExpoMediaLibrary:
     :path: "../node_modules/expo-media-library/ios"
   ExpoModulesCore:
@@ -2499,6 +2504,7 @@ SPEC CHECKSUMS:
   ExpoLinking: f051f28e50ea9269ff539317c166adec81d9342d
   ExpoLocalization: b852a5d8ec14c5349c1593eca87896b5b3ebfcca
   ExpoLocation: 93d7faa0c2adbd5a04686af0c1a61bc6ed3ee2f7
+  ExpoMaps: 6dd49c855ceaa100954dd1eaac08571aee15e1ea
   ExpoMediaLibrary: 641a6952299b395159ccd459bd8f5f6764bf55fe
   ExpoModulesCore: 9281d8f1cda9d0c37dbce34c26014212b22eb8c0
   ExpoSharing: 032c01bb034319e2374badf082ae935be866d2e9
