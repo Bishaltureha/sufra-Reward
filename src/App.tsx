@@ -8,18 +8,18 @@ import {
   StatusBar,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import AppNavigator from "./src/navigation/AppNavigator";
+import AppNavigator from "./navigation/AppNavigator";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { LocalizationProvider } from "./src/context/LocalizationContext";
+import { LocalizationProvider } from "./context/LocalizationContext";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "./src/store";
-import { navigationRef } from "./src/navigation/navigationRef";
-import { getLanguage } from "./src/utils/storage";
+import { store, persistor } from "./store";
+import { navigationRef } from "./navigation/navigationRef";
+import { getLanguage } from "./utils/storage";
 
 // 👇 Import the package (with your custom type)
 import changeNavigationBarColor from "react-native-navigation-bar-color";
-import { AddressProvider } from "./src/context/AddressContext";
+import { AddressProvider } from "./context/AddressContext";
 
 const App = () => {
   useEffect(() => {
